@@ -1,0 +1,46 @@
+import crypto from 'crypto';
+import * as fs from 'fs';
+
+try {
+  const privateKey = fs.readFileSync('./private.pem', { encoding: 'utf8' });
+  const publicKey = fs.readFileSync('./public.pem', { encoding: 'utf8' });
+
+  const createSignature = (data: string) => {
+    const sign = crypto.createSign('SHA256');
+    sign.update(data);
+    return sign.sign({ key: privateKey, passphrase: 'CoUrSe123' }).toString('base64');
+  };
+
+  const verifySignature = (data: string, signature: string) => {
+    const verify = crypto.createVerify('SHA256');
+    verify.update(data);
+    return verify.verify(publicKey, Buffer.from(signature, 'base64'));
+  };
+
+  // const discount = {
+  //   default: 200,
+  //   GBP: 150,
+  // };
+  // const sig = createSignature(JSON.stringify(discount));
+  // if (!verifySignature(JSON.stringify(discount), sig)) {
+  //   throw Error('invalid signature');
+  // }
+  // // tslint:disable-next-line:no-console
+  // console.log(sig);
+
+
+  const oldDiscount = 150;
+  const oldSig = createSignature(oldDiscount.toString());
+  if (!verifySignature(oldDiscount.toString(), oldSig)) {
+     throw Error('invalid signature');
+  }
+ // tslint:disable-next-line:no-console
+  console.log(oldSig);
+
+
+
+
+
+} catch (err) {
+  //
+}
