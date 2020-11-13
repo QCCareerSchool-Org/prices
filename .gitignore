@@ -5,3 +5,4 @@ public.pem
 private.pem
 error.log
 combined.log
+dist
