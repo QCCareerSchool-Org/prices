@@ -3,3 +3,6 @@ node_modules
 .vscode
 public.pem
 private.pem
+error.log
+combined.log
+dist
