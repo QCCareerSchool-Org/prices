@@ -75,12 +75,12 @@ router.get('/', asyncWrapper(async (req, res) => {
 const newPrices = async (req: Request): Promise<PriceResult> => {
   const connection = await (await pool).getConnection();
   try {
+    let query: PriceQuery | undefined;
     try {
-      await priceSchema.validate(req.query);
+      query = await priceSchema.validate(req.query, { strict: true });
     } catch (err) {
       throw new HttpStatus.BadRequest(err.message);
     }
-    const query = priceSchema.cast(req.query);
     if (typeof query === 'undefined') {
       throw new HttpStatus.InternalServerError('Could not cast querystring');
     }
@@ -94,12 +94,12 @@ const oldPrices = async (req: Request): Promise<OldPriceResult> => {
   console.log('Old prices function called', req.headers.origin);
   const connection = await (await pool).getConnection();
   try {
+    let query: OldPriceQuery | undefined;
     try {
-      await oldPriceSchema.validate(req.query);
+      query = await oldPriceSchema.validate(req.query, { strict: true });
     } catch (err) {
       throw new HttpStatus.BadRequest(err.message);
     }
-    const query = oldPriceSchema.cast(req.query);
     if (typeof query === 'undefined') {
       throw new HttpStatus.InternalServerError('Could not cast querystring');
     }
