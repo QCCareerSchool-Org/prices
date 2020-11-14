@@ -77,7 +77,7 @@ const newPrices = async (req: Request): Promise<PriceResult> => {
   try {
     let query: PriceQuery | undefined;
     try {
-      query = await priceSchema.validate(req.query, { strict: true });
+      query = await priceSchema.validate(req.query);
     } catch (err) {
       throw new HttpStatus.BadRequest(err.message);
     }
@@ -96,7 +96,7 @@ const oldPrices = async (req: Request): Promise<OldPriceResult> => {
   try {
     let query: OldPriceQuery | undefined;
     try {
-      query = await oldPriceSchema.validate(req.query, { strict: true });
+      query = await oldPriceSchema.validate(req.query);
     } catch (err) {
       throw new HttpStatus.BadRequest(err.message);
     }
