@@ -43,7 +43,7 @@ const priceSchema = yup.object<PriceQuery>({
     blackFriday2020: yup.boolean(),
     school: yup.string(),
   }),
-});
+}).noUnknown();
 
 const oldPriceSchema = yup.object<OldPriceQuery>({
   courses: yup.array(yup.string().required()).default([]).required(),
@@ -63,7 +63,7 @@ const oldPriceSchema = yup.object<OldPriceQuery>({
     discountSignatureGBP: yup.string(),
   }),
   _: yup.number(),
-});
+}).noUnknown();
 
 export const router = express.Router();
 
