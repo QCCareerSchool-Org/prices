@@ -7,6 +7,13 @@ import { getPrices, PriceQuery, PriceResult } from './prices';
 import { pool } from './pool';
 import { oldGetPrices, OldPriceQuery, OldPriceResult } from './old-prices';
 
+const objectMap = (obj: any, mapFunction: (value: any) => any) => {
+  return Object.keys(obj).reduce((result, key) => {
+    result[key] = mapFunction(obj[key]);
+    return result;
+  }, {} as any)
+}
+
 // validate the parameters
 const priceSchema = yup.object<PriceQuery>({
   courses: yup.array(yup.string().required()).default([]).required(),
@@ -27,7 +34,9 @@ const priceSchema = yup.object<PriceQuery>({
     MMFreeMW: yup.boolean(),
     deluxeKit: yup.boolean(),
     portfolio: yup.boolean(),
-    depositOverride: yup.object(), // { [key: string]: number }
+    depositOverride: yup.lazy(obj => yup.object(
+      objectMap(obj, () => yup.number()),
+    )),
     installmentsOverride: yup.number().min(1).max(24),
     studentDiscount: yup.boolean(),
     blackFriday2020: yup.boolean(),
