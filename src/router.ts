@@ -22,7 +22,7 @@ const priceSchema = yup.object<PriceQuery>({
       GBP: yup.number(),
       AUD: yup.number(),
       NZD: yup.number(),
-    }),
+    }).optional(),
     discountSignature: yup.string(),
     MMFreeMW: yup.boolean(),
     deluxeKit: yup.boolean(),
