@@ -22,16 +22,16 @@ if (typeof process.env.DB_SOCKET_PATH !== 'undefined') {
   options.host = process.env.DB_HOST;
 }
 
-if (typeof process.env.DB_SSL !== 'undefined' && process.env.DB_SSL === 'TRUE') {
+if (typeof process.env.DB_SSL !== 'undefined' && process.env.DB_SSL === 'true') {
   options.ssl = {};
-  if (typeof process.env.DB_SSL_CERT !== 'undefined') {
-    options.ssl.cert = fs.readFileSync(process.env.DB_SSL_CERT);
+  if (typeof process.env.DB_CLIENT_CERT !== 'undefined') {
+    options.ssl.cert = fs.readFileSync(process.env.DB_CLIENT_CERT);
   }
-  if (typeof process.env.DB_SSL_KEY !== 'undefined') {
-    options.ssl.key = fs.readFileSync(process.env.DB_SSL_KEY);
+  if (typeof process.env.DB_CLIENT_KEY !== 'undefined') {
+    options.ssl.key = fs.readFileSync(process.env.DB_CLIENT_KEY);
   }
-  if (typeof process.env.DB_SSL_CA !== 'undefined') {
-    options.ssl.ca = fs.readFileSync(process.env.DB_SSL_CA);
+  if (typeof process.env.DB_SERVER_CA !== 'undefined') {
+    options.ssl.ca = fs.readFileSync(process.env.DB_SERVER_CA);
   }
 }
 
