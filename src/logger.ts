@@ -1,38 +1,43 @@
 import { NodemailerTransport } from '@qccareerschool/winston-nodemailer';
-import winston, { format } from 'winston';
 import dotenv from 'dotenv';
+import winston, { format, transports } from 'winston';
 
 dotenv.config();
 
-if (typeof process.env.LOG_MAIL_USERNAME === 'undefined') {
-  throw new Error('EMAIL_USERNAME not specified in .env file');
+if (typeof process.env.LOG_EMAIL_USERNAME === 'undefined') {
+  throw new Error('LOG_EMAIL_USERNAME not specified in .env file');
 }
-const username = process.env.LOG_MAIL_USERNAME;
+const user = process.env.LOG_EMAIL_USERNAME;
 
-if (typeof process.env.LOG_MAIL_PASSWORD === 'undefined') {
-  throw new Error('EMAIL_PASSWORD not specified in .env file');
+if (typeof process.env.LOG_EMAIL_PASSWORD === 'undefined') {
+  throw new Error('LOG_EMAIL_PASSWORD not specified in .env file');
 }
-const password = process.env.LOG_MAIL_PASSWORD;
+const pass = process.env.LOG_EMAIL_PASSWORD;
 
-if (typeof process.env.LOG_MAIL_HOST === 'undefined') {
-  throw new Error('EMAIL_HOST not specified in .env file');
+if (typeof process.env.LOG_EMAIL_HOST === 'undefined') {
+  throw new Error('LOG_EMAIL_HOST not specified in .env file');
 }
-const host = process.env.LOG_MAIL_HOST;
+const host = process.env.LOG_EMAIL_HOST;
 
-if (typeof process.env.LOG_MAIL_TLS === 'undefined') {
-  throw new Error('EMAIL_TLS not specified in .env file');
+if (typeof process.env.LOG_EMAIL_TLS === 'undefined') {
+  throw new Error('LOG_EMAIL_TLS not specified in .env file');
 }
-const tls = process.env.LOG_MAIL_TLS === 'TRUE' ? true : false;
+const tls = process.env.LOG_EMAIL_TLS === 'true' ? true : false;
 
-if (typeof process.env.LOG_MAIL_TO === 'undefined') {
-  throw new Error('EMAIL_TO not specified in .env file');
+if (typeof process.env.LOG_EMAIL_PORT === 'undefined') {
+  throw new Error('LOG_EMAIL_PORT not specified in .env file');
 }
-const to = process.env.LOG_MAIL_TO;
+const port = parseInt(process.env.LOG_EMAIL_PORT, 10);
 
-if (typeof process.env.LOG_MAIL_FROM === 'undefined') {
-  throw new Error('EMAIL_FROM not specified in .env file');
+if (typeof process.env.LOG_EMAIL_TO === 'undefined') {
+  throw new Error('LOG_EMAIL_TO not specified in .env file');
 }
-const from = process.env.LOG_MAIL_FROM;
+const to = process.env.LOG_EMAIL_TO;
+
+if (typeof process.env.LOG_EMAIL_FROM === 'undefined') {
+  throw new Error('LOG_EMAIL_FROM not specified in .env file');
+}
+const from = process.env.LOG_EMAIL_FROM;
 
 /**
  * If the data passed to the logger is an instance of Error, transform the stack trace into an array
@@ -63,24 +68,24 @@ const replacer = (key: string, value: any) => {
 };
 
 export const logger = winston.createLogger({
-  level: 'info',
   format: format.combine(
     format.timestamp(),
     format.json({ space: 2, replacer }),
   ),
   transports: [
-    new winston.transports.File({ filename: 'error.log', level: 'error' }),
-    new winston.transports.File({ filename: 'combined.log' }),
+    new transports.Console({
+      format: format.colorize(),
+    }),
+    new transports.File({
+      filename: '/var/log/node-prices.log',
+    }),
     new NodemailerTransport({
-      auth: {
-        pass: password,
-        user: username,
-      },
-      filter: ({ level }: { level: string }) => level === 'error' || level === 'crit' || level === 'alert' || level === 'emerg',
+      auth: { user, pass },
+      filter: ({ level }) => [ 'error', 'crit', 'alert', 'emerg' ].includes(level),
       from,
       host,
-      port: 587,
-      secure: false,
+      port,
+      secure: tls,
       tags: [ 'prices' ],
       to,
     }),
