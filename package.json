@@ -6,8 +6,8 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "test": "jest",
-    "build": "tsc",
-    "start": "node dist"
+    "start": "node dist",
+    "build": "tsc"
   },
   "author": "Dave Welsh",
   "license": "UNLICENSED",
@@ -24,7 +24,6 @@
     "typescript": "^3.9.7"
   },
   "dependencies": {
-    "@hapi/joi": "^17.1.1",
     "@qccareerschool/helper-functions": "^1.5.1",
     "@qccareerschool/http-status": "^2.1.0",
     "@qccareerschool/winston-nodemailer": "^4.0.1",
@@ -35,7 +34,6 @@
     "@types/debug": "0.0.30",
     "@types/dotenv": "^4.0.3",
     "@types/express": "^4.17.8",
-    "@types/hapi__joi": "^16.0.12",
     "@types/helmet": "0.0.45",
     "@types/nodemailer": "^6.4.0",
     "@types/yup": "^0.29.9",

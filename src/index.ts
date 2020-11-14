@@ -1,13 +1,14 @@
-import * as HttpStatus from '@qccareerschool/http-status';
 import compression from 'compression';
 import cors from 'cors';
-import express, { NextFunction, Request, Response } from 'express';
+import express from 'express';
 import helmet from 'helmet';
 
 import { logger } from './logger';
 import { router } from './router';
+import { httpErrorHandler } from './handlers/httpErrorHandler';
+import { errorHandler } from './handlers/errorHandler';
+import { versionMiddleware } from './handlers/versionMiddleware';
 
-const app = express();
 const HTTP_PORT = 15004;
 
 const origin = [
@@ -30,33 +31,15 @@ const origin = [
   /\.qccareerschool\.now\.sh$/,
 ];
 
+const app = express();
 app.use(cors({ origin }));
-app.use(helmet({ hsts: false, frameguard: false })); // NGINX will do these
+app.use(helmet());
 app.use(compression());
-
-app.use((req, res, next) => {
-  let version = 1;
-  if (req.headers['x-api-version']) {
-    if (typeof req.headers['x-api-version'] === 'string') {
-      version = parseInt(req.headers['x-api-version'], 10);
-    } else if (req.headers['x-api-version'].length > 0) {
-      version = parseInt(req.headers['x-api-version'][0], 10);
-    }
-  }
-  res.locals.apiVersion = version;
-  next();
-});
-
+app.use(versionMiddleware);
 app.use('/prices', router);
+app.use(httpErrorHandler);
+app.use(errorHandler);
 
-// global error middleware
-app.use((err: any, req: Request, res: Response, next: NextFunction) => {
-  if (err instanceof HttpStatus.HttpResponse && err.isClientError()) {
-    res.status(err.statusCode).send({ message: err.message });
-    return;
-  }
-  logger.error(err);
-  res.status(500).send(err.message);
+app.listen(HTTP_PORT, () => {
+  logger.info(`Server running on port ${HTTP_PORT}`);
 });
-
-app.listen(HTTP_PORT);

@@ -1,112 +1,100 @@
-// TODO: migrate from Joi to yup
-import Joi from '@hapi/joi';
-import express from 'express';
 import * as HttpStatus from '@qccareerschool/http-status';
+import yup from 'yup';
+import express, { Request } from 'express';
 
 import { asyncWrapper } from './async-wrapper';
-import { getPrices, PriceQuery } from './prices';
+import { getPrices, PriceQuery, PriceResult } from './prices';
 import { pool } from './pool';
-import { oldGetPrices, OldPriceQuery } from './old-prices';
-import { sendTuitionEmail, TuitionEmailBody } from './tuition-email';
+import { oldGetPrices, OldPriceQuery, OldPriceResult } from './old-prices';
 
 // validate the parameters
-const priceSchema = Joi.object<PriceQuery>({
-  courses: Joi.array().default([]),
-  countryCode: Joi.string().length(2).required(),
-  provinceCode: Joi.string().max(3).allow(''),
-  options: Joi.object({
-    noShipping: Joi.boolean(),
-    discountAll: Joi.boolean(),
-    discount: Joi.object({
-      default: Joi.number().required(),
-      CAD: Joi.number(),
-      USD: Joi.number(),
-      GBP: Joi.number(),
-      AUD: Joi.number(),
-      NZD: Joi.number(),
+const priceSchema = yup.object<PriceQuery>({
+  courses: yup.array(yup.string().required()).default([]).required(),
+  countryCode: yup.string().length(2).required(),
+  provinceCode: yup.string().max(3),
+  options: yup.object({
+    noShipping: yup.boolean(),
+    discountAll: yup.boolean(),
+    discount: yup.object({
+      default: yup.number().required(),
+      CAD: yup.number(),
+      USD: yup.number(),
+      GBP: yup.number(),
+      AUD: yup.number(),
+      NZD: yup.number(),
     }),
-    discountSignature: Joi.string(),
-    MMFreeMW: Joi.boolean(),
-    deluxeKit: Joi.boolean(),
-    portfolio: Joi.boolean(),
-    depositOverride: Joi.object().pattern(/./, Joi.number()),
-    installmentsOverride: Joi.number().min(1).max(24),
-    studentDiscount: Joi.boolean(),
-    blackFriday2020: Joi.boolean(),
-    school: Joi.string(),
-  }).with('discount', 'discountSignature'),
+    discountSignature: yup.string(),
+    MMFreeMW: yup.boolean(),
+    deluxeKit: yup.boolean(),
+    portfolio: yup.boolean(),
+    depositOverride: yup.object(), // { [key: string]: number }
+    installmentsOverride: yup.number().min(1).max(24),
+    studentDiscount: yup.boolean(),
+    blackFriday2020: yup.boolean(),
+    school: yup.string(),
+  }),
 });
 
-const tuitionEmailSchema = (priceSchema as Joi.ObjectSchema<TuitionEmailBody>).keys({
-  emailAddress: Joi.string().required(),
-  school: Joi.string().required(),
-});
-
-const oldPriceSchema = Joi.object<OldPriceQuery>().keys({
-  courses: Joi.array().default([]),
-  countryCode: Joi.string().length(2).required(),
-  provinceCode: Joi.string().max(3).allow(null).allow('').default(null),
-  discountAll: Joi.number(), // the old way of calling this endpoint
-  options: Joi.object().keys({
-    discountAll: Joi.boolean(),
-    discount: Joi.number().min(0),
-    discountSignature: Joi.string(),
-    MMFreeMW: Joi.boolean(),
-    deluxeKit: Joi.boolean(),
-    portfolio: Joi.boolean(),
-    campaignId: Joi.string().allow(''),
-    discountCode: Joi.string().allow(''),
-    discountGBP: Joi.number().min(0),
-    discountSignatureGBP: Joi.string(),
-  }).with('discount', 'discountSignature').default({}),
-  _: Joi.number(),
+const oldPriceSchema = yup.object<OldPriceQuery>({
+  courses: yup.array(yup.string().required()).default([]).required(),
+  countryCode: yup.string().length(2).required(),
+  provinceCode: yup.string().max(3).nullable(true).default(null).required(),
+  discountAll: yup.number(), // the old way of calling this endpoint
+  options: yup.object({
+    discountAll: yup.boolean(),
+    discount: yup.number().min(0),
+    discountSignature: yup.string(),
+    MMFreeMW: yup.boolean(),
+    deluxeKit: yup.boolean(),
+    portfolio: yup.boolean(),
+    campaignId: yup.string(),
+    discountCode: yup.string(),
+    discountGBP: yup.number().min(0),
+    discountSignatureGBP: yup.string(),
+  }),
+  _: yup.number(),
 });
 
 export const router = express.Router();
 
 router.get('/', asyncWrapper(async (req, res) => {
-  const connection = await (await pool).getConnection();
-  try {
-    let prices;
-    if (res.locals.apiVersion === 2) {
-      let query: PriceQuery;
-      try {
-        query = await priceSchema.validateAsync(req.query);
-      } catch (err) {
-        throw new HttpStatus.BadRequest(err.message);
-      }
-      prices = await getPrices(connection, query.courses, query.countryCode, query.provinceCode, query.options);
-    } else if (res.locals.apiVersion === 1) {
-      console.log('Old prices function called', req.headers.origin);
-      let query: OldPriceQuery;
-      try {
-        query = await oldPriceSchema.validateAsync(req.query);
-      } catch (err) {
-        throw new HttpStatus.BadRequest(err.message);
-      }
-      prices = await oldGetPrices(connection, query.courses, query.countryCode, query.provinceCode, query.discountAll, query.options);
-    }
-    res.setHeader('Cache-Control', 'public, max-age=300'); // five minutes
-    res.send(prices);
-  } finally {
-    connection.release();
-  }
+  res.setHeader('Cache-Control', 'public, max-age=300'); // five minutes
+  res.send(res.locals.apiVersion === 2 ? await newPrices(req) : await oldPrices(req));
 }));
 
-router.post('/tuitionEmail', asyncWrapper(async (req, res) => {
+const newPrices = async (req: Request): Promise<PriceResult> => {
   const connection = await (await pool).getConnection();
   try {
-    let body: TuitionEmailBody;
     try {
-      body = await tuitionEmailSchema.validateAsync(req.body);
+      await priceSchema.validate(req.query);
     } catch (err) {
       throw new HttpStatus.BadRequest(err.message);
     }
-    const prices = await getPrices(connection, body.courses, body.countryCode, body.provinceCode, body.options);
-    await sendTuitionEmail(body.emailAddress, body.school, prices);
-    res.end();
+    const query = priceSchema.cast(req.query);
+    if (typeof query === 'undefined') {
+      throw new HttpStatus.InternalServerError('Could not cast querystring');
+    }
+    return getPrices(connection, query.courses, query.countryCode, query.provinceCode, query.options);
   } finally {
     connection.release();
   }
-}));
+}
 
+const oldPrices = async (req: Request): Promise<OldPriceResult> => {
+  console.log('Old prices function called', req.headers.origin);
+  const connection = await (await pool).getConnection();
+  try {
+    try {
+      await oldPriceSchema.validate(req.query);
+    } catch (err) {
+      throw new HttpStatus.BadRequest(err.message);
+    }
+    const query = oldPriceSchema.cast(req.query);
+    if (typeof query === 'undefined') {
+      throw new HttpStatus.InternalServerError('Could not cast querystring');
+    }
+    return oldGetPrices(connection, query.courses, query.countryCode, query.provinceCode, query.discountAll, query.options);
+  } finally {
+    connection.release();
+  }
+}
