@@ -1,5 +1,5 @@
 import * as HttpStatus from '@qccareerschool/http-status';
-import yup from 'yup';
+import * as yup from 'yup';
 import express, { Request } from 'express';
 
 import { asyncWrapper } from './async-wrapper';
