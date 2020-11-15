@@ -12,14 +12,14 @@ interface OldPriceQueryOptions {
     discountSignatureGBP?: string;
 }
 export interface OldPriceQuery {
-    courses: string[];
+    courses?: string[];
     countryCode: string;
     provinceCode: string | null;
     discountAll: number;
     options?: OldPriceQueryOptions;
     _: number;
 }
-export declare const oldGetPrices: (connection: PoolConnection, courses: string[], countryCode: string, provinceCode: string | null, discountAll: number, options?: OldPriceQueryOptions | undefined) => Promise<OldPriceResult>;
+export declare const oldGetPrices: (connection: PoolConnection, courses: string[] | undefined, countryCode: string, provinceCode: string | null, discountAll: number, options?: OldPriceQueryOptions | undefined) => Promise<OldPriceResult>;
 export interface IInstalmentPlanTypes {
     [key: string]: number;
     accelerated: number;

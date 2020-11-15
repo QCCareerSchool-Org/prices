@@ -24,7 +24,7 @@ export interface PriceQueryOptions {
     school?: School;
 }
 export interface PriceQuery {
-    courses: string[];
+    courses?: string[];
     countryCode: string;
     provinceCode?: string;
     options?: PriceQueryOptions;
@@ -102,7 +102,7 @@ export interface PriceRow {
     courseName: string;
     shipping: number;
 }
-export declare function getPrices(connection: PoolConnection, courses: string[], countryCode: string, provinceCode?: string, options?: PriceQueryOptions): Promise<PriceResult>;
+export declare function getPrices(connection: PoolConnection, courses: string[] | undefined, countryCode: string, provinceCode?: string, options?: PriceQueryOptions): Promise<PriceResult>;
 declare type CalulatePricesFunction = (p: PriceRow, i: number, a: PriceRow[]) => CourseResult;
 /**
  * Returns a function that maps a PriceRow to a CourseResult

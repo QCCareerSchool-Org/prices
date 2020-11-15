@@ -80,6 +80,7 @@ var lookupPrice_1 = require("./lookupPrice");
 var getFreeCourses_1 = require("./getFreeCourses");
 var publicKey = fs_1.default.readFileSync(path_1.default.join(__dirname, '../public.pem'), 'utf8');
 function getPrices(connection, courses, countryCode, provinceCode, options) {
+    if (courses === void 0) { courses = []; }
     return __awaiter(this, void 0, void 0, function () {
         var depositOverrides_1, notes, disclaimers, noShipping, noShippingDisclaimer, tel, noShippingMessage, priceRows, freeCourses, currencyCode, currency, courseResults;
         return __generator(this, function (_a) {

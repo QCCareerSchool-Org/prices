@@ -33,7 +33,7 @@ export interface PriceQueryOptions {
 }
 
 export interface PriceQuery {
-  courses: string[];
+  courses?: string[];
   countryCode: string;
   provinceCode?: string;
   options?: PriceQueryOptions;
@@ -118,7 +118,7 @@ export interface PriceRow {
 
 export async function getPrices(
   connection: PoolConnection,
-  courses: string[],
+  courses: string[] = [],
   countryCode: string,
   provinceCode?: string,
   options?: PriceQueryOptions,

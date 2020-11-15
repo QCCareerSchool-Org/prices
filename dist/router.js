@@ -70,7 +70,7 @@ var objectMap_1 = require("./lib/objectMap");
 var logger_1 = require("./logger");
 // validate the parameters
 var priceSchema = yup.object({
-    courses: yup.array(yup.string().required()).default([]).required(),
+    courses: yup.array(yup.string().required()).default([]),
     countryCode: yup.string().length(2).required(),
     provinceCode: yup.string().max(3),
     options: yup.object({
@@ -95,7 +95,7 @@ var priceSchema = yup.object({
     }),
 });
 var oldPriceSchema = yup.object({
-    courses: yup.array(yup.string().required()).default([]).required(),
+    courses: yup.array(yup.string().required()).default([]),
     countryCode: yup.string().length(2).required(),
     provinceCode: yup.string().max(3).nullable(true).default(null).required(),
     discountAll: yup.number(),

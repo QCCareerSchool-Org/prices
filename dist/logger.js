@@ -75,8 +75,9 @@ var replacer = function (key, value) {
     if (value instanceof Error) {
         return Object.getOwnPropertyNames(value).reduce(function (previousValue, currentValue) {
             var _a;
+            var _b;
             if (currentValue === 'stack') {
-                return __assign(__assign({}, previousValue), { stack: value.stack.split('\n').map(function (v) {
+                return __assign(__assign({}, previousValue), { stack: (_b = value.stack) === null || _b === void 0 ? void 0 : _b.split('\n').map(function (v) {
                         v = v.trim();
                         return v.substr(0, 3) === 'at ' ? v.slice(3) : v;
                     }) });
