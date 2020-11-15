@@ -4,4 +4,3 @@ node_modules
 private.pem
 error.log
 combined.log
-dist

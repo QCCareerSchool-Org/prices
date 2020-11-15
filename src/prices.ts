@@ -3,10 +3,13 @@ import * as HttpStatus from '@qccareerschool/http-status';
 import { Big } from 'big.js';
 import crypto from 'crypto';
 import { PoolConnection } from 'promise-mysql';
+import path from 'path';
+import fs from 'fs';
 
-import publicKey from './public-key';
-import { lookupPriceByCountryAndProvince } from './price-lookups';
-import { getFreeCourses } from './get-free-courses';
+import { lookupPriceByCountryAndProvince } from './lookupPrice';
+import { getFreeCourses } from './getFreeCourses';
+
+const publicKey = fs.readFileSync(path.join(__dirname, '../public.pem'), 'utf8');
 
 type NoShipping = 'ALLOWED' | 'APPLIED' | 'REQUIRED' | 'FORBIDDEN';
 
@@ -142,7 +145,7 @@ export async function getPrices(
 
   // don't allow people from Ontario to enroll in DG or FA
   if (countryCode === 'CA' && provinceCode === 'ON') {
-    courses = courses.filter((course) => course !== 'DG' && course !== 'FA');
+    courses = courses.filter(course => course !== 'DG' && course !== 'FA');
   }
 
   // initialize the notes
@@ -152,7 +155,7 @@ export async function getPrices(
   const disclaimers: string[] = [];
 
   // determine whether we'll be shipping materials or not
-  const noShipping: NoShipping = helpers.noShipCountry(countryCode) ? 'REQUIRED' : options?.noShipping ? 'APPLIED' : 'ALLOWED'
+  const noShipping: NoShipping = helpers.noShipCountry(countryCode) ? 'REQUIRED' : options?.noShipping ? 'APPLIED' : 'ALLOWED';
 
   const noShippingDisclaimer = getNoShippingDisclaimer(noShipping, courses);
   if (noShippingDisclaimer) {
@@ -187,10 +190,10 @@ export async function getPrices(
   }
 
   // look up all the prices and sort them from most to least expensive
-  let priceRows = await Promise.all(courses.map((course) => lookupPrice(connection, course, countryCode, provinceCode)));
+  let priceRows = await Promise.all(courses.map(course => lookupPrice(connection, course, countryCode, provinceCode)));
 
   // determine which courses should be free
-  const freeCourses = getFreeCourses(priceRows, options)
+  const freeCourses = getFreeCourses(priceRows, options);
 
   // sort based on price and free status
   priceRows = priceRows.sort((a, b) => {
@@ -209,7 +212,7 @@ export async function getPrices(
   }
 
   // make sure we don't have mismatched currencies
-  priceRows.forEach((p) => {
+  priceRows.forEach(p => {
     if (p.currencyCode !== currencyCode) {
       throw new HttpStatus.InternalServerError(`Currency mismatch: ${courses} ${countryCode} ${provinceCode}`);
     }
@@ -304,8 +307,8 @@ const getBlackFriday2020 = (currencyCode: CurrencyCode, options?: PriceQueryOpti
             remainder: partRemainder,
             total: partTotal,
             originalDeposit: originalPartDeposit,
-          }
-        }
+          },
+        },
       };
     } else {
       return courseResult;
@@ -313,9 +316,7 @@ const getBlackFriday2020 = (currencyCode: CurrencyCode, options?: PriceQueryOpti
   };
 
   return blackFriday2020;
-}
-
-
+};
 
 /**
  * Creates the final response
@@ -332,34 +333,34 @@ const collateResults = (countryCode: string, provinceCode: string | null, curren
   countryCode,
   provinceCode: provinceCode ?? undefined,
   currency,
-  cost: parseFloat(courseResults.map((p) => Big(p.cost)).reduce(sumBigArray, Big(0)).toFixed(2)),
-  multiCourseDiscount: parseFloat(courseResults.map((c) => Big(c.multiCourseDiscount)).reduce(sumBigArray, Big(0)).toFixed(2)),
-  promoDiscount: parseFloat(courseResults.map((c) => Big(c.promoDiscount)).reduce(sumBigArray, Big(0)).toFixed(2)),
-  shippingDiscount: parseFloat(courseResults.map((c) => Big(c.shippingDiscount)).reduce(sumBigArray, Big(0)).toFixed(2)),
-  discountedCost: parseFloat(courseResults.map((c) => Big(c.discountedCost)).reduce(sumBigArray, Big(0)).toFixed(2)),
+  cost: parseFloat(courseResults.map(p => Big(p.cost)).reduce(sumBigArray, Big(0)).toFixed(2)),
+  multiCourseDiscount: parseFloat(courseResults.map(c => Big(c.multiCourseDiscount)).reduce(sumBigArray, Big(0)).toFixed(2)),
+  promoDiscount: parseFloat(courseResults.map(c => Big(c.promoDiscount)).reduce(sumBigArray, Big(0)).toFixed(2)),
+  shippingDiscount: parseFloat(courseResults.map(c => Big(c.shippingDiscount)).reduce(sumBigArray, Big(0)).toFixed(2)),
+  discountedCost: parseFloat(courseResults.map(c => Big(c.discountedCost)).reduce(sumBigArray, Big(0)).toFixed(2)),
   plans: {
     full: {
-      discount: parseFloat(courseResults.map((c) => Big(c.plans.full.discount)).reduce(sumBigArray, Big(0)).toFixed(2)),
-      deposit: parseFloat(courseResults.map((c) => Big(c.plans.full.deposit)).reduce(sumBigArray, Big(0)).toFixed(2)),
-      installmentSize: parseFloat(courseResults.map((c) => Big(c.plans.full.installmentSize)).reduce(sumBigArray, Big(0)).toFixed(2)),
+      discount: parseFloat(courseResults.map(c => Big(c.plans.full.discount)).reduce(sumBigArray, Big(0)).toFixed(2)),
+      deposit: parseFloat(courseResults.map(c => Big(c.plans.full.deposit)).reduce(sumBigArray, Big(0)).toFixed(2)),
+      installmentSize: parseFloat(courseResults.map(c => Big(c.plans.full.installmentSize)).reduce(sumBigArray, Big(0)).toFixed(2)),
       installments: 0,
-      remainder: parseFloat(courseResults.map((c) => Big(c.plans.full.remainder)).reduce(sumBigArray, Big(0)).toFixed(2)),
-      total: parseFloat(courseResults.map((c) => Big(c.plans.full.total)).reduce(sumBigArray, Big(0)).toFixed(2)),
-      originalDeposit: parseFloat(courseResults.map((c) => Big(c.plans.full.originalDeposit)).reduce(sumBigArray, Big(0)).toFixed(2)),
+      remainder: parseFloat(courseResults.map(c => Big(c.plans.full.remainder)).reduce(sumBigArray, Big(0)).toFixed(2)),
+      total: parseFloat(courseResults.map(c => Big(c.plans.full.total)).reduce(sumBigArray, Big(0)).toFixed(2)),
+      originalDeposit: parseFloat(courseResults.map(c => Big(c.plans.full.originalDeposit)).reduce(sumBigArray, Big(0)).toFixed(2)),
       originalInstallments: 0,
     },
     part: {
-      discount: parseFloat(courseResults.map((c) => Big(c.plans.part.discount)).reduce(sumBigArray, Big(0)).toFixed(2)),
-      deposit: parseFloat(courseResults.map((c) => Big(c.plans.part.deposit)).reduce(sumBigArray, Big(0)).toFixed(2)),
-      installmentSize: parseFloat(courseResults.map((c) => Big(c.plans.part.installmentSize)).reduce(sumBigArray, Big(0)).toFixed(2)),
+      discount: parseFloat(courseResults.map(c => Big(c.plans.part.discount)).reduce(sumBigArray, Big(0)).toFixed(2)),
+      deposit: parseFloat(courseResults.map(c => Big(c.plans.part.deposit)).reduce(sumBigArray, Big(0)).toFixed(2)),
+      installmentSize: parseFloat(courseResults.map(c => Big(c.plans.part.installmentSize)).reduce(sumBigArray, Big(0)).toFixed(2)),
       installments: courseResults.length ? courseResults[0].plans.part.installments : 0,
-      remainder: parseFloat(courseResults.map((c) => Big(c.plans.part.remainder)).reduce(sumBigArray, Big(0)).toFixed(2)),
-      total: parseFloat(courseResults.map((c) => Big(c.plans.part.total)).reduce(sumBigArray, Big(0)).toFixed(2)),
-      originalDeposit: parseFloat(courseResults.map((c) => Big(c.plans.part.originalDeposit)).reduce(sumBigArray, Big(0)).toFixed(2)),
+      remainder: parseFloat(courseResults.map(c => Big(c.plans.part.remainder)).reduce(sumBigArray, Big(0)).toFixed(2)),
+      total: parseFloat(courseResults.map(c => Big(c.plans.part.total)).reduce(sumBigArray, Big(0)).toFixed(2)),
+      originalDeposit: parseFloat(courseResults.map(c => Big(c.plans.part.originalDeposit)).reduce(sumBigArray, Big(0)).toFixed(2)),
       originalInstallments: courseResults.length ? courseResults[0].plans.part.originalInstallments : 0,
     },
   },
-  shipping: parseFloat(courseResults.map((c) => Big(c.shipping)).reduce(sumBigArray, Big(0)).toFixed(2)),
+  shipping: parseFloat(courseResults.map(c => Big(c.shipping)).reduce(sumBigArray, Big(0)).toFixed(2)),
   disclaimers,
   notes,
   noShipping,
@@ -376,11 +377,11 @@ const validateDiscounts = (options?: PriceQueryOptions): boolean => {
     const verify = crypto.createVerify('SHA256');
     verify.update(JSON.stringify(options.discount));
     if (!verify.verify(publicKey, Buffer.from(options.discountSignature, 'base64'))) {
-      return false
+      return false;
     }
   }
   return true;
-}
+};
 
 const getNoShippingDisclaimer = (noShipping: NoShipping, courses: string[]): string | undefined => {
   if (noShipping === 'REQUIRED') {
@@ -389,7 +390,7 @@ const getNoShippingDisclaimer = (noShipping: NoShipping, courses: string[]): str
       'to your country. The cost of your course' + (courses.length > 1 ? 's have ' : ' has ') +
       'been reduced accordingly. You will have access to electronic course materials through the Online Student Center.' +
       (courses.some(designCourse) ? ' You will need to source your own design tools to complete your assignments. Please refer to your welcome email for more information.' : '') +
-      (courses.some(makeupCourse) ? ' You will have to source your own makeup and tools. Please refer to your course guide for the materials required for each assignment.' : '')
+      (courses.some(makeupCourse) ? ' You will have to source your own makeup and tools. Please refer to your course guide for the materials required for each assignment.' : '');
   } else if (noShipping === 'APPLIED') {
     return 'You have selected to not receive physical ' +
       'course materials' + (courses.some(makeupCourse) ? ', <u>including makeup kits</u>' : '') + '. ' +
@@ -398,7 +399,7 @@ const getNoShippingDisclaimer = (noShipping: NoShipping, courses: string[]): str
       (courses.some(designCourse) ? ' You will need to source your own design tools to complete your assignments. Please refer to your welcome email for more information.' : '') +
       (courses.some(makeupCourse) ? ' You will have to source your own makeup and tools. Please refer to your course guide for the materials required for each assignment.' : '');
   }
-}
+};
 
 /**
  * Determines the currency we should assume the courses will be priced in based on the country
@@ -416,7 +417,9 @@ const getDefaultCurrencyCode = (countryCode: string): CurrencyCode => {
   } else {
     return 'USD';
   }
-}
+};
+
+type CalulatePricesFunction = (p: PriceRow, i: number, a: PriceRow[]) => CourseResult;
 
 /**
  * Returns a function that maps a PriceRow to a CourseResult
@@ -425,7 +428,7 @@ const getDefaultCurrencyCode = (countryCode: string): CurrencyCode => {
  * @param currencyCode
  * @param freeCourses
  */
-export const getCalculatePrices = (options: any, noShipping: NoShipping, currencyCode: CurrencyCode, freeCourses: string[]) => {
+export const getCalculatePrices = (options: PriceQueryOptions | undefined, noShipping: NoShipping, currencyCode: CurrencyCode, freeCourses: string[]): CalulatePricesFunction => {
 
   // determine the promotional discount
   let promoDiscount: number;
@@ -488,7 +491,7 @@ export const getCalculatePrices = (options: any, noShipping: NoShipping, currenc
     const partRemainder = parseFloat(Big(partTotal).minus(partDeposit).minus(Big(partInstallmentSize).times(partInstallments)).toFixed());
 
     if (partTotal < 0 || fullTotal < 0) {
-      throw new HttpStatus.InternalServerError(`Invalid price calculation`);
+      throw new HttpStatus.InternalServerError('Invalid price calculation');
     }
 
     return {
@@ -538,11 +541,11 @@ export const getCalculatePrices = (options: any, noShipping: NoShipping, currenc
  * @param a the first course result
  * @param b the second course result
  */
-export const courseSort = (a: CourseResult, b: CourseResult) => {
+export const courseSort = (a: CourseResult, b: CourseResult): number => {
   if (a.primary === b.primary) {
     if (a.free === b.free) {
       if (a.cost === b.cost) {
-        return a.discountedCost - b.discountedCost
+        return a.discountedCost - b.discountedCost;
       }
       return b.cost - a.cost;
     }
@@ -561,7 +564,7 @@ export const courseSort = (a: CourseResult, b: CourseResult) => {
  * @param courses the courses
  * @param countryCode the country code
  */
-export const getDisclaimers = (courses: string[], countryCode: string) => {
+export const getDisclaimers = (courses: string[], countryCode: string): string[] => {
   const disclaimers = [];
 
   if (courses.includes('DG') && helpers.audCountry(countryCode)) {
@@ -611,7 +614,7 @@ export const getDisclaimers = (courses: string[], countryCode: string) => {
   }
 
   return disclaimers;
-}
+};
 
 export const lookupPrice = async (connection: PoolConnection, courseCode: string, countryCode: string, provinceCode?: string): Promise<PriceRow> => {
   let result: PriceRow[];
@@ -653,7 +656,7 @@ export const lookupPrice = async (connection: PoolConnection, courseCode: string
   }
 
   throw new HttpStatus.BadRequest(`No pricing information found for course ${courseCode}`);
-}
+};
 
 export const lookupCurrency = async (connection: PoolConnection, currencyCode: string): Promise<Currency> => {
   const sql = 'SELECT code, name, symbol, exchange exchangeRate FROM currencies WHERE code = ? LIMIT 1';
@@ -662,26 +665,25 @@ export const lookupCurrency = async (connection: PoolConnection, currencyCode: s
     throw new HttpStatus.InternalServerError('Unable to find currency');
   }
   return currencyResult[0];
-}
+};
 
 export const makeupCourse = (course: string): boolean => {
   return [ 'MM', 'MA', 'MZ', 'MK', 'SF', 'HS', 'AB', 'MW', 'PW', 'GB', 'SK', 'PA', 'PF', 'VM' ].includes(course);
-}
+};
 
 export const designCourse = (course: string): boolean => {
   return [ 'I2', 'ST', 'PO', 'FS', 'CC', 'AP', 'DB', 'MS', 'VD' ].includes(course);
-}
+};
 
 export const eventFoundationCourse = (course: string): boolean => {
   return [ 'EP', 'CP', 'CE', 'WP' ].includes(course);
-}
+};
 
 export const eventAdvancedCourse = (course: string): boolean => {
   return [ 'ED', 'EB', 'LW', 'DW', 'FL', 'PE', 'TT', 'TG', 'VE' ].includes(course);
-}
+};
 
 export const eventCourse = (course: string): boolean => eventFoundationCourse(course) || eventAdvancedCourse(course);
-
 
 // reduce function to sum Big numbers
 export const sumBigArray = (previous: Big, current: Big): Big => previous.plus(current);
