@@ -2,18 +2,12 @@ import * as HttpStatus from '@qccareerschool/http-status';
 import * as yup from 'yup';
 import express, { Request } from 'express';
 
-import { asyncWrapper } from './async-wrapper';
+import { asyncWrapper } from './lib/asyncWrapper';
 import { getPrices, PriceQuery, PriceResult } from './prices';
 import { pool } from './pool';
 import { oldGetPrices, OldPriceQuery, OldPriceResult } from './old-prices';
-
-const objectMap = (obj: any, mapFunction: (value: any) => any) => {
-  if (!obj) return {};
-  return Object.keys(obj).reduce((result, key) => {
-    result[key] = mapFunction(obj[key]);
-    return result;
-  }, {} as any)
-}
+import { objectMap } from './lib/objectMap';
+import { logger } from './logger';
 
 // validate the parameters
 const priceSchema = yup.object<PriceQuery>({
@@ -40,10 +34,9 @@ const priceSchema = yup.object<PriceQuery>({
     )),
     installmentsOverride: yup.number().min(1).max(24),
     studentDiscount: yup.boolean(),
-    blackFriday2020: yup.boolean(),
     school: yup.string(),
   }),
-}).noUnknown();
+});
 
 const oldPriceSchema = yup.object<OldPriceQuery>({
   courses: yup.array(yup.string().required()).default([]).required(),
@@ -63,7 +56,7 @@ const oldPriceSchema = yup.object<OldPriceQuery>({
     discountSignatureGBP: yup.string(),
   }),
   _: yup.number(),
-}).noUnknown();
+});
 
 export const router = express.Router();
 
@@ -91,7 +84,7 @@ const newPrices = async (req: Request): Promise<PriceResult> => {
 }
 
 const oldPrices = async (req: Request): Promise<OldPriceResult> => {
-  console.log('Old prices function called', req.headers.origin);
+  logger.warn('Old prices function called', req.headers.origin);
   const connection = await (await pool).getConnection();
   try {
     let query: OldPriceQuery | undefined;

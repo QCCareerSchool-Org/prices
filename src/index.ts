@@ -12,11 +12,7 @@ import { versionMiddleware } from './handlers/versionMiddleware';
 const HTTP_PORT = 15004;
 
 const origin = [
-  'http://192.168.6.197:3000',
-  /(.*\.)?localhost:3000$/,
-  'http://localhost:4200',
-  'http://localhost:5000',
-  'http://localhost:8000',
+  /(?:.*\.)?localhost(?::\d{1,5})?$/,
   /\.qcmakeupacademy\.com$/,
   /\.qceventplanning\.com$/,
   /\.qcdesignschool\.com$/,
@@ -24,8 +20,6 @@ const origin = [
   /\.doggroomingcourse\.com$/,
   /\.qcwellnessstudies\.com$/,
   /\.winghill\.com$/,
-  /\.qcstyleacademy\.com$/,
-  /\.qctravelschool\.com$/,
   'https://blissful-hopper-b5c7db.netlify.com',
   /www-qcwellnessstudies-com\.now\.sh$/,
   /\.qccareerschool\.now\.sh$/,
