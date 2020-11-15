@@ -3,5 +3,6 @@
 node_modules
 dist
 private.pem
-error.log
-combined.log
+server-ca.pem
+client-cert.pem
+client-key.pem
