@@ -5,7 +5,7 @@ import express, { Request } from 'express';
 import { asyncWrapper } from './lib/asyncWrapper';
 import { getPrices, PriceQuery, PriceResult } from './prices';
 import { pool } from './pool';
-import { oldGetPrices, OldPriceQuery, OldPriceResult } from './old-prices';
+import { oldGetPrices, OldPriceQuery, OldPriceResult } from './oldPrices';
 import { objectMap } from './lib/objectMap';
 import { logger } from './logger';
 
@@ -81,7 +81,7 @@ const newPrices = async (req: Request): Promise<PriceResult> => {
   } finally {
     connection.release();
   }
-}
+};
 
 const oldPrices = async (req: Request): Promise<OldPriceResult> => {
   logger.warn('Old prices function called', req.headers.origin);
@@ -100,4 +100,4 @@ const oldPrices = async (req: Request): Promise<OldPriceResult> => {
   } finally {
     connection.release();
   }
-}
+};

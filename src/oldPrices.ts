@@ -4,8 +4,10 @@ import { Big } from 'big.js';
 import crypto from 'crypto';
 import debug from 'debug';
 import { PoolConnection } from 'promise-mysql';
+import fs from 'fs';
+import path from 'path';
 
-import publicKey from './public-key';
+const publicKey = fs.readFileSync(path.join(__dirname, '../public.pem'), 'utf8');
 
 const logger = debug('qc:prices');
 
@@ -65,7 +67,7 @@ export const oldGetPrices = async (
 
   // don't allow people from Ontario to enroll in DG or FA
   if (countryCode === 'CA' && provinceCode === 'ON') {
-    courses = courses.filter((value) => value !== 'DG' && value !== 'FA');
+    courses = courses.filter(value => value !== 'DG' && value !== 'FA');
   }
 
   let validDiscount = false;
@@ -198,7 +200,7 @@ export const oldGetPrices = async (
 
   // event promotion
   let foundationCount = 0;
-  [ 'EP', 'CP', 'CE', 'WP' ].forEach((course) => {
+  [ 'EP', 'CP', 'CE', 'WP' ].forEach(course => {
     if (courses.indexOf(course) !== -1) {
       foundationCount++;
     }
@@ -215,7 +217,7 @@ export const oldGetPrices = async (
   // design promotion
   const designCourses = [ 'VD', 'AP', 'MS', 'FS', 'DB', 'CC', 'PO', 'ST', 'I2' ]; // cheapest to most expensive
   let designCount = 0;
-  designCourses.forEach((course) => {
+  designCourses.forEach(course => {
     if (courses.includes(course)) {
       designCount++;
     }
@@ -233,15 +235,14 @@ export const oldGetPrices = async (
   if (now >= new Date('2020-03-11T10:00:00-04:00')) {
     let freeMakeupSelected = false;
     if (courses.includes('MZ')) {
-      [ 'PW', 'MW', 'GB', 'SK'  ].forEach((c) => {
+      [ 'PW', 'MW', 'GB', 'SK'  ].forEach(c => {
         if (!freeMakeupSelected && courses.includes(c)) {
           freeCourses.push(c);
           freeMakeupSelected = true;
         }
-      })
+      });
     }
   }
-
 
   logger(freeCourses);
 
@@ -637,7 +638,7 @@ export const oldGetPrices = async (
         result.courses[primaryCourse].campaignDiscount.part =
           parseFloat(Big(result.campaign.discount.part).minus(totalCampaignDiscountPart).toFixed(2));
 
-        logger(`course = '${primaryCourse}'`);
+        logger(`course =      '${primaryCourse}'`);
         logger(`full =        '${result.courses[primaryCourse].campaignDiscount.full}'`);
         logger(`accelerated = '${result.courses[primaryCourse].campaignDiscount.accelerated}'`);
         logger(`part =        '${result.courses[primaryCourse].campaignDiscount.part}'`);

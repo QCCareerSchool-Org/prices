@@ -1,4 +1,4 @@
-import * as BlueBird from 'bluebird';
+import Bluebird from 'bluebird';
 import dotenv from 'dotenv';
 import fs from 'fs';
 import mysql from 'promise-mysql';
@@ -35,4 +35,4 @@ if (typeof process.env.DB_SSL !== 'undefined' && process.env.DB_SSL === 'true') 
   }
 }
 
-export const pool: BlueBird<mysql.Pool> = mysql.createPool(options);
+export const pool: PromiseLike<mysql.Pool> = mysql.createPool(options);

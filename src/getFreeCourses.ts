@@ -73,4 +73,4 @@ export const getFreeCourses = (priceRows: PriceRow[], options?: PriceQueryOption
   // no free courses
 
   return freeCourses;
-}
+};
