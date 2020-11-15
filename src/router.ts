@@ -11,7 +11,7 @@ import { logger } from './logger';
 
 // validate the parameters
 const priceSchema = yup.object<PriceQuery>({
-  courses: yup.array(yup.string().required()).default([]).required(),
+  courses: yup.array(yup.string().required()).default([]),
   countryCode: yup.string().length(2).required(),
   provinceCode: yup.string().max(3),
   options: yup.object({
@@ -39,7 +39,7 @@ const priceSchema = yup.object<PriceQuery>({
 });
 
 const oldPriceSchema = yup.object<OldPriceQuery>({
-  courses: yup.array(yup.string().required()).default([]).required(),
+  courses: yup.array(yup.string().required()).default([]),
   countryCode: yup.string().length(2).required(),
   provinceCode: yup.string().max(3).nullable(true).default(null).required(),
   discountAll: yup.number(), // the old way of calling this endpoint

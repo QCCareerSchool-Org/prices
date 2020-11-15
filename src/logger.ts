@@ -44,13 +44,13 @@ const from = process.env.LOG_EMAIL_FROM;
  * @param key
  * @param value
  */
-const replacer = (key: string, value: any) => {
+const replacer = (key: string, value: unknown) => {
   if (value instanceof Error) {
     return Object.getOwnPropertyNames(value).reduce((previousValue, currentValue) => {
       if (currentValue === 'stack') {
         return {
           ...previousValue,
-          stack: value.stack!.split('\n').map((v) => {
+          stack: value.stack?.split('\n').map(v => {
             v = v.trim();
             return v.substr(0, 3) === 'at ' ? v.slice(3) : v;
           }),

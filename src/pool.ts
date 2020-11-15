@@ -1,4 +1,3 @@
-import Bluebird from 'bluebird';
 import dotenv from 'dotenv';
 import fs from 'fs';
 import mysql from 'promise-mysql';

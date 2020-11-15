@@ -25,7 +25,7 @@ interface OldPriceQueryOptions {
 }
 
 export interface OldPriceQuery {
-  courses: string[];
+  courses?: string[];
   countryCode: string;
   provinceCode: string | null;
   discountAll: number;
@@ -35,7 +35,7 @@ export interface OldPriceQuery {
 
 export const oldGetPrices = async (
   connection: PoolConnection,
-  courses: string[],
+  courses: string[] = [],
   countryCode: string,
   provinceCode: string | null,
   discountAll: number,
