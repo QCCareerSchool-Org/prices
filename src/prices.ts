@@ -419,6 +419,8 @@ const getDefaultCurrencyCode = (countryCode: string): CurrencyCode => {
   }
 };
 
+type CalulatePricesFunction = (p: PriceRow, i: number, a: PriceRow[]) => CourseResult;
+
 /**
  * Returns a function that maps a PriceRow to a CourseResult
  * @param options
@@ -426,7 +428,7 @@ const getDefaultCurrencyCode = (countryCode: string): CurrencyCode => {
  * @param currencyCode
  * @param freeCourses
  */
-export const getCalculatePrices = (options: any, noShipping: NoShipping, currencyCode: CurrencyCode, freeCourses: string[]) => {
+export const getCalculatePrices = (options: PriceQueryOptions | undefined, noShipping: NoShipping, currencyCode: CurrencyCode, freeCourses: string[]): CalulatePricesFunction => {
 
   // determine the promotional discount
   let promoDiscount: number;
@@ -539,7 +541,7 @@ export const getCalculatePrices = (options: any, noShipping: NoShipping, currenc
  * @param a the first course result
  * @param b the second course result
  */
-export const courseSort = (a: CourseResult, b: CourseResult) => {
+export const courseSort = (a: CourseResult, b: CourseResult): number => {
   if (a.primary === b.primary) {
     if (a.free === b.free) {
       if (a.cost === b.cost) {
@@ -562,7 +564,7 @@ export const courseSort = (a: CourseResult, b: CourseResult) => {
  * @param courses the courses
  * @param countryCode the country code
  */
-export const getDisclaimers = (courses: string[], countryCode: string) => {
+export const getDisclaimers = (courses: string[], countryCode: string): string[] => {
   const disclaimers = [];
 
   if (courses.includes('DG') && helpers.audCountry(countryCode)) {
