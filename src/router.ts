@@ -36,7 +36,7 @@ const priceSchema = yup.object<PriceQuery>({
     studentDiscount: yup.boolean(),
     school: yup.string(),
   }),
-});
+}).required();
 
 const oldPriceSchema = yup.object<OldPriceQuery>({
   courses: yup.array(yup.string().required()).default([]),
@@ -56,7 +56,7 @@ const oldPriceSchema = yup.object<OldPriceQuery>({
     discountSignatureGBP: yup.string(),
   }),
   _: yup.number(),
-});
+}).required();
 
 export const router = express.Router();
 
@@ -68,14 +68,11 @@ router.get('/', asyncWrapper(async (req, res) => {
 const newPrices = async (req: Request): Promise<PriceResult> => {
   const connection = await (await pool).getConnection();
   try {
-    let query: PriceQuery | undefined;
+    let query: PriceQuery;
     try {
       query = await priceSchema.validate(req.query);
     } catch (err) {
       throw new HttpStatus.BadRequest(err.message);
-    }
-    if (typeof query === 'undefined') {
-      throw new HttpStatus.InternalServerError('Could not cast querystring');
     }
     return getPrices(connection, query.courses, query.countryCode, query.provinceCode, query.options);
   } finally {
@@ -87,14 +84,11 @@ const oldPrices = async (req: Request): Promise<OldPriceResult> => {
   logger.warn('Old prices function called', req.headers.origin);
   const connection = await (await pool).getConnection();
   try {
-    let query: OldPriceQuery | undefined;
+    let query: OldPriceQuery;
     try {
       query = await oldPriceSchema.validate(req.query);
     } catch (err) {
       throw new HttpStatus.BadRequest(err.message);
-    }
-    if (typeof query === 'undefined') {
-      throw new HttpStatus.InternalServerError('Could not cast querystring');
     }
     return oldGetPrices(connection, query.courses, query.countryCode, query.provinceCode, query.discountAll, query.options);
   } finally {
