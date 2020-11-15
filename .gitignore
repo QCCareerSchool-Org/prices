@@ -1,6 +1,7 @@
-node_modules
 .env
 .vscode
+node_modules
+dist
 private.pem
 error.log
 combined.log
