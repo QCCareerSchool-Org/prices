@@ -1,9 +1,7 @@
 {
-  "name": "@qccareerschool/prices",
-  "version": "2.18.5",
+  "name": "prices",
+  "version": "3.0.0",
   "description": "",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
   "scripts": {
     "test": "jest",
     "start": "node dist",
@@ -11,6 +9,7 @@
   },
   "author": "Dave Welsh",
   "license": "UNLICENSED",
+  "private": true,
   "devDependencies": {
     "@babel/core": "^7.12.3",
     "@babel/preset-env": "^7.12.1",
