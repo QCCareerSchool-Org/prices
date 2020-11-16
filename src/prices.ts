@@ -225,13 +225,13 @@ export async function getPrices(
   disclaimers.push(...getDisclaimers(courses, countryCode));
 
   // prepare the courses result
-  let courseResults: CourseResult[] = priceRows
+  const courseResults: CourseResult[] = priceRows
     .map(getCalculatePrices(options, noShipping, currencyCode, freeCourses))
     .sort(courseSort);
 
-  if (!options?.discountAll && options?.school === 'QC Makeup Academy' && courseResults.some(c => c.code === 'MZ')) {
-    courseResults = courseResults.map(getBlackFriday2020(currencyCode)).sort(courseSort);
-  }
+  // if (!options?.discountAll && options?.school === 'QC Makeup Academy' && courseResults.some(c => c.code === 'MZ')) {
+  //   courseResults = courseResults.map(getBlackFriday2020(currencyCode)).sort(courseSort);
+  // }
 
   return collateResults(countryCode, provinceCode ?? null, currency, courseResults, disclaimers, notes, noShipping, noShippingMessage);
 }
