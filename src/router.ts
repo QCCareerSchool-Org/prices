@@ -17,13 +17,13 @@ const priceSchema = yup.object<PriceQuery>({
   options: yup.object({
     noShipping: yup.boolean(),
     discountAll: yup.boolean(),
-    discount: yup.object({
-      default: yup.number().required(),
-      CAD: yup.number(),
-      USD: yup.number(),
-      GBP: yup.number(),
-      AUD: yup.number(),
+    discount: yup.object({ // keys must be in opposite order because yup reverses them
       NZD: yup.number(),
+      AUD: yup.number(),
+      GBP: yup.number(),
+      USD: yup.number(),
+      CAD: yup.number(),
+      default: yup.number().required(),
     }).default(undefined),
     discountSignature: yup.string(),
     MMFreeMW: yup.boolean(),

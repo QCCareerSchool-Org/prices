@@ -11,4 +11,4 @@ export const versionMiddleware = (req: Request, res: Response, next: NextFunctio
   }
   res.locals.apiVersion = version;
   next();
-}
+};
