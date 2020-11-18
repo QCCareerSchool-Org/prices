@@ -3,7 +3,7 @@ import * as yup from 'yup';
 import express, { Request } from 'express';
 
 import { asyncWrapper } from './lib/asyncWrapper';
-import { getPrices, PriceQuery, PriceResult } from './prices';
+import { getPrices, PriceQuery, PriceQueryOptions, PriceResult } from './prices';
 import { pool } from './pool';
 import { oldGetPrices, OldPriceQuery, OldPriceResult } from './oldPrices';
 import { objectMap } from './lib/objectMap';
@@ -14,7 +14,7 @@ const priceSchema = yup.object<PriceQuery>({
   courses: yup.array(yup.string().required()).default([]),
   countryCode: yup.string().length(2).required(),
   provinceCode: yup.string().max(3),
-  options: yup.object({
+  options: yup.object<PriceQueryOptions>({
     noShipping: yup.boolean(),
     discountAll: yup.boolean(),
     discount: yup.object({ // keys must be in opposite order because yup reverses them
@@ -29,7 +29,7 @@ const priceSchema = yup.object<PriceQuery>({
     MMFreeMW: yup.boolean(),
     deluxeKit: yup.boolean(),
     portfolio: yup.boolean(),
-    depositOverride: yup.lazy(obj => yup.object(
+    depositOverrides: yup.lazy(obj => yup.object(
       objectMap(obj, () => yup.number()),
     )),
     installmentsOverride: yup.number().min(1).max(24),
