@@ -225,13 +225,13 @@ export async function getPrices(
   disclaimers.push(...getDisclaimers(courses, countryCode));
 
   // prepare the courses result
-  const courseResults: CourseResult[] = priceRows
+  let courseResults: CourseResult[] = priceRows
     .map(getCalculatePrices(options, noShipping, currencyCode, freeCourses))
     .sort(courseSort);
 
-  // if (!options?.discountAll && options?.school === 'QC Makeup Academy' && courseResults.some(c => c.code === 'MZ')) {
-  //   courseResults = courseResults.map(getBlackFriday2020(currencyCode)).sort(courseSort);
-  // }
+  if (!options?.discountAll && options?.school === 'QC Makeup Academy' && courseResults.some(c => c.code === 'MZ')) {
+    courseResults = courseResults.map(getBlackFriday2020(currencyCode)).sort(courseSort);
+  }
 
   return collateResults(countryCode, provinceCode ?? null, currency, courseResults, disclaimers, notes, noShipping, noShippingMessage);
 }
@@ -255,7 +255,8 @@ const getBlackFriday2020 = (currencyCode: CurrencyCode, options?: PriceQueryOpti
       const fullTotal = parseFloat(Big(discountedCost).minus(courseResult.plans.full.discount).toFixed(2));
       const partTotal = discountedCost; // no discount for part payment plan
 
-      const originalPartDeposit = discountedCost > 0 ? Math.min(discountedCost, courseResult.plans.part.deposit) : 0;
+      // const originalPartDeposit = discountedCost > 0 ? Math.min(discountedCost, courseResult.plans.part.deposit) : 0;
+      const originalPartDeposit = 0;
       let partDeposit = originalPartDeposit;
       if (typeof options?.depositOverrides?.[courseResult.code] !== 'undefined') {
         const depositOverride = options?.depositOverrides?.[courseResult.code];
