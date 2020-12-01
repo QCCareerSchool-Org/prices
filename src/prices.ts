@@ -288,7 +288,7 @@ const getBlackFriday2020 = (currencyCode: CurrencyCode, options?: PriceQueryOpti
         ...courseResult,
         multiCourseDiscount,
         discountedCost,
-        discountMessage: 'Black Friday Special',
+        discountMessage: 'Unlocked Savings',
         plans: {
           ...courseResult.plans,
           full: {
@@ -673,11 +673,11 @@ export const makeupCourse = (course: string): boolean => {
 };
 
 export const designCourse = (course: string): boolean => {
-  return [ 'I2', 'ST', 'PO', 'FS', 'CC', 'AP', 'DB', 'MS', 'VD' ].includes(course);
+  return [ 'I2', 'ST', 'PO', 'FS', 'CC', 'AP', 'DB', 'MS', 'VD', 'FD' ].includes(course);
 };
 
 export const eventFoundationCourse = (course: string): boolean => {
-  return [ 'EP', 'CP', 'CE', 'WP' ].includes(course);
+  return [ 'EP', 'CP', 'CE', 'WP', 'FD' ].includes(course);
 };
 
 export const eventAdvancedCourse = (course: string): boolean => {
