@@ -40,9 +40,6 @@ export const getFreeCourses = (priceRows: PriceRow[], options?: PriceQueryOption
         if (eventAdvancedCourses.length >= 1) {
           freeCourses.push(eventAdvancedCourses[0]);
         }
-        if (eventAdvancedCourses.length >= 2) {
-          freeCourses.push(eventAdvancedCourses[1]);
-        }
       }
     }
   }
