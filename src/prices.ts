@@ -171,7 +171,7 @@ export async function getPrices(
 
   // deluxeKit option
   if (options?.deluxeKit === true) {
-    if (courses.includes('MM')) {
+    if (courses.includes('MZ')) {
       notes.push('deluxe kit');
       disclaimers.push('You will recieve the deluxe makeup kit with your Master Makeup Artistry course.');
     }
