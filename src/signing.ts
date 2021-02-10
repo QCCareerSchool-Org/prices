@@ -17,24 +17,24 @@ try {
     return verify.verify(publicKey, Buffer.from(signature, 'base64'));
   };
 
-  // const discount = {
-  //   default: 100,
-  //   GBP: 75,
-  // };
-  // const sig = createSignature(JSON.stringify(discount));
-  // if (!verifySignature(JSON.stringify(discount), sig)) {
-  //   throw Error('invalid signature');
-  // }
-  // // tslint:disable-next-line:no-console
-  // console.log(sig);
-
-  const oldDiscount = 75;
-  const oldSig = createSignature(oldDiscount.toString());
-  if (!verifySignature(oldDiscount.toString(), oldSig)) {
-     throw Error('invalid signature');
+  const discount = {
+    default: 100,
+    GBP: 75,
+  };
+  const sig = createSignature(JSON.stringify(discount));
+  if (!verifySignature(JSON.stringify(discount), sig)) {
+    throw Error('invalid signature');
   }
- // tslint:disable-next-line:no-console
-  console.log(oldSig);
+  // eslint-disable-next-line no-console
+  console.log(sig);
+
+//   const oldDiscount = 75;
+//   const oldSig = createSignature(oldDiscount.toString());
+//   if (!verifySignature(oldDiscount.toString(), oldSig)) {
+//      throw Error('invalid signature');
+//   }
+//   // eslint-disable-next-line no-console
+//   console.log(oldSig);
 
 } catch (err) {
   //
