@@ -672,6 +672,10 @@ export const makeupCourse = (course: string): boolean => {
   return [ 'MM', 'MA', 'MZ', 'MK', 'SF', 'HS', 'AB', 'MW', 'PW', 'GB', 'SK', 'PA', 'PF', 'VM' ].includes(course);
 };
 
+export const makeupAdvancedCourse = (course: string): boolean => {
+  return [ 'MW', 'PW', 'GB', 'VM' ].includes(course);
+};
+
 export const designCourse = (course: string): boolean => {
   return [ 'I2', 'ST', 'PO', 'FS', 'CC', 'AP', 'DB', 'MS', 'VD', 'FD' ].includes(course);
 };
