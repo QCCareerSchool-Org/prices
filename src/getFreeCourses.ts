@@ -71,13 +71,17 @@ export const getFreeCourses = (priceRows: PriceRow[], options?: PriceQueryOption
   }
 
   if (options?.school === 'QC Makeup Academy') {
-    if (priceRows.some(p => p.code === 'MZ') && priceRows.length >= 2) {
-      const courses = priceRows
-        .filter(p => makeupAdvancedCourse(p.code) && p.code !== 'MZ') // filter to just makeup courses, excluding MZ
-        .sort((a, b) => a.cost - b.cost) // sort cheapest to most expensive
-        .map(p => p.code); // map to just course code
-      if (courses.length) {
-        freeCourses.push(courses[0]);
+    if (options?.discountAll) {
+      // no promotion for existing students
+    } else {
+      if (priceRows.some(p => p.code === 'MZ') && priceRows.length >= 2) {
+        const courses = priceRows
+          .filter(p => makeupAdvancedCourse(p.code) && p.code !== 'MZ') // filter to just makeup courses, excluding MZ
+          .sort((a, b) => a.cost - b.cost) // sort cheapest to most expensive
+          .map(p => p.code); // map to just course code
+        if (courses.length) {
+          freeCourses.push(courses[0]);
+        }
       }
     }
   }
