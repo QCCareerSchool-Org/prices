@@ -155,7 +155,7 @@ export async function getPrices(
   const disclaimers: string[] = [];
 
   // determine whether we'll be shipping materials or not
-  const noShipping: NoShipping = helpers.noShipCountry(countryCode) ? 'REQUIRED' : options?.noShipping ? 'APPLIED' : 'ALLOWED';
+  const noShipping: NoShipping = helpers.noShipCountry(countryCode) ? 'REQUIRED' : options?.noShipping ? 'APPLIED' : 'ALLOWED' as NoShipping;
 
   const noShippingDisclaimer = getNoShippingDisclaimer(noShipping, courses);
   if (noShippingDisclaimer) {
@@ -170,10 +170,9 @@ export async function getPrices(
   }
 
   // deluxeKit option
-  if (options?.deluxeKit === true) {
+  if (options?.deluxeKit === true && (noShipping === 'ALLOWED' || noShipping === 'FORBIDDEN')) {
     if (courses.includes('MZ')) {
-      notes.push('deluxe kit');
-      disclaimers.push('You will recieve the deluxe makeup kit with your Master Makeup Artistry course.');
+      notes.push('deluxe/elite kit');
     }
   }
 
