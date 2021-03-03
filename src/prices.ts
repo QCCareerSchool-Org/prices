@@ -172,7 +172,7 @@ export async function getPrices(
   // deluxeKit option
   if (options?.deluxeKit === true && (noShipping === 'ALLOWED' || noShipping === 'FORBIDDEN')) {
     if (courses.includes('MZ')) {
-      notes.push('deluxe/elite kit');
+      notes.push('deluxe/elite/better kit');
     }
   }
 
