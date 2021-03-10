@@ -30,6 +30,7 @@ export interface PriceQueryOptions {
   studentDiscount?: boolean;
   blackFriday2020?: boolean;
   school?: School;
+  promoCode?: string;
 }
 
 export interface PriceQuery {
