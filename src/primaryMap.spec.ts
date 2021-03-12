@@ -1,0 +1,273 @@
+
+import { primaryMap } from './primaryMap';
+import { CourseResult } from './types';
+
+describe('primaryMap', () => {
+
+  it('should set primary to true if the index is 0', () => {
+    const courseResult: CourseResult = {
+      code: 'ZU',
+      name: 'Zergling Herding',
+      primary: false,
+      cost: 3232.44,
+      multiCourseDiscountRate: 0.40,
+      multiCourseDiscount: 0,
+      promoDiscount: 25,
+      shippingDiscount: 0,
+      discountedCost: 3207.44,
+      plans: {
+        full: {
+          discount: 22.11,
+          deposit: 3185.33,
+          installmentSize: 0,
+          installments: 0,
+          remainder: 0,
+          total: 3185.33,
+          originalDeposit: 3185.33,
+          originalInstallments: 0,
+        },
+        part: {
+          discount: 0,
+          deposit: 342.31,
+          installmentSize: 716.28,
+          installments: 4,
+          remainder: 0.01,
+          total: 3207.44,
+          originalDeposit: 342.31,
+          originalInstallments: 4,
+        },
+      },
+      shipping: 83,
+      free: false,
+      discountMessage: null,
+    };
+    expect(primaryMap(courseResult, 0, [ courseResult ])).toEqual({
+      code: 'ZU',
+      name: 'Zergling Herding',
+      primary: true,
+      cost: 3232.44,
+      multiCourseDiscountRate: 0.40,
+      multiCourseDiscount: 0,
+      promoDiscount: 25,
+      shippingDiscount: 0,
+      discountedCost: 3207.44,
+      plans: {
+        full: {
+          discount: 22.11,
+          deposit: 3185.33,
+          installmentSize: 0,
+          installments: 0,
+          remainder: 0,
+          total: 3185.33,
+          originalDeposit: 3185.33,
+          originalInstallments: 0,
+        },
+        part: {
+          discount: 0,
+          deposit: 342.31,
+          installmentSize: 716.28,
+          installments: 4,
+          remainder: 0.01,
+          total: 3207.44,
+          originalDeposit: 342.31,
+          originalInstallments: 4,
+        },
+      },
+      shipping: 83,
+      free: false,
+      discountMessage: null,
+    });
+  });
+
+  [ true, false ].forEach(p => {
+    it(`should leave the primary value unchanged as ${p ? 'true' : 'false' } if the index is not 0`, () => {
+      const courseResults: CourseResult[] = [
+        {
+          code: 'ZU',
+          name: 'Zergling Herding',
+          primary: true,
+          cost: 3232.44,
+          multiCourseDiscountRate: 0.40,
+          multiCourseDiscount: 0,
+          promoDiscount: 25,
+          shippingDiscount: 0,
+          discountedCost: 3207.44,
+          plans: {
+            full: {
+              discount: 22.11,
+              deposit: 3185.33,
+              installmentSize: 0,
+              installments: 0,
+              remainder: 0,
+              total: 3185.33,
+              originalDeposit: 3185.33,
+              originalInstallments: 0,
+            },
+            part: {
+              discount: 0,
+              deposit: 342.31,
+              installmentSize: 716.28,
+              installments: 4,
+              remainder: 0.01,
+              total: 3207.44,
+              originalDeposit: 342.31,
+              originalInstallments: 4,
+            },
+          },
+          shipping: 83,
+          free: false,
+          discountMessage: null,
+        },
+        {
+          code: 'HD',
+          name: 'Hydralisk Racing',
+          primary: p,
+          cost: 4494.34,
+          multiCourseDiscountRate: 0.40,
+          multiCourseDiscount: 0,
+          promoDiscount: 25,
+          shippingDiscount: 0,
+          discountedCost: 4469.34,
+          plans: {
+            full: {
+              discount: 100,
+              deposit: 4369.34,
+              installmentSize: 0,
+              installments: 0,
+              remainder: 0,
+              total: 4369.34,
+              originalDeposit: 4369.34,
+              originalInstallments: 0,
+            },
+            part: {
+              discount: 0,
+              deposit: 469.34,
+              installmentSize: 800,
+              installments: 5,
+              remainder: 0,
+              total: 4469.34,
+              originalDeposit: 469.34,
+              originalInstallments: 5,
+            },
+          },
+          shipping: 83,
+          free: false,
+          discountMessage: null,
+        },
+        {
+          code: 'US',
+          name: 'Ultralisk Feeding',
+          primary: p,
+          cost: 4494.34,
+          multiCourseDiscountRate: 0.40,
+          multiCourseDiscount: 0,
+          promoDiscount: 25,
+          shippingDiscount: 0,
+          discountedCost: 4469.34,
+          plans: {
+            full: {
+              discount: 100,
+              deposit: 4369.34,
+              installmentSize: 0,
+              installments: 0,
+              remainder: 0,
+              total: 4369.34,
+              originalDeposit: 4369.34,
+              originalInstallments: 0,
+            },
+            part: {
+              discount: 0,
+              deposit: 469.34,
+              installmentSize: 100,
+              installments: 10,
+              remainder: 0,
+              total: 4469.34,
+              originalDeposit: 469.34,
+              originalInstallments: 10,
+            },
+          },
+          shipping: 83,
+          free: false,
+          discountMessage: null,
+        },
+      ];
+
+      const expected1: CourseResult = {
+        code: 'HD',
+        name: 'Hydralisk Racing',
+        primary: p,
+        cost: 4494.34,
+        multiCourseDiscountRate: 0.40,
+        multiCourseDiscount: 0,
+        promoDiscount: 25,
+        shippingDiscount: 0,
+        discountedCost: 4469.34,
+        plans: {
+          full: {
+            discount: 100,
+            deposit: 4369.34,
+            installmentSize: 0,
+            installments: 0,
+            remainder: 0,
+            total: 4369.34,
+            originalDeposit: 4369.34,
+            originalInstallments: 0,
+          },
+          part: {
+            discount: 0,
+            deposit: 469.34,
+            installmentSize: 1000,
+            installments: 4,
+            remainder: 0,
+            total: 4469.34,
+            originalDeposit: 469.34,
+            originalInstallments: 4,
+          },
+        },
+        shipping: 83,
+        free: false,
+        discountMessage: null,
+      };
+
+      const expected2: CourseResult = {
+        code: 'US',
+        name: 'Ultralisk Feeding',
+        primary: p,
+        cost: 4494.34,
+        multiCourseDiscountRate: 0.40,
+        multiCourseDiscount: 0,
+        promoDiscount: 25,
+        shippingDiscount: 0,
+        discountedCost: 4469.34,
+        plans: {
+          full: {
+            discount: 100,
+            deposit: 4369.34,
+            installmentSize: 0,
+            installments: 0,
+            remainder: 0,
+            total: 4369.34,
+            originalDeposit: 4369.34,
+            originalInstallments: 0,
+          },
+          part: {
+            discount: 0,
+            deposit: 469.34,
+            installmentSize: 1000,
+            installments: 4,
+            remainder: 0,
+            total: 4469.34,
+            originalDeposit: 469.34,
+            originalInstallments: 4,
+          },
+        },
+        shipping: 83,
+        free: false,
+        discountMessage: null,
+      }
+
+      expect(primaryMap(courseResults[1], 1, courseResults)).toEqual(expected1);
+      expect(primaryMap(courseResults[2], 2, courseResults)).toEqual(expected2);
+    });
+  });
+});

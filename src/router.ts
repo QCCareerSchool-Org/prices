@@ -3,7 +3,8 @@ import * as yup from 'yup';
 import express, { Request } from 'express';
 
 import { asyncWrapper } from './lib/asyncWrapper';
-import { getPrices, PriceQuery, PriceQueryOptions, PriceResult } from './prices';
+import { prices } from './prices';
+import { PriceQuery, PriceQueryOptions, PriceResult } from './types';
 import { pool } from './pool';
 import { oldGetPrices, OldPriceQuery, OldPriceResult } from './oldPrices';
 import { objectMap } from './lib/objectMap';
@@ -35,6 +36,7 @@ const priceSchema = yup.object<PriceQuery>({
     installmentsOverride: yup.number().min(1).max(24),
     studentDiscount: yup.boolean(),
     school: yup.string(),
+    promoCode: yup.string(),
   }),
 }).required();
 
@@ -74,7 +76,7 @@ const newPrices = async (req: Request): Promise<PriceResult> => {
     } catch (err) {
       throw new HttpStatus.BadRequest(err.message);
     }
-    return getPrices(connection, query.courses, query.countryCode, query.provinceCode, query.options);
+    return prices(connection, query.courses, query.countryCode, query.provinceCode, query.options);
   } finally {
     connection.release();
   }

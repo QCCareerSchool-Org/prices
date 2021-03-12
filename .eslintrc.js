@@ -29,5 +29,6 @@ module.exports = {
     'quotes': [ 'error', 'single' ],
     'semi': 'error',
     'space-in-parens': 'error',
+    'space-infix-ops': [ 'error', { int32Hint: false } ],
   },
 };

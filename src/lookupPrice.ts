@@ -1,34 +1,48 @@
+import { audCountry, gbpCountry, nzdCountry } from '@qccareerschool/helper-functions';
+import HttpStatus from '@qccareerschool/http-status';
 import { PoolConnection } from 'promise-mysql';
-import { PriceRow } from './prices';
 
-const sqlLookupPrice = `
-SELECT
-  p.course_code code,
-  p.currency_code currencyCode,
-  p.cost,
-  p.secondary_discount multiCourseDiscountRate,
-  p.discount,
-  p.deposit,
-  p.installments,
-  p.course_code courseCode,
-  c.name courseName,
-  p.shipping
-FROM
-  prices p
-LEFT JOIN
-  courses c ON c.code = p.course_code
-WHERE
-  NOT p.enabled = 0 AND p.course_code = ?`;
+import { lookupPriceByCountryAndProvince } from './lookupPriceByCountryAndProvince';
+import { PriceRow } from './types';
 
-export async function lookupPriceByCountryAndProvince(connection: PoolConnection, courseCode: string, countryCode: string | null, provinceCode: string | null): Promise<PriceRow[]> {
-  if (countryCode === null) {
-    const sql = `${sqlLookupPrice} AND country_code IS NULL AND province_code IS NULL`;
-    return await connection.query(sql, [ courseCode ]);
-  } else if (provinceCode === null) {
-    const sql = `${sqlLookupPrice} AND country_code = ? AND province_code IS NULL`;
-    return await connection.query(sql, [ courseCode, countryCode ]);
-  } else {
-    const sql = `${sqlLookupPrice} AND country_code = ? AND province_code = ?`;
-    return await connection.query(sql, [ courseCode, countryCode, provinceCode ]);
+export const lookupPrice = async (connection: PoolConnection, courseCode: string, countryCode: string, provinceCode?: string): Promise<PriceRow> => {
+  let result: PriceRow[];
+
+  if (typeof provinceCode !== 'undefined') { // look for this exact country/province combination
+    result = await lookupPriceByCountryAndProvince(connection, courseCode, countryCode, provinceCode);
+    if (result.length) {
+      return result[0];
+    }
   }
-}
+
+  // look for this exact country
+  result = await lookupPriceByCountryAndProvince(connection, courseCode, countryCode, null);
+  if (result.length) {
+    return result[0];
+  }
+
+  if (audCountry(countryCode)) { // check for an Australia price
+    result = await lookupPriceByCountryAndProvince(connection, courseCode, 'AU', null);
+    if (result.length) {
+      return result[0];
+    }
+  } else if (gbpCountry(countryCode)) { // check for a UK price
+    result = await lookupPriceByCountryAndProvince(connection, courseCode, 'GB', null);
+    if (result.length) {
+      return result[0];
+    }
+  } else if (nzdCountry(countryCode)) { // check for a New Zealand price
+    result = await lookupPriceByCountryAndProvince(connection, courseCode, 'AU', null);
+    if (result.length) {
+      return result[0];
+    }
+  }
+
+  // check for default price
+  result = await lookupPriceByCountryAndProvince(connection, courseCode, null, null);
+  if (result.length) {
+    return result[0];
+  }
+
+  throw new HttpStatus.BadRequest(`No pricing information found for course ${courseCode}`);
+};
