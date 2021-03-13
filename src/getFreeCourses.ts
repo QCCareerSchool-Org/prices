@@ -6,7 +6,7 @@ import { PriceRow, PriceQueryOptions, eventCourse, designCourse, eventFoundation
  * @param options the price query options
  */
 export const getFreeCourses = (priceRows: PriceRow[], options?: PriceQueryOptions): string[] => {
-
+  const now = new Date();
   const freeCourses: string[] = [];
 
   // MMFreeMW option
@@ -23,24 +23,31 @@ export const getFreeCourses = (priceRows: PriceRow[], options?: PriceQueryOption
 
   if (options?.school === 'QC Event School') {
     if (options?.discountAll) {
-      if (new Date() < new Date('2021-02-01T08:00:00-05:00')) {
+      if (now < new Date('2021-02-01T08:00:00-05:00')) {
         // promotion for returning students--get VE free with any other event course
         if (priceRows.filter(p => eventCourse(p.code) && p.code !== 'VE').length) {
           freeCourses.push('VE');
         }
       }
     } else {
-      // promotion for new students---buy any foundation course and get up to two advanced or specialty courses free
-      const foundationEventCoursesCount = priceRows
-        .filter(p => eventFoundationCourse(p.code)) // filter to just foundation courses
-        .length;
-      if (foundationEventCoursesCount >= 1) {
-        const eventAdvancedCourses = priceRows
-          .filter(p => eventAdvancedCourse(p.code)) // filter to just advanced and specialty event courses, excluding VE
-          .sort((a, b) => a.cost - b.cost) // sort cheapest to most expensive
-          .map(p => p.code); // map to just the course code
-        if (eventAdvancedCourses.length >= 1) {
-          freeCourses.push(eventAdvancedCourses[0]);
+      if (now >= new Date('2021-03-15T09:00:00-04:00')) {
+        // promotion for new students---buy EP and get DW and LW free
+        if (priceRows.some(p => p.code === 'EP')) {
+          freeCourses.push('LW', 'DW');
+        }
+      } else {
+        // promotion for new students---buy any foundation course and get up to two advanced or specialty courses free
+        const foundationEventCoursesCount = priceRows
+          .filter(p => eventFoundationCourse(p.code)) // filter to just foundation courses
+          .length;
+        if (foundationEventCoursesCount >= 1) {
+          const eventAdvancedCourses = priceRows
+            .filter(p => eventAdvancedCourse(p.code)) // filter to just advanced and specialty event courses, excluding VE
+            .sort((a, b) => a.cost - b.cost) // sort cheapest to most expensive
+            .map(p => p.code); // map to just the course code
+          if (eventAdvancedCourses.length >= 1) {
+            freeCourses.push(eventAdvancedCourses[0]);
+          }
         }
       }
     }
@@ -48,7 +55,7 @@ export const getFreeCourses = (priceRows: PriceRow[], options?: PriceQueryOption
 
   if (options?.school === 'QC Design School') {
     if (options?.discountAll) {
-      if (new Date() < new Date('2021-02-01T08:00:00-05:00')) {
+      if (now < new Date('2021-02-01T08:00:00-05:00')) {
         // promotion for returning students---get VD free with any other course
         const courses = priceRows
           .filter(p => designCourse(p.code) && p.code !== 'VD') // filter to just design courses, excluding VD
@@ -74,15 +81,13 @@ export const getFreeCourses = (priceRows: PriceRow[], options?: PriceQueryOption
     if (options?.discountAll) {
       // no promotion for existing students
     } else {
-      if (new Date() < new Date('2021-03-02T08:00:00-05:00')) {
-        if (priceRows.some(p => p.code === 'MZ') && priceRows.length >= 2) {
-          const courses = priceRows
-            .filter(p => makeupAdvancedCourse(p.code) && p.code !== 'MZ') // filter to just makeup courses, excluding MZ
-            .sort((a, b) => a.cost - b.cost) // sort cheapest to most expensive
-            .map(p => p.code); // map to just course code
-          if (courses.length) {
-            freeCourses.push(courses[0]);
-          }
+      if (now >= new Date('2021-03-15T09:00:00-04:00')) {
+        if (priceRows.some(p => p.code === 'MZ')) {
+          freeCourses.push('MW');
+        }
+      } else if (now >= new Date('2021-03-13T08:00:00-04:00')) {
+        if (priceRows.some(p => p.code === 'MZ')) {
+          freeCourses.push('VM');
         }
       }
     }
