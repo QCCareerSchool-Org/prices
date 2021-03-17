@@ -1,5 +1,5 @@
 import { audCountry, gbpCountry, nzdCountry } from '@qccareerschool/helper-functions';
-import HttpStatus from '@qccareerschool/http-status';
+import * as HttpStatus from '@qccareerschool/http-status';
 import { PoolConnection } from 'promise-mysql';
 
 import { lookupPriceByCountryAndProvince } from './lookupPriceByCountryAndProvince';

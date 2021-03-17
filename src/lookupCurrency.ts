@@ -1,4 +1,4 @@
-import HttpStatus from '@qccareerschool/http-status';
+import * as HttpStatus from '@qccareerschool/http-status';
 import { PoolConnection } from 'promise-mysql';
 
 import { Currency, CurrencyCode } from './types';

@@ -1,4 +1,4 @@
-import { CourseResult } from './types';
+import { CourseResult } from '../../types';
 
 /**
  * Sort function for CourseResults

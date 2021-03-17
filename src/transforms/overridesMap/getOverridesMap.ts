@@ -1,7 +1,7 @@
-import HttpStatus from '@qccareerschool/http-status';
+import * as HttpStatus from '@qccareerschool/http-status';
 import Big from 'big.js';
 
-import { CourseResult, MapFunction, PriceQueryOptions } from './types';
+import { CourseResult, MapFunction, PriceQueryOptions } from '../../types';
 
 export const getOverridesMap = (courses: string[], depositOverrides: PriceQueryOptions['depositOverrides'], installmentsOverride: PriceQueryOptions['installmentsOverride']): MapFunction<CourseResult, CourseResult> => {
   if (typeof depositOverrides !== 'undefined') {

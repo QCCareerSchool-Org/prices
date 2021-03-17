@@ -23,7 +23,8 @@ import { CourseResult, Currency, PriceResult, NoShipping } from './types';
   disclaimers: string[],
   notes: string[],
   noShipping: NoShipping,
-  noShippingMessage?: string
+  noShippingMessage?: string,
+  promoCodeRecognized?: boolean,
 ): PriceResult => ({
   countryCode,
   provinceCode: provinceCode ?? undefined,
@@ -60,5 +61,6 @@ import { CourseResult, Currency, PriceResult, NoShipping } from './types';
   notes,
   noShipping,
   noShippingMessage,
+  promoCodeRecognized,
   courses: courseResults,
 });

@@ -1,0 +1,46 @@
+import Big from 'big.js';
+
+import { calculatePlans } from '../../calculatePlans';
+import { CourseResult, MapFunction, PriceQueryOptions } from '../../types';
+import { shouldGetMultiCourseDiscount } from './shouldGetMultiCourseDiscount';
+
+/**
+ * Creates a map function that adds the multi-course discount to course results
+ *
+ * @param options the PriceQueryOptions
+ */
+export const getMultiCourseDiscountMap = (options?: PriceQueryOptions): MapFunction<CourseResult, CourseResult> => {
+
+  return (courseResult: CourseResult, index: number) => {
+    // skip free courses
+    if (courseResult.free) {
+      return courseResult;
+    }
+
+    // skip courses that shouldn't get the multi-course discount
+    if (!shouldGetMultiCourseDiscount(index, options)) {
+      return courseResult;
+    }
+
+    // subtract all the discounts we have so far (use `shipping` instead of `shippingDiscount`) from the cost to determine the lowest possible price we might display (before payment-plan discounts)
+    const minimumPrice = parseFloat(Big(courseResult.cost).minus(courseResult.shipping).minus(courseResult.multiCourseDiscount).minus(courseResult.promoDiscount).toFixed(2));
+
+    // the amount we'd like to give
+    const desiredMultiCourseDiscount = parseFloat(Big(courseResult.cost).times(courseResult.multiCourseDiscountRate).toFixed(2));
+
+    // the true amount we'll give
+    const multiCourseDiscount = Math.min(minimumPrice, desiredMultiCourseDiscount);
+
+    const discountedCost = parseFloat(Big(courseResult.cost).minus(courseResult.shippingDiscount).minus(multiCourseDiscount).minus(courseResult.promoDiscount).toFixed(2));
+
+    const [ full, part ] = calculatePlans(courseResult.plans, minimumPrice);
+
+    return {
+      ...courseResult,
+      multiCourseDiscount,
+      discountedCost,
+      discountMessage: multiCourseDiscount === desiredMultiCourseDiscount ? null : `${Math.round(multiCourseDiscount / courseResult.cost * 100)}% Discount`, // override the discount message if we gave a different discount
+      plans: { full, part },
+    };
+  };
+};

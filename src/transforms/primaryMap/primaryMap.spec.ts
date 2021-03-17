@@ -1,6 +1,5 @@
-
+import { CourseResult } from '../../types';
 import { primaryMap } from './primaryMap';
-import { CourseResult } from './types';
 
 describe('primaryMap', () => {
 
@@ -264,7 +263,7 @@ describe('primaryMap', () => {
         shipping: 83,
         free: false,
         discountMessage: null,
-      }
+      };
 
       expect(primaryMap(courseResults[1], 1, courseResults)).toEqual(expected1);
       expect(primaryMap(courseResults[2], 2, courseResults)).toEqual(expected2);

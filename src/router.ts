@@ -4,7 +4,7 @@ import express, { Request } from 'express';
 
 import { asyncWrapper } from './lib/asyncWrapper';
 import { prices } from './prices';
-import { PriceQuery, PriceQueryOptions, PriceResult } from './types';
+import { PriceQuery, PriceQueryOptions, PriceResult, School } from './types';
 import { pool } from './pool';
 import { oldGetPrices, OldPriceQuery, OldPriceResult } from './oldPrices';
 import { objectMap } from './lib/objectMap';
@@ -35,7 +35,7 @@ const priceSchema = yup.object<PriceQuery>({
     )),
     installmentsOverride: yup.number().min(1).max(24),
     studentDiscount: yup.boolean(),
-    school: yup.string(),
+    school: yup.string<School>().oneOf([ 'QC Career School', 'QC Makeup Academy', 'QC Design School', 'QC Event School', 'QC Pet Studies', 'QC Wellness Studies', 'Winghill Writing School' ]),
     promoCode: yup.string(),
   }),
 }).required();

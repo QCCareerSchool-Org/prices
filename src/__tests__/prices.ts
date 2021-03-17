@@ -1,7 +1,7 @@
 import { PoolConnection } from 'promise-mysql';
 
 import { prices } from '../prices';
-import { Currency, PriceResult, PriceRow } from '../types';
+import { Currency, PriceQueryOptions, PriceResult, PriceRow } from '../types';
 
 describe('INTEGRATION prices', () => {
   let connection: { query: jest.Mock };
@@ -63,7 +63,7 @@ describe('INTEGRATION prices', () => {
   });
 
   it('should resolve to a PriceResult', async () => {
-    connection.query.mockResolvedValueOnce([ priceRow1 ]).mockResolvedValueOnce([ priceRow2 ]).mockResolvedValueOnce([ currency ]);
+    connection.query.mockResolvedValueOnce([ priceRow2 ]).mockResolvedValueOnce([ currency ]);
 
     const expected: PriceResult = {
       countryCode: 'CA',
@@ -74,38 +74,39 @@ describe('INTEGRATION prices', () => {
         symbol: '$',
         exchangeRate: 0.322,
       },
-      cost: 8215.88,
+      cost: 4983.44,
       multiCourseDiscount: 0,
       promoDiscount: 0,
       shippingDiscount: 0,
-      discountedCost: 8215.88,
+      discountedCost: 4983.44,
       plans: {
         full: {
-          discount: 122.11,
-          deposit: 8093.77,
+          discount: 100,
+          deposit: 4883.44,
           installmentSize: 0,
           installments: 0,
-          remainder: 0,
-          total: 8093.77,
-          originalDeposit: 8093.77,
+          originalDeposit: 4883.44,
           originalInstallments: 0,
+          remainder: 0,
+          total: 4883.44,
         },
         part: {
           discount: 0,
-          deposit: 574.42,
-          installmentSize: 1910.36,
+          deposit: 232.11,
+          installmentSize: 1187.83,
           installments: 4,
-          remainder: 0.02,
-          total: 8215.88,
-          originalDeposit: 574.42,
+          originalDeposit: 232.11,
           originalInstallments: 4,
+          remainder: 0.01,
+          total: 4983.44,
         },
       },
-      shipping: 95.13,
+      shipping: 12.13,
       disclaimers: [],
       notes: [],
       noShipping: 'ALLOWED',
       noShippingMessage: undefined,
+      promoCodeRecognized: undefined,
       courses: [
         {
           code: 'HQ',
@@ -143,48 +144,12 @@ describe('INTEGRATION prices', () => {
           },
           shipping: 12.13,
         },
-        {
-          code: 'ZU',
-          name: 'Zergling Herding',
-          primary: false,
-          free: false,
-          cost: 3232.44,
-          discountMessage: null,
-          multiCourseDiscountRate: 0.4,
-          multiCourseDiscount: 0,
-          promoDiscount: 0,
-          shippingDiscount: 0,
-          discountedCost: 3232.44,
-          plans: {
-            full: {
-              discount: 22.11,
-              deposit: 3210.33,
-              installmentSize: 0,
-              installments: 0,
-              originalDeposit: 3210.33,
-              originalInstallments: 0,
-              remainder: 0,
-              total: 3210.33,
-            },
-            part: {
-              discount: 0,
-              deposit: 342.31,
-              installmentSize: 722.53,
-              installments: 4,
-              originalDeposit: 342.31,
-              originalInstallments: 4,
-              remainder: 0.01,
-              total: 3232.44,
-            },
-          },
-          shipping: 83,
-        },
       ],
     };
-    await expect(prices(connection as unknown as PoolConnection, [ 'ZU', 'HQ' ], 'CA', 'ON')).resolves.toEqual(expected);
+    await expect(prices(connection as unknown as PoolConnection, [ 'ZU' ], 'CA', 'ON')).resolves.toEqual(expected);
   });
 
-  it('should discount all courses after the first one if the BOGO discountCode is used', async () => {
+  it('should add the multi-course discount and remove the payment-plan discounts for all courses after the first one if the BOGO discountCode is used', async () => {
     connection.query
       .mockResolvedValueOnce([ priceRow1 ])
       .mockResolvedValueOnce([ priceRow2 ])
@@ -207,13 +172,13 @@ describe('INTEGRATION prices', () => {
       discountedCost: 8635.78,
       plans: {
         full: {
-          discount: 327.40,
-          deposit: 8308.38,
+          discount: 100,
+          deposit: 8535.78,
           installmentSize: 0,
           installments: 0,
           remainder: 0,
-          total: 8308.38,
-          originalDeposit: 8308.38,
+          total: 8535.78,
+          originalDeposit: 8535.78,
           originalInstallments: 0,
         },
         part: {
@@ -232,6 +197,7 @@ describe('INTEGRATION prices', () => {
       notes: [],
       noShipping: 'ALLOWED',
       noShippingMessage: undefined,
+      promoCodeRecognized: true,
       courses: [
         {
           code: 'HQ',
@@ -283,14 +249,14 @@ describe('INTEGRATION prices', () => {
           discountedCost: 1712.88,
           plans: {
             full: {
-              discount: 205.29,
-              deposit: 1507.59,
+              discount: 0,
+              deposit: 1712.88,
               installmentSize: 0,
               installments: 0,
-              originalDeposit: 1507.59,
+              originalDeposit: 1712.88,
               originalInstallments: 0,
               remainder: 0,
-              total: 1507.59,
+              total: 1712.88,
             },
             part: {
               discount: 0,
@@ -319,14 +285,14 @@ describe('INTEGRATION prices', () => {
           discountedCost: 1939.46,
           plans: {
             full: {
-              discount: 22.11,
-              deposit: 1917.35,
+              discount: 0,
+              deposit: 1939.46,
               installmentSize: 0,
               installments: 0,
-              originalDeposit: 1917.35,
+              originalDeposit: 1939.46,
               originalInstallments: 0,
               remainder: 0,
-              total: 1917.35,
+              total: 1939.46,
             },
             part: {
               discount: 0,
@@ -343,10 +309,11 @@ describe('INTEGRATION prices', () => {
         },
       ],
     };
-    await expect(prices(connection as unknown as PoolConnection, [ 'ZU', 'HQ', 'UZ' ], 'CA', 'ON', { promoCode: 'BOGO' })).resolves.toEqual(expected);
+    const options: PriceQueryOptions = { school: 'QC Makeup Academy', promoCode: 'BOGO' };
+    await expect(prices(connection as unknown as PoolConnection, [ 'ZU', 'HQ', 'UZ' ], 'CA', 'ON', options)).resolves.toEqual(expected);
   });
 
-  it('should discount all courses if this is a price for existing students', async () => {
+  it('should add the multi-course discount and remove the payment-plan discounts for all courses if this is a price for existing students', async () => {
     connection.query
       .mockResolvedValueOnce([ priceRow1 ])
       .mockResolvedValueOnce([ priceRow2 ])
@@ -369,13 +336,13 @@ describe('INTEGRATION prices', () => {
       discountedCost: 5645.72,
       plans: {
         full: {
-          discount: 327.40,
-          deposit: 5318.32,
+          discount: 0,
+          deposit: 5645.72,
           installmentSize: 0,
           installments: 0,
           remainder: 0,
-          total: 5318.32,
-          originalDeposit: 5318.32,
+          total: 5645.72,
+          originalDeposit: 5645.72,
           originalInstallments: 0,
         },
         part: {
@@ -394,6 +361,7 @@ describe('INTEGRATION prices', () => {
       notes: [],
       noShipping: 'ALLOWED',
       noShippingMessage: undefined,
+      promoCodeRecognized: undefined,
       courses: [
         {
           code: 'HQ',
@@ -409,14 +377,14 @@ describe('INTEGRATION prices', () => {
           discountedCost: 1993.38,
           plans: {
             full: {
-              discount: 100,
-              deposit: 1893.38,
+              discount: 0,
+              deposit: 1993.38,
               installmentSize: 0,
               installments: 0,
-              originalDeposit: 1893.38,
+              originalDeposit: 1993.38,
               originalInstallments: 0,
               remainder: 0,
-              total: 1893.38,
+              total: 1993.38,
             },
             part: {
               discount: 0,
@@ -445,14 +413,14 @@ describe('INTEGRATION prices', () => {
           discountedCost: 1712.88,
           plans: {
             full: {
-              discount: 205.29,
-              deposit: 1507.59,
+              discount: 0,
+              deposit: 1712.88,
               installmentSize: 0,
               installments: 0,
-              originalDeposit: 1507.59,
+              originalDeposit: 1712.88,
               originalInstallments: 0,
               remainder: 0,
-              total: 1507.59,
+              total: 1712.88,
             },
             part: {
               discount: 0,
@@ -481,14 +449,14 @@ describe('INTEGRATION prices', () => {
           discountedCost: 1939.46,
           plans: {
             full: {
-              discount: 22.11,
-              deposit: 1917.35,
+              discount: 0,
+              deposit: 1939.46,
               installmentSize: 0,
               installments: 0,
-              originalDeposit: 1917.35,
+              originalDeposit: 1939.46,
               originalInstallments: 0,
               remainder: 0,
-              total: 1917.35,
+              total: 1939.46,
             },
             part: {
               discount: 0,
@@ -505,10 +473,11 @@ describe('INTEGRATION prices', () => {
         },
       ],
     };
-    await expect(prices(connection as unknown as PoolConnection, [ 'ZU', 'HQ', 'UZ' ], 'CA', 'ON', { discountAll: true })).resolves.toEqual(expected);
+    const options: PriceQueryOptions = { discountAll: true };
+    await expect(prices(connection as unknown as PoolConnection, [ 'ZU', 'HQ', 'UZ' ], 'CA', 'ON', options)).resolves.toEqual(expected);
   });
 
-  it('should discount all courses if this is a price for existing students and add in a student promo discount if studentDiscount is set', async () => {
+  it('should add the multi-course discount and remove the payment-plan discounts for all courses if this is a price for existing students and add in a student promo discount if studentDiscount is set', async () => {
     connection.query
       .mockResolvedValueOnce([ priceRow1 ])
       .mockResolvedValueOnce([ priceRow2 ])
@@ -531,13 +500,13 @@ describe('INTEGRATION prices', () => {
       discountedCost: 5495.72,
       plans: {
         full: {
-          discount: 327.40,
-          deposit: 5168.32,
+          discount: 0,
+          deposit: 5495.72,
           installmentSize: 0,
           installments: 0,
           remainder: 0,
-          total: 5168.32,
-          originalDeposit: 5168.32,
+          total: 5495.72,
+          originalDeposit: 5495.72,
           originalInstallments: 0,
         },
         part: {
@@ -558,6 +527,7 @@ describe('INTEGRATION prices', () => {
       ],
       noShipping: 'ALLOWED',
       noShippingMessage: undefined,
+      promoCodeRecognized: undefined,
       courses: [
         {
           code: 'HQ',
@@ -573,14 +543,14 @@ describe('INTEGRATION prices', () => {
           discountedCost: 1943.38,
           plans: {
             full: {
-              discount: 100,
-              deposit: 1843.38,
+              discount: 0,
+              deposit: 1943.38,
               installmentSize: 0,
               installments: 0,
-              originalDeposit: 1843.38,
+              originalDeposit: 1943.38,
               originalInstallments: 0,
               remainder: 0,
-              total: 1843.38,
+              total: 1943.38,
             },
             part: {
               discount: 0,
@@ -609,14 +579,14 @@ describe('INTEGRATION prices', () => {
           discountedCost: 1662.88,
           plans: {
             full: {
-              discount: 205.29,
-              deposit: 1457.59,
+              discount: 0,
+              deposit: 1662.88,
               installmentSize: 0,
               installments: 0,
-              originalDeposit: 1457.59,
+              originalDeposit: 1662.88,
               originalInstallments: 0,
               remainder: 0,
-              total: 1457.59,
+              total: 1662.88,
             },
             part: {
               discount: 0,
@@ -645,14 +615,14 @@ describe('INTEGRATION prices', () => {
           discountedCost: 1889.46,
           plans: {
             full: {
-              discount: 22.11,
-              deposit: 1867.35,
+              discount: 0,
+              deposit: 1889.46,
               installmentSize: 0,
               installments: 0,
-              originalDeposit: 1867.35,
+              originalDeposit: 1889.46,
               originalInstallments: 0,
               remainder: 0,
-              total: 1867.35,
+              total: 1889.46,
             },
             part: {
               discount: 0,
@@ -669,10 +639,11 @@ describe('INTEGRATION prices', () => {
         },
       ],
     };
-    await expect(prices(connection as unknown as PoolConnection, [ 'ZU', 'HQ', 'UZ' ], 'CA', 'ON', { discountAll: true, studentDiscount: true })).resolves.toEqual(expected);
+    const options: PriceQueryOptions = { discountAll: true, studentDiscount: true };
+    await expect(prices(connection as unknown as PoolConnection, [ 'ZU', 'HQ', 'UZ' ], 'CA', 'ON', options)).resolves.toEqual(expected);
   });
 
-  it('should discount all courses if this is a price for existing students and add in a student promo discount if studentDiscount is set and add an custom promo discount', async () => {
+  it('should add the mult-course discount and remove the payment-plan discounts for all courses if this is a price for existing students, and add in a student promo discount if studentDiscount is set, and add an custom promo discount', async () => {
     connection.query
       .mockResolvedValueOnce([ priceRow1 ])
       .mockResolvedValueOnce([ priceRow2 ])
@@ -695,23 +666,23 @@ describe('INTEGRATION prices', () => {
       discountedCost: 3495.72,
       plans: {
         full: {
-          discount: 327.40,
-          deposit: 3168.32,
+          discount: 0,
+          deposit: 3495.72,
           installmentSize: 0,
           installments: 0,
           remainder: 0,
-          total: 3168.32,
-          originalDeposit: 3168.32,
+          total: 3495.72,
+          originalDeposit: 3495.72,
           originalInstallments: 0,
         },
         part: {
           discount: 0,
-          deposit: 771.18,
-          installmentSize: 681.12,
+          deposit: 671.18,
+          installmentSize: 706.12,
           installments: 4,
           remainder: 0.06,
           total: 3495.72,
-          originalDeposit: 771.18,
+          originalDeposit: 671.18,
           originalInstallments: 4,
         },
       },
@@ -722,6 +693,7 @@ describe('INTEGRATION prices', () => {
       ],
       noShipping: 'ALLOWED',
       noShippingMessage: undefined,
+      promoCodeRecognized: undefined,
       courses: [
         {
           code: 'HQ',
@@ -731,13 +703,13 @@ describe('INTEGRATION prices', () => {
           cost: 4983.44,
           discountMessage: null,
           multiCourseDiscountRate: 0.6,
-          multiCourseDiscount: 2990.06, // not all the custom deposit gets added here because it would make the cost negative
-          promoDiscount: 1893.38,
+          multiCourseDiscount: 2990.06,
+          promoDiscount: 1993.38, // not all the custom deposit gets added here because it would make the cost negative (50 + 1943.38 = 1993.38, leaving 56.62 to be added to the next course)
           shippingDiscount: 0,
-          discountedCost: 100, // we have to leave 100 here because the full payment plan has a 100 discount
+          discountedCost: 0, // we have to leave 100 here because the full payment plan has a 100 discount
           plans: {
             full: {
-              discount: 100,
+              discount: 0,
               deposit: 0,
               installmentSize: 0,
               installments: 0,
@@ -748,13 +720,13 @@ describe('INTEGRATION prices', () => {
             },
             part: {
               discount: 0,
-              deposit: 100,
+              deposit: 0,
               installmentSize: 0,
               installments: 4,
-              originalDeposit: 100,
+              originalDeposit: 0,
               originalInstallments: 4,
               remainder: 0,
-              total: 100,
+              total: 0,
             },
           },
           shipping: 12.13,
@@ -768,29 +740,29 @@ describe('INTEGRATION prices', () => {
           discountMessage: null,
           multiCourseDiscountRate: 0.6,
           multiCourseDiscount: 2569.33,
-          promoDiscount: 206.62,
+          promoDiscount: 106.62, // 50 + 56.62 left over from previous course
           shippingDiscount: 0,
-          discountedCost: 1506.26,
+          discountedCost: 1606.26,
           plans: {
             full: {
-              discount: 205.29,
-              deposit: 1300.97,
+              discount: 0,
+              deposit: 1606.26,
               installmentSize: 0,
               installments: 0,
-              originalDeposit: 1300.97,
+              originalDeposit: 1606.26,
               originalInstallments: 0,
               remainder: 0,
-              total: 1300.97,
+              total: 1606.26,
             },
             part: {
               discount: 0,
               deposit: 328.87,
-              installmentSize: 294.34,
+              installmentSize: 319.34,
               installments: 4,
               originalDeposit: 328.87,
               originalInstallments: 4,
               remainder: 0.03,
-              total: 1506.26,
+              total: 1606.26,
             },
           },
           shipping: 402.32,
@@ -809,14 +781,14 @@ describe('INTEGRATION prices', () => {
           discountedCost: 1889.46,
           plans: {
             full: {
-              discount: 22.11,
-              deposit: 1867.35,
+              discount: 0,
+              deposit: 1889.46,
               installmentSize: 0,
               installments: 0,
-              originalDeposit: 1867.35,
+              originalDeposit: 1889.46,
               originalInstallments: 0,
               remainder: 0,
-              total: 1867.35,
+              total: 1889.46,
             },
             part: {
               discount: 0,
@@ -845,7 +817,7 @@ describe('INTEGRATION prices', () => {
     await expect(prices(connection as unknown as PoolConnection, [ 'ZU', 'HQ', 'UZ' ], 'CA', 'ON', options)).resolves.toEqual(expected);
   });
 
-  it('should discount all courses if this is a price for existing students and add in a student promo discount if studentDiscount is set and add an custom promo discount and handle shipping discounts', async () => {
+  it('should add the multi-course discount and remove the payment-plan discount for all courses if this is a price for existing students, and add in a student promo discount if studentDiscount is set, and add an custom promo discount, and handle shipping discounts', async () => {
     connection.query
       .mockResolvedValueOnce([ priceRow1 ])
       .mockResolvedValueOnce([ priceRow2 ])
@@ -868,23 +840,23 @@ describe('INTEGRATION prices', () => {
       discountedCost: 2998.27,
       plans: {
         full: {
-          discount: 327.40,
-          deposit: 2670.87,
+          discount: 0,
+          deposit: 2998.27,
           installmentSize: 0,
           installments: 0,
           remainder: 0,
-          total: 2670.87,
-          originalDeposit: 2670.87,
+          total: 2998.27,
+          originalDeposit: 2998.27,
           originalInstallments: 0,
         },
         part: {
           discount: 0,
-          deposit: 771.18,
-          installmentSize: 556.76,
+          deposit: 671.18,
+          installmentSize: 581.76,
           installments: 4,
           remainder: 0.05,
           total: 2998.27,
-          originalDeposit: 771.18,
+          originalDeposit: 671.18,
           originalInstallments: 4,
         },
       },
@@ -895,6 +867,7 @@ describe('INTEGRATION prices', () => {
       ],
       noShipping: 'APPLIED',
       noShippingMessage: 'You have selected to not receive physical course materials. The cost of your courses have been reduced accordingly. You will have access to electronic course materials through the Online Student Center.',
+      promoCodeRecognized: undefined,
       courses: [
         {
           code: 'HQ',
@@ -905,12 +878,12 @@ describe('INTEGRATION prices', () => {
           discountMessage: null,
           multiCourseDiscountRate: 0.6,
           multiCourseDiscount: 2990.06, // not all the custom deposit gets added here because it would make the cost negative
-          promoDiscount: 1881.25,
+          promoDiscount: 1981.25,
           shippingDiscount: 12.13,
-          discountedCost: 100, // we have to leave 100 here because the full payment plan has a 100 discount
+          discountedCost: 0, // we have to leave 100 here because the full payment plan has a 100 discount
           plans: {
             full: {
-              discount: 100,
+              discount: 0,
               deposit: 0,
               installmentSize: 0,
               installments: 0,
@@ -921,13 +894,13 @@ describe('INTEGRATION prices', () => {
             },
             part: {
               discount: 0,
-              deposit: 100,
+              deposit: 0,
               installmentSize: 0,
               installments: 4,
-              originalDeposit: 100,
+              originalDeposit: 0,
               originalInstallments: 4,
               remainder: 0,
-              total: 100,
+              total: 0,
             },
           },
           shipping: 12.13,
@@ -941,29 +914,29 @@ describe('INTEGRATION prices', () => {
           discountMessage: null,
           multiCourseDiscountRate: 0.6,
           multiCourseDiscount: 2569.33,
-          promoDiscount: 218.75,
+          promoDiscount: 118.75,
           shippingDiscount: 402.32,
-          discountedCost: 1091.81,
+          discountedCost: 1191.81,
           plans: {
             full: {
-              discount: 205.29,
-              deposit: 886.52,
+              discount: 0,
+              deposit: 1191.81,
               installmentSize: 0,
               installments: 0,
-              originalDeposit: 886.52,
+              originalDeposit: 1191.81,
               originalInstallments: 0,
               remainder: 0,
-              total: 886.52,
+              total: 1191.81,
             },
             part: {
               discount: 0,
               deposit: 328.87,
-              installmentSize: 190.73,
+              installmentSize: 215.73,
               installments: 4,
               originalDeposit: 328.87,
               originalInstallments: 4,
               remainder: 0.02,
-              total: 1091.81,
+              total: 1191.81,
             },
           },
           shipping: 402.32,
@@ -982,14 +955,14 @@ describe('INTEGRATION prices', () => {
           discountedCost: 1806.46,
           plans: {
             full: {
-              discount: 22.11,
-              deposit: 1784.35,
+              discount: 0,
+              deposit: 1806.46,
               installmentSize: 0,
               installments: 0,
-              originalDeposit: 1784.35,
+              originalDeposit: 1806.46,
               originalInstallments: 0,
               remainder: 0,
-              total: 1784.35,
+              total: 1806.46,
             },
             part: {
               discount: 0,
