@@ -198,6 +198,7 @@ describe('INTEGRATION prices', () => {
       noShipping: 'ALLOWED',
       noShippingMessage: undefined,
       promoCodeRecognized: true,
+      promoCode: 'SAVE50',
       courses: [
         {
           code: 'HQ',
