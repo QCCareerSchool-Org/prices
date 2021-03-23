@@ -9,7 +9,7 @@ import { shouldGetMultiCourseDiscount } from './shouldGetMultiCourseDiscount';
  *
  * @param options the PriceQueryOptions
  */
-export const getMultiCourseDiscountMap = (options?: PriceQueryOptions): MapFunction<CourseResult, CourseResult> => {
+export const getMultiCourseDiscountMap = (now: Date, options?: PriceQueryOptions): MapFunction<CourseResult, CourseResult> => {
 
   return (courseResult: CourseResult, index: number) => {
     // skip free courses
@@ -18,7 +18,7 @@ export const getMultiCourseDiscountMap = (options?: PriceQueryOptions): MapFunct
     }
 
     // skip courses that shouldn't get the multi-course discount
-    if (!shouldGetMultiCourseDiscount(index, options)) {
+    if (!shouldGetMultiCourseDiscount(now, index, options)) {
       return courseResult;
     }
 
