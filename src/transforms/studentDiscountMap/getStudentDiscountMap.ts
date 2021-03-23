@@ -33,7 +33,7 @@ export const getStudentDiscountMap = (currencyCode: CurrencyCode, options?: Pric
 
     const discountedCost = parseFloat(Big(courseResult.cost).minus(courseResult.shippingDiscount).minus(courseResult.multiCourseDiscount).minus(promoDiscount).toFixed(2));
 
-    const [ full, part ] = calculatePlans(courseResult.plans, minimumPrice);
+    const [ full, part ] = calculatePlans(courseResult.plans, discountedCost);
 
     return {
       ...courseResult,

@@ -18,7 +18,7 @@ export const getExtraDiscountMap = (currencyCode: CurrencyCode, options?: PriceQ
     throw new HttpStatus.BadRequest('invalid discount signature');
   }
 
-  const remainingExtraDiscount = options?.discount ? options.discount[currencyCode] ?? options.discount.default : 0;
+  let remainingExtraDiscount = options?.discount ? options.discount[currencyCode] ?? options.discount.default : 0;
 
   return (courseResult: CourseResult, index: number) => {
     // skip free courses
@@ -34,14 +34,17 @@ export const getExtraDiscountMap = (currencyCode: CurrencyCode, options?: PriceQ
     // subtract all the discounts we have so far (use `shipping` instead of `shippingDiscount`) from the cost to determine the lowest possible price we might display (before payment-plan discounts)
     const minimumPrice = parseFloat(Big(courseResult.cost).minus(courseResult.shipping).minus(courseResult.multiCourseDiscount).minus(courseResult.promoDiscount).toFixed(2));
 
-    const extraDiscount = Math.min(minimumPrice, remainingExtraDiscount, courseResult.discountedCost);
+    const extraDiscount = Math.min(minimumPrice, remainingExtraDiscount);
+
+    // reduce the remaining extra discount we have left to give to other courses
+    remainingExtraDiscount = parseFloat(Big(remainingExtraDiscount).minus(extraDiscount).toFixed(2));
 
     // for all promo discounts, add to the existing promo discount value rather than overwriting it
     const promoDiscount = parseFloat(Big(courseResult.promoDiscount).plus(extraDiscount).toFixed(2));
 
     const discountedCost = parseFloat(Big(courseResult.cost).minus(courseResult.shippingDiscount).minus(courseResult.multiCourseDiscount).minus(promoDiscount).toFixed(2));
 
-    const [ full, part ] = calculatePlans(courseResult.plans, minimumPrice);
+    const [ full, part ] = calculatePlans(courseResult.plans, discountedCost);
 
     return {
       ...courseResult,

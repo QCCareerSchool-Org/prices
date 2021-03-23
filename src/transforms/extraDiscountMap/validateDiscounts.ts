@@ -4,7 +4,7 @@ import path from 'path';
 
 import { PriceQueryOptions } from '../../types';
 
-const publicKey = fs.readFileSync(path.join(__dirname, '../public.pem'), 'utf8');
+const publicKey = fs.readFileSync(path.join(__dirname, '../../../public.pem'), 'utf8');
 
 /**
  * Determines if the discount options are valid

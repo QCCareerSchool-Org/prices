@@ -7,14 +7,15 @@ import { Plan } from './types';
  * @param plans the existing payment plans
  * @param minimumPrice the new minimum price
  */
-export const calculatePlans = (plans: { full: Plan, part: Plan }, minimumPrice: number): [Plan, Plan] => {
-  const fullDiscount = Math.min(minimumPrice, plans.full.discount); // can't be larger than the minimum price
+export const calculatePlans = (plans: { full: Plan, part: Plan }, discountedCost: number, removePlanDiscounts?: boolean): [Plan, Plan] => {
 
-  const fullTotal = parseFloat(Big(minimumPrice).minus(fullDiscount).toFixed(2));
+  const fullDiscount = removePlanDiscounts ? 0 : Math.min(discountedCost, plans.full.discount); // can't be larger than the minimum price
 
-  const partDiscount = Math.min(minimumPrice, plans.part.discount); // can't be larger than the minimum price
+  const fullTotal = parseFloat(Big(discountedCost).minus(fullDiscount).toFixed(2));
 
-  const partTotal = parseFloat(Big(minimumPrice).minus(partDiscount).toFixed(2));
+  const partDiscount = removePlanDiscounts ? 0 : Math.min(discountedCost, plans.part.discount); // can't be larger than the minimum price
+
+  const partTotal = parseFloat(Big(discountedCost).minus(partDiscount).toFixed(2));
 
   const partDeposit = Math.min(partTotal, plans.part.deposit); // can't be larger than the total price
 

@@ -1,7 +1,9 @@
 import { audCountry, gbpCountry, nzdCountry } from '@qccareerschool/helper-functions';
+import { promoCodeApplies, promoCodeSpecs } from './promoCodes';
+import { NoShipping, PriceQueryOptions } from './types';
 
 /**
- * Returns an array of disclaimer strings based on the courses selected and the country code
+ * Returns a tuple of string arrays [ notes, disclaimers ]
  *
  * Note: These strings may be inserted as raw HTML by the front end application
  * Do not include any unescaped user input in them (preferably do not include
@@ -10,8 +12,42 @@ import { audCountry, gbpCountry, nzdCountry } from '@qccareerschool/helper-funct
  * @param courses the courses
  * @param countryCode the country code
  */
- export const getDisclaimers = (courses: string[], countryCode: string): string[] => {
-  const disclaimers = [];
+export const getNotesAndDisclaimers = (now: Date, courses: string[], countryCode: string, noShipping: NoShipping, options?: PriceQueryOptions): [ string[], string[] ] => {
+  const notes: string[] = [];
+  const disclaimers: string[] = [];
+
+  const student = options?.discountAll ?? false;
+
+  // studentDiscount option
+  if (options?.studentDiscount) {
+    notes.push('additional discount');
+  }
+
+  // deluxeKit option
+  if (options?.deluxeKit === true && (noShipping === 'ALLOWED' || noShipping === 'FORBIDDEN')) {
+    if (courses.includes('MZ')) {
+      notes.push('deluxe/elite/better kit');
+    }
+  }
+
+  // MMFreeMW option
+  if (options?.MMFreeMW === true) {
+    if (courses.includes('MM') || courses.includes('MZ')) {
+      notes.push('free MW course');
+    }
+  }
+
+  // portfolio option
+  if (options?.portfolio === true) {
+    notes.push('portfolio');
+  }
+
+  // makeup ELITE promo code
+  const elite = promoCodeSpecs.find(p => p.code === 'ELITE');
+  if ((noShipping === 'ALLOWED' || noShipping === 'FORBIDDEN') && elite && promoCodeApplies(elite, now, student, options?.promoCode, options?.school)) {
+    notes.push('elite makeup kit');
+    disclaimers.push('<strong>ELITE</strong> promo code applied: You\'ll get the elite makeup kit');
+  }
 
   if (courses.includes('DG') && audCountry(countryCode)) {
     disclaimers.push('The WAHL clippers and attachment combs will not be provided with your course. ' +
@@ -59,5 +95,5 @@ import { audCountry, gbpCountry, nzdCountry } from '@qccareerschool/helper-funct
     disclaimers.push('The Fashion Styling Course includes electronic course material only.');
   }
 
-  return disclaimers;
+  return [ notes, disclaimers ];
 };

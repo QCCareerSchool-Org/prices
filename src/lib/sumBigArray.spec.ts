@@ -1,3 +1,4 @@
+import Big from 'big.js';
 import faker from 'faker';
 
 import { sumBigArray } from './sumBigArray';

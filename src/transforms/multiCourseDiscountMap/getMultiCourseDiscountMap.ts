@@ -33,7 +33,7 @@ export const getMultiCourseDiscountMap = (options?: PriceQueryOptions): MapFunct
 
     const discountedCost = parseFloat(Big(courseResult.cost).minus(courseResult.shippingDiscount).minus(multiCourseDiscount).minus(courseResult.promoDiscount).toFixed(2));
 
-    const [ full, part ] = calculatePlans(courseResult.plans, minimumPrice);
+    const [ full, part ] = calculatePlans(courseResult.plans, discountedCost, true);
 
     return {
       ...courseResult,

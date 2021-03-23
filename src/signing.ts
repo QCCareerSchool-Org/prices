@@ -18,7 +18,7 @@ try {
   };
 
   const discount = {
-    default: 2000,
+    default: 3000,
   };
   const sig = createSignature(JSON.stringify(discount));
   if (!verifySignature(JSON.stringify(discount), sig)) {

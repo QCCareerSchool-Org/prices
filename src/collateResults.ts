@@ -25,6 +25,7 @@ import { CourseResult, Currency, PriceResult, NoShipping } from './types';
   noShipping: NoShipping,
   noShippingMessage?: string,
   promoCodeRecognized?: boolean,
+  promoCode?: string,
 ): PriceResult => ({
   countryCode,
   provinceCode: provinceCode ?? undefined,
@@ -49,11 +50,11 @@ import { CourseResult, Currency, PriceResult, NoShipping } from './types';
       discount: parseFloat(courseResults.map(c => Big(c.plans.part.discount)).reduce(sumBigArray, Big(0)).toFixed(2)),
       deposit: parseFloat(courseResults.map(c => Big(c.plans.part.deposit)).reduce(sumBigArray, Big(0)).toFixed(2)),
       installmentSize: parseFloat(courseResults.map(c => Big(c.plans.part.installmentSize)).reduce(sumBigArray, Big(0)).toFixed(2)),
-      installments: courseResults.length ? courseResults[0].plans.part.installments : 0,
+      installments: courseResults.length ? courseResults[0].plans.part.installments : 1,
       remainder: parseFloat(courseResults.map(c => Big(c.plans.part.remainder)).reduce(sumBigArray, Big(0)).toFixed(2)),
       total: parseFloat(courseResults.map(c => Big(c.plans.part.total)).reduce(sumBigArray, Big(0)).toFixed(2)),
       originalDeposit: parseFloat(courseResults.map(c => Big(c.plans.part.originalDeposit)).reduce(sumBigArray, Big(0)).toFixed(2)),
-      originalInstallments: courseResults.length ? courseResults[0].plans.part.originalInstallments : 0,
+      originalInstallments: courseResults.length ? courseResults[0].plans.part.originalInstallments : 1,
     },
   },
   shipping: parseFloat(courseResults.map(c => Big(c.shipping)).reduce(sumBigArray, Big(0)).toFixed(2)),
@@ -62,5 +63,6 @@ import { CourseResult, Currency, PriceResult, NoShipping } from './types';
   noShipping,
   noShippingMessage,
   promoCodeRecognized,
+  promoCode,
   courses: courseResults,
 });
