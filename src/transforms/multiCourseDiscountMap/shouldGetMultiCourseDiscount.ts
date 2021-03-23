@@ -5,7 +5,7 @@ import { PriceQueryOptions } from '../../types';
  * @param index the index for this course (0 = first)
  * @param options the price query options supplied with the prices request
  */
-export const shouldGetMultiCourseDiscount = (index: number, options?: PriceQueryOptions): boolean => {
+export const shouldGetMultiCourseDiscount = (now: Date, index: number, options?: PriceQueryOptions): boolean => {
   // when discountAll is true all courses get the multi-course discount
   if (options?.discountAll) {
     return true;
@@ -17,8 +17,8 @@ export const shouldGetMultiCourseDiscount = (index: number, options?: PriceQuery
     if (options?.school === 'QC Career School' || options?.school === 'QC Design School' || options?.school === 'QC Event School' || options?.school === 'QC Pet Studies' || options?.school === 'QC Wellness Studies' || options?.school === 'Winghill Writing School') {
       return true;
     }
-    // and the school is 'QC Makeup Academy' and the promo code is 'SAVE50' the course gets the multi-course discount
-    if (options?.school === 'QC Makeup Academy' && options?.promoCode === 'SAVE50') {
+    // and the school is 'QC Makeup Academy' and the promo code is 'SAVE50' or the date is less than 2021-03-28 the course gets the multi-course discount
+    if (options?.school === 'QC Makeup Academy' && (options?.promoCode === 'SAVE50' || now < new Date('2021-03-28T00:00:00-0400'))) {
       return true;
     }
   }
