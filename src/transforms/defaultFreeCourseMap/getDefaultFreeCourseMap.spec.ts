@@ -63,7 +63,7 @@ describe('getFreeCoursesMap', () => {
         { ...fakeCourseResult, code: 'FD' },
       ];
       const expected: CourseResult[] = [
-        { ...fakeCourseResult, code: 'DW', free: true, cost: 0, multiCourseDiscountRate: 0, multiCourseDiscount: 0, promoDiscount: 0, shippingDiscount: 0, discountedCost: 0, shipping: 0, plans: { ...fakeCourseResult.plans, full: { discount: 0, deposit: 0, installmentSize: 0, installments: 0, remainder: 0, total: 0, originalDeposit: 0, originalInstallments: 0 }, part: { discount: 0, deposit: 0, installmentSize: 0, installments: 0, remainder: 0, total: 0, originalDeposit: 0, originalInstallments: 0 } } },
+        { ...fakeCourseResult, code: 'DW', free: true, multiCourseDiscountRate: 0, multiCourseDiscount: fakeCourseResult.cost, promoDiscount: 0, shippingDiscount: 0, discountedCost: 0, shipping: 0, plans: { ...fakeCourseResult.plans, full: { discount: 0, deposit: 0, installmentSize: 0, installments: 0, remainder: 0, total: 0, originalDeposit: 0, originalInstallments: 0 }, part: { discount: 0, deposit: 0, installmentSize: 0, installments: 0, remainder: 0, total: 0, originalDeposit: 0, originalInstallments: 0 } } },
         { ...fakeCourseResult, code: 'EP' },
         { ...fakeCourseResult, code: 'MZ' },
         { ...fakeCourseResult, code: 'FD' },
@@ -83,7 +83,7 @@ describe('getFreeCoursesMap', () => {
       const expected: CourseResult[] = [
         { ...fakeCourseResult, code: 'EP' },
         { ...fakeCourseResult, code: 'MZ' },
-        { ...fakeCourseResult, code: 'LW', free: true, cost: 0, multiCourseDiscountRate: 0, multiCourseDiscount: 0, promoDiscount: 0, shippingDiscount: 0, discountedCost: 0, shipping: 0, plans: { ...fakeCourseResult.plans, full: { discount: 0, deposit: 0, installmentSize: 0, installments: 0, remainder: 0, total: 0, originalDeposit: 0, originalInstallments: 0 }, part: { discount: 0, deposit: 0, installmentSize: 0, installments: 0, remainder: 0, total: 0, originalDeposit: 0, originalInstallments: 0 } } },
+        { ...fakeCourseResult, code: 'LW', free: true, multiCourseDiscountRate: 0, multiCourseDiscount: fakeCourseResult.cost, promoDiscount: 0, shippingDiscount: 0, discountedCost: 0, shipping: 0, plans: { ...fakeCourseResult.plans, full: { discount: 0, deposit: 0, installmentSize: 0, installments: 0, remainder: 0, total: 0, originalDeposit: 0, originalInstallments: 0 }, part: { discount: 0, deposit: 0, installmentSize: 0, installments: 0, remainder: 0, total: 0, originalDeposit: 0, originalInstallments: 0 } } },
         { ...fakeCourseResult, code: 'FD' },
       ];
       expect(courseResults.map(freeCoursesMap)).toEqual(expected);
@@ -100,10 +100,10 @@ describe('getFreeCoursesMap', () => {
         { ...fakeCourseResult, code: 'FD' },
       ];
       const expected: CourseResult[] = [
-        { ...fakeCourseResult, code: 'DW', free: true, cost: 0, multiCourseDiscountRate: 0, multiCourseDiscount: 0, promoDiscount: 0, shippingDiscount: 0, discountedCost: 0, shipping: 0, plans: { ...fakeCourseResult.plans, full: { discount: 0, deposit: 0, installmentSize: 0, installments: 0, remainder: 0, total: 0, originalDeposit: 0, originalInstallments: 0 }, part: { discount: 0, deposit: 0, installmentSize: 0, installments: 0, remainder: 0, total: 0, originalDeposit: 0, originalInstallments: 0 } } },
+        { ...fakeCourseResult, code: 'DW', free: true, multiCourseDiscountRate: 0, multiCourseDiscount: fakeCourseResult.cost, promoDiscount: 0, shippingDiscount: 0, discountedCost: 0, shipping: 0, plans: { ...fakeCourseResult.plans, full: { discount: 0, deposit: 0, installmentSize: 0, installments: 0, remainder: 0, total: 0, originalDeposit: 0, originalInstallments: 0 }, part: { discount: 0, deposit: 0, installmentSize: 0, installments: 0, remainder: 0, total: 0, originalDeposit: 0, originalInstallments: 0 } } },
         { ...fakeCourseResult, code: 'EP' },
         { ...fakeCourseResult, code: 'MZ' },
-        { ...fakeCourseResult, code: 'LW', free: true, cost: 0, multiCourseDiscountRate: 0, multiCourseDiscount: 0, promoDiscount: 0, shippingDiscount: 0, discountedCost: 0, shipping: 0, plans: { ...fakeCourseResult.plans, full: { discount: 0, deposit: 0, installmentSize: 0, installments: 0, remainder: 0, total: 0, originalDeposit: 0, originalInstallments: 0 }, part: { discount: 0, deposit: 0, installmentSize: 0, installments: 0, remainder: 0, total: 0, originalDeposit: 0, originalInstallments: 0 } } },
+        { ...fakeCourseResult, code: 'LW', free: true, multiCourseDiscountRate: 0, multiCourseDiscount: fakeCourseResult.cost, promoDiscount: 0, shippingDiscount: 0, discountedCost: 0, shipping: 0, plans: { ...fakeCourseResult.plans, full: { discount: 0, deposit: 0, installmentSize: 0, installments: 0, remainder: 0, total: 0, originalDeposit: 0, originalInstallments: 0 }, part: { discount: 0, deposit: 0, installmentSize: 0, installments: 0, remainder: 0, total: 0, originalDeposit: 0, originalInstallments: 0 } } },
         { ...fakeCourseResult, code: 'FD' },
       ];
       expect(courseResults.map(freeCoursesMap)).toEqual(expected);
@@ -181,7 +181,7 @@ describe('getFreeCoursesMap', () => {
       ];
       const expected: CourseResult[] = [
         { ...fakeCourseResult, code: 'HS' },
-        { ...fakeCourseResult, code: 'PO', free: true, cost: 0, multiCourseDiscountRate: 0, multiCourseDiscount: 0, promoDiscount: 0, shippingDiscount: 0, discountedCost: 0, shipping: 0, plans: { ...fakeCourseResult.plans, full: { discount: 0, deposit: 0, installmentSize: 0, installments: 0, remainder: 0, total: 0, originalDeposit: 0, originalInstallments: 0 }, part: { discount: 0, deposit: 0, installmentSize: 0, installments: 0, remainder: 0, total: 0, originalDeposit: 0, originalInstallments: 0 } } },
+        { ...fakeCourseResult, code: 'PO', free: true, multiCourseDiscountRate: 0, multiCourseDiscount: fakeCourseResult.cost, promoDiscount: 0, shippingDiscount: 0, discountedCost: 0, shipping: 0, plans: { ...fakeCourseResult.plans, full: { discount: 0, deposit: 0, installmentSize: 0, installments: 0, remainder: 0, total: 0, originalDeposit: 0, originalInstallments: 0 }, part: { discount: 0, deposit: 0, installmentSize: 0, installments: 0, remainder: 0, total: 0, originalDeposit: 0, originalInstallments: 0 } } },
         { ...fakeCourseResult, code: 'I2' },
         { ...fakeCourseResult, code: 'MZ' },
       ];
@@ -218,7 +218,7 @@ describe('getFreeCoursesMap', () => {
       ];
       const expected: CourseResult[] = [
         { ...fakeCourseResult, code: 'HS' },
-        { ...fakeCourseResult, code: 'PO', free: true, cost: 0, multiCourseDiscountRate: 0, multiCourseDiscount: 0, promoDiscount: 0, shippingDiscount: 0, discountedCost: 0, shipping: 0, plans: { ...fakeCourseResult.plans, full: { discount: 0, deposit: 0, installmentSize: 0, installments: 0, remainder: 0, total: 0, originalDeposit: 0, originalInstallments: 0 }, part: { discount: 0, deposit: 0, installmentSize: 0, installments: 0, remainder: 0, total: 0, originalDeposit: 0, originalInstallments: 0 } } },
+        { ...fakeCourseResult, code: 'PO', free: true, multiCourseDiscountRate: 0, multiCourseDiscount: fakeCourseResult.cost, promoDiscount: 0, shippingDiscount: 0, discountedCost: 0, shipping: 0, plans: { ...fakeCourseResult.plans, full: { discount: 0, deposit: 0, installmentSize: 0, installments: 0, remainder: 0, total: 0, originalDeposit: 0, originalInstallments: 0 }, part: { discount: 0, deposit: 0, installmentSize: 0, installments: 0, remainder: 0, total: 0, originalDeposit: 0, originalInstallments: 0 } } },
         { ...fakeCourseResult, code: 'I2' },
         { ...fakeCourseResult, code: 'ST' },
         { ...fakeCourseResult, code: 'FS' },

@@ -44,9 +44,8 @@ export const getDefaultFreeCourseMap = (now: Date, options?: PriceQueryOptions):
 export const freeMap = (courseResult: CourseResult): CourseResult => ({
   ...courseResult,
   free: true,
-  cost: 0,
   multiCourseDiscountRate: 0,
-  multiCourseDiscount: 0,
+  multiCourseDiscount: courseResult.cost,
   promoDiscount: 0,
   shippingDiscount: 0,
   discountedCost: 0,
