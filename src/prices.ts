@@ -66,7 +66,7 @@ export async function prices(
     .sort((a, b) => a.free === b.free ? b.cost - a.cost : a.free ? 1 : -1) // sort by free in ascending order, then cost in descending order
     .map(primaryMap) // mark first course primary and adjust other courses' installments to match the primary course
     .map(getShippingMap(noShipping)) // apply shipping discounts
-    .map(getMultiCourseDiscountMap(options)) // apply multi-course discounts
+    .map(getMultiCourseDiscountMap(now, options)) // apply multi-course discounts
     .map(getStudentDiscountMap(currencyCode, options)) // apply student promotional discounts
     .map(getExtraDiscountMap(currencyCode, options)) // apply extra promotional discounts
     .map(getPromoCodeDiscountsMap(now, options)) // apply promotional discounts based on promo codes
