@@ -4,7 +4,8 @@ const makeupSpecialtyCourses = [ 'AB', 'SF', 'HS', 'PF', 'VM' ];
 
 const designCourses = [ 'I2', 'ST', 'PO', 'FS', 'CC', 'AP', 'DB', 'MS', 'VD', 'FD' ];
 
-const eventCourses = [ 'EP', 'CP', 'CE', 'WP', 'FD', 'ED', 'EB', 'LW', 'DW', 'FL', 'PE', 'TT', 'TG', 'VE' ];
+const eventFoundationCourses = [ 'EP', 'CP', 'CE', 'WP', 'FD' ];
+const eventSpecialtyCourses = [ 'ED', 'EB', 'LW', 'DW', 'FL', 'PE', 'TT', 'TG', 'VE' ];
 
 export const isMakeupFoundationCourse = (course: string, exclude?: string[]): boolean => {
   return makeupFoundationCourses.filter(c => !exclude?.includes(c)).includes(course);
@@ -26,14 +27,14 @@ export const isDesignCourse = (course: string, exclude?: string[]): boolean => {
   return designCourses.filter(c => !exclude?.includes(c)).includes(course);
 };
 
+export const isEventFoundationCourse = (course: string, exclude?: string[]): boolean => {
+  return eventFoundationCourses.filter(c => !exclude?.includes(c)).includes(course);
+};
+
+export const isEventSpecialtyCourse = (course: string, exclude?: string[]): boolean => {
+  return eventSpecialtyCourses.filter(c => !exclude?.includes(c)).includes(course);
+};
+
 export const isEventCourse = (course: string, exclude?: string[]): boolean => {
-  return eventCourses.filter(c => !exclude?.includes(c)).includes(course);
-};
-
-export const isEventFoundationCourse = (course: string): boolean => {
-  return [ 'EP', 'CP', 'CE', 'WP', 'FD' ].includes(course);
-};
-
-export const isEventAdvancedCourse = (course: string): boolean => {
-  return [ 'ED', 'EB', 'LW', 'DW', 'FL', 'PE', 'TT', 'TG', 'VE' ].includes(course);
+  return isEventFoundationCourse(course, exclude) || isEventSpecialtyCourse(course, exclude);
 };
