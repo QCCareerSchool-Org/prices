@@ -14,7 +14,9 @@ export const promoCodeSpecs: PromoCodeSpec[] = [
   { code: 'SAVE50', student: 'DENIED', schools: [ 'QC Makeup Academy' ] },
   { code: 'ELITE', student: 'DENIED', schools: [ 'QC Makeup Academy' ] },
   { code: 'ADVANCED100', student: 'DENIED', schools: [ 'QC Makeup Academy' ] },
-  { code: 'FOUNDIT', student: 'DENIED', schools: [ 'QC Makeup Academy' ], start: new Date('2021-03-18T09:00:00-0400'), end: new Date('2021-04-01T09:00:00-0400') },
+  { code: 'FREEPRO', student: 'DENIED' },
+  { code: 'FOUNDIT', student: 'DENIED', schools: [ 'QC Makeup Academy' ], start: new Date('2021-03-29T09:00:00-0400'), end: new Date('2021-04-06T09:00:00-0400') },
+  { code: 'SPRING21', student: 'DENIED', schools: [ 'QC Makeup Academy' ], start: new Date('2021-04-06T09:00:00-0400') },
   ...studentSupport50Specs,
 ];
 

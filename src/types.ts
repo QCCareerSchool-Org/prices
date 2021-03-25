@@ -20,6 +20,7 @@ export interface PriceQueryOptions {
   blackFriday2020?: boolean;
   school?: School;
   promoCode?: string;
+  dateOverride?: Date;
 }
 
 export interface PriceQuery {
@@ -71,6 +72,7 @@ export type PriceResult = {
   currency: Currency;
   disclaimers: string[];
   notes: string[];
+  promoWarnings: string[];
   noShipping: NoShipping;
   noShippingMessage?: string;
   promoCodeRecognized?: boolean;

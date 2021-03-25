@@ -13,7 +13,7 @@ import { getShippingMap } from './transforms/shippingMap/getShippingMap';
 import { getStudentDiscountMap } from './transforms/studentDiscountMap/getStudentDiscountMap';
 import { collateResults } from './collateResults';
 import { defaultCurrencyCode } from './defaultCurrencyCode';
-import { getNotesAndDisclaimers } from './getNotesAndDisclaimers';
+import { notesAndDisclaimers } from './notesAndDisclaimers';
 import { lookupCurrency } from './lookupCurrency';
 import { lookupPrice } from './lookupPrice';
 import { noShippingMessage } from './noShippingMessage';
@@ -54,7 +54,9 @@ export async function prices(
   // determine whether we'll be shipping materials or not
   const noShipping: NoShipping = noShipCountry(countryCode) ? 'REQUIRED' : options?.noShipping ? 'APPLIED' : 'ALLOWED' as NoShipping;
 
-  const now = new Date();
+  const now = process.env.NODE_ENV !== 'production'
+    ? options?.dateOverride ?? new Date()
+    : new Date();
 
   // prepare the courses result
   const courseResults = priceRows
@@ -73,7 +75,7 @@ export async function prices(
     .map(getOverridesMap(courses, options?.depositOverrides, options?.installmentsOverride)) // update the courseResults based on the sales agent's overrides
     .sort(courseSort); // sort by primary, free, cost, discounted cost
 
-  const [ notes, disclaimers ] = getNotesAndDisclaimers(now, courses, countryCode, noShipping, options);
+  const [ notes, disclaimers, promoWarnings ] = notesAndDisclaimers(now, courses, countryCode, noShipping, options);
 
   const recognized = promoCodeRecognized(now, options);
 
@@ -84,6 +86,7 @@ export async function prices(
     courseResults,
     disclaimers,
     notes,
+    promoWarnings,
     noShipping,
     noShippingMessage(noShipping, courses, countryCode),
     recognized,

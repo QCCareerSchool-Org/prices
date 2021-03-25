@@ -30,8 +30,8 @@ export const getDefaultFreeCourseMap = (now: Date, options?: PriceQueryOptions):
       }
     }
 
-     // makeup -- buy MZ and get MW free
-     if (options?.school === 'QC Makeup Academy' && !student) {
+    // makeup -- buy MZ and get MW free
+    if (options?.school === 'QC Makeup Academy' && now < new Date('2021-03-29T09:00:00-0400') && !student) {
       if (courseResult.code === 'MW' && array.some(c => c.code === 'MZ')) {
         return freeMap(courseResult);
       }

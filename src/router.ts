@@ -37,6 +37,7 @@ const priceSchema = yup.object<PriceQuery>({
     studentDiscount: yup.boolean(),
     school: yup.string<School>().oneOf([ 'QC Career School', 'QC Makeup Academy', 'QC Design School', 'QC Event School', 'QC Pet Studies', 'QC Wellness Studies', 'Winghill Writing School' ]),
     promoCode: yup.string(),
+    dateOverride: yup.date(),
   }),
 }).required();
 
@@ -73,6 +74,7 @@ const newPrices = async (req: Request): Promise<PriceResult> => {
     let query: PriceQuery;
     try {
       query = await priceSchema.validate(req.query);
+      console.log(query);
     } catch (err) {
       throw new HttpStatus.BadRequest(err.message);
     }
