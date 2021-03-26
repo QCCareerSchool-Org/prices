@@ -74,7 +74,6 @@ const newPrices = async (req: Request): Promise<PriceResult> => {
     let query: PriceQuery;
     try {
       query = await priceSchema.validate(req.query);
-      console.log(query);
     } catch (err) {
       throw new HttpStatus.BadRequest(err.message);
     }
