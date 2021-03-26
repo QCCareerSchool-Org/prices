@@ -8,7 +8,7 @@ export const getPromoCodeFreeCourseMap = (now: Date, options?: PriceQueryOptions
   const applies = (spec?: PromoCodeSpec) => spec && promoCodeApplies(spec, now, student, options?.promoCode, options?.school);
 
   const foundItApplies = applies(promoCodeSpecs.find(v => v.code === 'FOUNDIT'));
-  const freeProApplies = applies(promoCodeSpecs.find(v => v.code === 'FOUNDIT'));
+  const freeProApplies = applies(promoCodeSpecs.find(v => v.code === 'FREEPRO'));
 
   return (courseResult: CourseResult, index: number, array: CourseResult[]): CourseResult => {
 
