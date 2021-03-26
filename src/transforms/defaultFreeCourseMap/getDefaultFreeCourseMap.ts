@@ -10,9 +10,19 @@ export const getDefaultFreeCourseMap = (now: Date, options?: PriceQueryOptions):
 
     // design -- buy any design course and get a second one free
     if (options?.school === 'QC Design School' && !student) {
-      if (freeDesignCount < 1 && isDesignCourse(courseResult.code) && array.filter(c => isDesignCourse(c.code)).length >= 2) {
-        freeDesignCount++;
-        return freeMap(courseResult);
+      if (now >= new Date('2021-03-29T09:00:00-0400')) {
+        if (freeDesignCount < 1 && isDesignCourse(courseResult.code, [ 'VD' ]) && array.filter(c => isDesignCourse(c.code, [ 'VD' ])).length >= 2) {
+          freeDesignCount++;
+          return freeMap(courseResult);
+        }
+        if (courseResult.code === 'VD' && array.filter(c => isDesignCourse(c.code, [ 'VD' ])).length >= 1) {
+          return freeMap(courseResult);
+        }
+      } else {
+        if (freeDesignCount < 1 && isDesignCourse(courseResult.code) && array.filter(c => isDesignCourse(c.code)).length >= 2) {
+          freeDesignCount++;
+          return freeMap(courseResult);
+        }
       }
     }
 

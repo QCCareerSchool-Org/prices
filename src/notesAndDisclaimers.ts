@@ -61,9 +61,9 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
   // FREEPRO promo code
   if (applies(promoCodeSpecs.find(p => p.code === 'FREEPRO'))) {
     if (!courses.includes('MZ') && !courses.includes('MW')) {
-      promoWarnings.push('You have entered the <strong>FREEPRO</strong> promo code but have not selected the <strong>Master Makeup Aristry</strong> and <strong>Pro Makeup Workshop</strong> courses.');
+      promoWarnings.push('You have entered the <strong>FREEPRO</strong> promo code but have not selected the <strong>Master Makeup Artistry</strong> and <strong>Pro Makeup Workshop</strong> courses.');
     } else if (!courses.includes('MZ')) {
-      promoWarnings.push('You have entered the <strong>FREEPRO</strong> promo code but have not selected the <strong>Master Makeup Aristry</strong> course.');
+      promoWarnings.push('You have entered the <strong>FREEPRO</strong> promo code but have not selected the <strong>Master Makeup Artistry</strong> course.');
     } else if (!courses.includes('MW')) {
       promoWarnings.push('You have entered the <strong>FREEPRO</strong> promo code but have not selected the <strong>Pro Makeup Workshop</strong> course.');
     }
@@ -72,9 +72,9 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
   // FOUNDIT promo code
   if (applies(promoCodeSpecs.find(p => p.code === 'FOUNDIT'))) {
     if (!courses.includes('MZ') && !courses.includes('VM')) {
-      promoWarnings.push('You have entered the <strong>FOUNDIT</strong> promo code but have not selected the <strong>Master Makeup Aristry</strong> and <strong>Virtual Makeup</strong> courses.');
+      promoWarnings.push('You have entered the <strong>FOUNDIT</strong> promo code but have not selected the <strong>Master Makeup Artistry</strong> and <strong>Virtual Makeup</strong> courses.');
     } else if (!courses.includes('MZ')) {
-      promoWarnings.push('You have entered the <strong>FOUNDIT</strong> promo code but have not selected the <strong>Master Makeup Aristry</strong> course.');
+      promoWarnings.push('You have entered the <strong>FOUNDIT</strong> promo code but have not selected the <strong>Master Makeup Artistry</strong> course.');
     } else if (!courses.includes('VM')) {
       promoWarnings.push('You have entered the <strong>FOUNDIT</strong> promo code but have not selected the <strong>Virtual Makeup</strong> course.');
     }
@@ -97,9 +97,9 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
   // SPRING21 promo code
   if (applies(promoCodeSpecs.find(p => p.code === 'SPRING21'))) {
     if (!courses.includes('MZ') && !courses.some(c => isMakeupAdvancedCourse(c))) {
-      promoWarnings.push('You have entered the <strong>SPRING21</strong> promo code but have not selected the <strong>Master Makeup Aristry</strong> and an Advanced makeup course.');
+      promoWarnings.push('You have entered the <strong>SPRING21</strong> promo code but have not selected the <strong>Master Makeup Artistry</strong> and an Advanced makeup course.');
     } else if (!courses.includes('MZ')) {
-      promoWarnings.push('You have entered the <strong>SPRING21</strong> promo code but have not selected the <strong>Master Makeup Aristry</strong> course.');
+      promoWarnings.push('You have entered the <strong>SPRING21</strong> promo code but have not selected the <strong>Master Makeup Artistry</strong> course.');
     } else if (!courses.some(c => isMakeupAdvancedCourse(c))) {
       promoWarnings.push('You have entered the <strong>SPRING21</strong> promo code but have not selected an Advanced makeup course.');
     }
