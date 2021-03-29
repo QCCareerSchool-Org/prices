@@ -104,6 +104,7 @@ describe('INTEGRATION prices', () => {
       shipping: 12.13,
       disclaimers: [],
       notes: [],
+      promoWarnings: [],
       noShipping: 'ALLOWED',
       noShippingMessage: undefined,
       promoCodeRecognized: undefined,
@@ -195,6 +196,7 @@ describe('INTEGRATION prices', () => {
       shipping: 497.45,
       disclaimers: [],
       notes: [],
+      promoWarnings: [],
       noShipping: 'ALLOWED',
       noShippingMessage: undefined,
       promoCodeRecognized: true,
@@ -360,6 +362,7 @@ describe('INTEGRATION prices', () => {
       shipping: 497.45,
       disclaimers: [],
       notes: [],
+      promoWarnings: [],
       noShipping: 'ALLOWED',
       noShippingMessage: undefined,
       promoCodeRecognized: undefined,
@@ -526,6 +529,7 @@ describe('INTEGRATION prices', () => {
       notes: [
         'additional discount',
       ],
+      promoWarnings: [],
       noShipping: 'ALLOWED',
       noShippingMessage: undefined,
       promoCodeRecognized: undefined,
@@ -692,6 +696,7 @@ describe('INTEGRATION prices', () => {
       notes: [
         'additional discount',
       ],
+      promoWarnings: [],
       noShipping: 'ALLOWED',
       noShippingMessage: undefined,
       promoCodeRecognized: undefined,
@@ -866,6 +871,7 @@ describe('INTEGRATION prices', () => {
       notes: [
         'additional discount',
       ],
+      promoWarnings: [],
       noShipping: 'APPLIED',
       noShippingMessage: 'You have selected to not receive physical course materials. The cost of your courses have been reduced accordingly. You will have access to electronic course materials through the Online Student Center.',
       promoCodeRecognized: undefined,

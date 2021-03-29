@@ -57,7 +57,7 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
   if (applies(promoCodeSpecs.find(p => p.code === 'ELITE'))) {
     if (noShipping === 'ALLOWED' || noShipping === 'FORBIDDEN') {
       notes.push('elite makeup kit');
-      disclaimers.push('You will receive a free elite makeup kit (includes a highlight palette, contour palette, eyebrow palette, 4-pack of false lashes, a makeup travel bag, and a stainless steel palette with spatula).');
+      disclaimers.push('You will receive the <strong>elite makeup kit upgrade</strong> (includes a highlight palette, contour palette, eyebrow palette, 4-pack of false lashes, a makeup travel bag, and a stainless steel palette with spatula).');
     } else if (noShipping === 'APPLIED') {
       promoWarnings.push('You entered the <strong>ELITE</strong> promo code, but have chosen to not have any materials shipped. You will not receive any makeup kits.');
     } else if (noShipping === 'REQUIRED') {
