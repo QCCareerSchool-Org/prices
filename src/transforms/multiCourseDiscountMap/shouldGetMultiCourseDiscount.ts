@@ -18,7 +18,7 @@ export const shouldGetMultiCourseDiscount = (now: Date, index: number, options?:
       return true;
     }
     // and the school is 'QC Makeup Academy' and the promo code is 'SAVE50' or the date is less than 2021-03-29 at 9am the course gets the multi-course discount
-    if (options?.school === 'QC Makeup Academy' && (options?.promoCode === 'SAVE50' || now < new Date('2021-03-29T09:00:00-0400'))) {
+    if (options?.school === 'QC Makeup Academy' && (options?.promoCode === 'SAVE50' || now.getTime() < Date.UTC(2021, 2, 29, 13))) {
       return true;
     }
   }

@@ -1,3 +1,4 @@
+import { isMakeupAdvancedCourse } from '../../courses';
 import { promoCodeSpecs, promoCodeApplies, PromoCodeSpec } from '../../promoCodes';
 import { CourseResult, MapFunction, PriceQueryOptions } from '../../types';
 import { freeMap } from '../defaultFreeCourseMap/getDefaultFreeCourseMap';
@@ -9,6 +10,8 @@ export const getPromoCodeFreeCourseMap = (now: Date, options?: PriceQueryOptions
 
   const foundItApplies = applies(promoCodeSpecs.find(v => v.code === 'FOUNDIT'));
   const freeProApplies = applies(promoCodeSpecs.find(v => v.code === 'FREEPRO'));
+  const spring21Applies = applies(promoCodeSpecs.find(v => v.code === 'SPRING21'));
+  let spring21Applied = false;
 
   return (courseResult: CourseResult, index: number, array: CourseResult[]): CourseResult => {
 
@@ -20,6 +23,13 @@ export const getPromoCodeFreeCourseMap = (now: Date, options?: PriceQueryOptions
 
     if (freeProApplies) {
       if (courseResult.code === 'MW' && array.some(c => c.code === 'MZ')) {
+        return freeMap(courseResult);
+      }
+    }
+
+    if (spring21Applies && !spring21Applied) {
+      if (isMakeupAdvancedCourse(courseResult.code) && array.some(c => c.code === 'MZ')) {
+        spring21Applied = true;
         return freeMap(courseResult);
       }
     }
