@@ -8,7 +8,9 @@ export type PromoCodeSpec = {
   end?: Date;
 }
 
-export const studentSupport50Specs: PromoCodeSpec[] = [ 'AMANDA50', 'ANDREW50', 'ANNIE50', 'CHARLOTTE50', 'EMILY50', 'GINA50', 'HEATHER50', 'JESS50', 'KAYLA50', 'PAMELA50', 'SASHA50', 'SHANNON50' ].map(code => ({ code, student: 'DENIED' } as const));
+const studentSupportNames =  [ 'NATHAN', 'AMANDA', 'ANDREW', 'ANNIE', 'CHARLOTTE', 'EMILY', 'GINA', 'HEATHER', 'JESS', 'KAYLA', 'PAMELA', 'SASHA', 'SHANNON' ];
+
+export const studentSupport50Specs: PromoCodeSpec[] = studentSupportNames.map(name => ({ code: name + '50', student: 'ALLOWED' } as const));
 
 export const promoCodeSpecs: PromoCodeSpec[] = [
   { code: 'SAVE50', student: 'DENIED', schools: [ 'QC Makeup Academy' ] },
