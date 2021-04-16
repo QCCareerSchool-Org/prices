@@ -40,14 +40,21 @@ export const getDefaultFreeCourseMap = (now: Date, options?: PriceQueryOptions):
       }
     }
 
-    // event -- buy EP and get LW and DW free
+    // event
     if (options?.school === 'QC Event School' && !student) {
-      if (now.getTime() >= Date.UTC(2021, 3, 6, 13)) {
+      if (now.getTime() >= Date.UTC(2021, 3, 19, 13)) {
+        // buy EP and get LW and DW free
+        if ((courseResult.code === 'DW' || courseResult.code === 'LW') && array.some(c => c.code === 'EP')) {
+          return freeMap(courseResult);
+        }
+      } else if (now.getTime() >= Date.UTC(2021, 3, 6, 13)) {
+        // but a foundation course and get any specialty course free (max 1)
         if (freeEventCount < 1 && isEventSpecialtyCourse(courseResult.code) && array.some(c => isEventFoundationCourse(c.code))) {
           freeEventCount++;
           return freeMap(courseResult);
         }
       } else {
+        // buy EP and get LW and DW free
         if ((courseResult.code === 'DW' || courseResult.code === 'LW') && array.some(c => c.code === 'EP')) {
           return freeMap(courseResult);
         }
