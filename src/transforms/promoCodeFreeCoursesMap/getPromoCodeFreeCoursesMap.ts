@@ -11,7 +11,11 @@ export const getPromoCodeFreeCourseMap = (now: Date, options?: PriceQueryOptions
   const foundItApplies = applies(promoCodeSpecs.find(v => v.code === 'FOUNDIT'));
   const freeProApplies = applies(promoCodeSpecs.find(v => v.code === 'FREEPRO'));
   const spring21Applies = applies(promoCodeSpecs.find(v => v.code === 'SPRING21'));
+  const happyMayApplies = applies(promoCodeSpecs.find(v => v.code === 'HAPPYMAY'));
+  const nathansDayApplies = applies(promoCodeSpecs.find(v => v.code === 'NATHANSDAY'));
+
   let spring21Applied = false;
+  let nathansDayApplied = false;
 
   return (courseResult: CourseResult, index: number, array: CourseResult[]): CourseResult => {
 
@@ -30,6 +34,19 @@ export const getPromoCodeFreeCourseMap = (now: Date, options?: PriceQueryOptions
     if (spring21Applies && !spring21Applied) {
       if (isMakeupAdvancedCourse(courseResult.code) && array.some(c => c.code === 'MZ')) {
         spring21Applied = true;
+        return freeMap(courseResult);
+      }
+    }
+
+    if (happyMayApplies) {
+      if (courseResult.code === 'VM' && array.some(c => c.code === 'MZ')) {
+        return freeMap(courseResult);
+      }
+    }
+
+    if (nathansDayApplies && !nathansDayApplied) {
+      if (isMakeupAdvancedCourse(courseResult.code) && array.some(c => c.code === 'MZ')) {
+        nathansDayApplied = true;
         return freeMap(courseResult);
       }
     }

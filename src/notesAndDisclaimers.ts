@@ -107,11 +107,53 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
   // SPRING21 promo code
   if (applies(promoCodeSpecs.find(p => p.code === 'SPRING21'))) {
     if (!courses.includes('MZ') && !courses.some(c => isMakeupAdvancedCourse(c))) {
-      promoWarnings.push('You have entered the <strong>SPRING21</strong> promo code but have not selected the <strong>Master Makeup Artistry</strong> and an Advanced makeup course.');
+      promoWarnings.push('You have entered the <strong>SPRING21</strong> promo code but have not selected the <strong>Master Makeup Artistry</strong> course and an Advanced makeup course.');
     } else if (!courses.includes('MZ')) {
       promoWarnings.push('You have entered the <strong>SPRING21</strong> promo code but have not selected the <strong>Master Makeup Artistry</strong> course.');
     } else if (!courses.some(c => isMakeupAdvancedCourse(c))) {
       promoWarnings.push('You have entered the <strong>SPRING21</strong> promo code but have not selected an Advanced makeup course.');
+    }
+  }
+
+  // HAPPYMAY promo code
+  if (applies(promoCodeSpecs.find(p => p.code === 'HAPPYMAY'))) {
+    if (!courses.includes('MZ') && !courses.includes('VM')) {
+      promoWarnings.push('You have entered the <strong>HAPPYMAY</strong> promo code but have not selected the <strong>Master Makeup Artistry</strong> course or the <strong>Virtual Makeup</strong> course.');
+    } else if (!courses.includes('MZ')) {
+      promoWarnings.push('You have entered the <strong>HAPPYMAY</strong> promo code but have not selected the <strong>Master Makeup Artistry</strong> course.');
+    } else if (!courses.includes('VM')) {
+      promoWarnings.push('You have entered the <strong>HAPPYMAY</strong> promo code but have not selected the <strong>Virtual Makeup</strong> course.');
+    } else {
+      if (noShipping === 'ALLOWED' || noShipping === 'FORBIDDEN') {
+        notes.push('elite makeup kit');
+        disclaimers.push('You will receive the <strong>elite makeup kit upgrade</strong> (includes a highlight palette, contour palette, eyebrow palette, 4-pack of false lashes, a makeup travel bag, and a stainless steel palette with spatula).');
+      } else if (noShipping === 'APPLIED') {
+        promoWarnings.push('You entered the <strong>ELITE</strong> promo code, but have chosen to not have any materials shipped. You will not receive any makeup kits.');
+      } else if (noShipping === 'REQUIRED') {
+        promoWarnings.push('You entered the <strong>ELITE</strong> promo code, but we do not ship to your country. You will not receive any makeup kits.');
+      }
+    }
+  }
+
+  // SKINCARE60 promo code
+  if (applies(promoCodeSpecs.find(p => p.code === 'SKINCARE60'))) {
+    if (!courses.includes('MZ') && !courses.includes('SK')) {
+      promoWarnings.push('You have entered the <strong>SKINCARE60</strong> promo code but have not selected the <strong>Master Makeup Artistry</strong> course or the <strong>Skincare</strong> course.');
+    } else if (!courses.includes('MZ')) {
+      promoWarnings.push('You have entered the <strong>SKINCARE60</strong> promo code but have not selected the <strong>Master Makeup Artistry</strong> course.');
+    } else if (!courses.includes('SK')) {
+      promoWarnings.push('You have entered the <strong>SKINCARE60</strong> promo code but have not selected the <strong>Skincare</strong> course.');
+    }
+  }
+
+  if (applies(promoCodeSpecs.find(p => p.code === 'NATHANSDAY'))) {
+    if (noShipping === 'ALLOWED' || noShipping === 'FORBIDDEN') {
+      notes.push('elite makeup kit');
+      disclaimers.push('You will receive the <strong>elite makeup kit upgrade</strong> (includes a highlight palette, contour palette, eyebrow palette, 4-pack of false lashes, a makeup travel bag, and a stainless steel palette with spatula).');
+    } else if (noShipping === 'APPLIED') {
+      promoWarnings.push('You entered the <strong>ELITE</strong> promo code, but have chosen to not have any materials shipped. You will not receive any makeup kits.');
+    } else if (noShipping === 'REQUIRED') {
+      promoWarnings.push('You entered the <strong>ELITE</strong> promo code, but we do not ship to your country. You will not receive any makeup kits.');
     }
   }
 
