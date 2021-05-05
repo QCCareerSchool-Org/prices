@@ -22,6 +22,7 @@ export const promoCodeSpecs: PromoCodeSpec[] = [
   { code: 'HAPPYMAY', student: 'DENIED', schools: [ 'QC Makeup Academy' ], start: new Date(Date.UTC(2021, 4, 1, 12)), end: new Date(Date.UTC(2021, 4, 3, 13)) },
   { code: 'SKINCARE60', student: 'DENIED', schools: [ 'QC Makeup Academy' ], start: new Date(Date.UTC(2021, 4, 3, 13)), end: new Date(Date.UTC(2021, 4, 15, 3, 39, 59)) },
   { code: 'NATHANSDAY', student: 'DENIED', schools: [ 'QC Makeup Academy' ], start: new Date(Date.UTC(2021, 3, 30, 13)), end: new Date(Date.UTC(2021, 4, 3, 13)) },
+  { code: 'MOTHERSDAY', student: 'DENIED', schools: [ 'QC Makeup Academy' ], start: new Date(Date.UTC(2021, 4, 5, 4)), end: new Date(Date.UTC(2021, 4, 10, 3, 59, 59)) },
   ...studentSupport50Specs,
 ];
 
