@@ -155,6 +155,17 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
     }
   }
 
+  // MOTHERSDAY promo code
+  if (applies(promoCodeSpecs.find(p => p.code === 'MOTHERSDAY'))) {
+    if (!courses.includes('MZ') && !courses.includes('MW')) {
+      promoWarnings.push('You have entered the <strong>MOTHERSDAY</strong> promo code but have not selected the <strong>Master Makeup Artistry</strong> course or the <strong>Pro Makeup Workshop</strong>.');
+    } else if (!courses.includes('MZ')) {
+      promoWarnings.push('You have entered the <strong>MOTHERSDAY</strong> promo code but have not selected the <strong>Master Makeup Artistry</strong> course.');
+    } else if (!courses.includes('MW')) {
+      promoWarnings.push('You have entered the <strong>SKINCAMOTHERSDAYRE60</strong> promo code but have not selected the <strong>Pro Makeup Workshop</strong>.');
+    }
+  }
+
   if (courses.includes('DG') && audCountry(countryCode)) {
     disclaimers.push('The WAHL clippers and attachment combs will not be provided with your course. ' +
       'QC only supplies the North American version, which is not compatible with power outlets in your country. ' +
