@@ -2,13 +2,11 @@ import Big from 'big.js';
 
 import { calculatePlans } from '../../calculatePlans';
 import { isMakeupAdvancedCourse } from '../../courses';
-import { promoCodeApplies, PromoCodeSpec, promoCodeSpecs, studentSupport50Specs } from '../../promoCodes';
+import { PromoCodeSpec, promoCodeSpecs, specApplies, studentSupport50Specs } from '../../promoCodes';
 import { CourseResult, MapFunction, PriceQueryOptions } from '../../types';
 
 export const getPromoCodeDiscountsMap = (now: Date, options?: PriceQueryOptions): MapFunction<CourseResult, CourseResult> => {
-  const student = options?.discountAll ?? false;
-
-  const applies = (spec?: PromoCodeSpec) => spec && promoCodeApplies(spec, now, student, options?.promoCode, options?.school);
+  const applies = (spec?: PromoCodeSpec): boolean => typeof spec !== 'undefined' && specApplies(spec, now, options?.discountAll, options?.promoCode, options?.school);
 
   const advanced100Applies = applies(promoCodeSpecs.find(v => v.code === 'ADVANCED100'));
   let advanced100Used = false;

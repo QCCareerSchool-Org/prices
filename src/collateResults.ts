@@ -1,7 +1,7 @@
 import Big from 'big.js';
 
 import { sumBigArray } from './lib/sumBigArray';
-import { CourseResult, Currency, PriceResult, NoShipping } from './types';
+import { CourseResult, Currency, NoShipping, PriceResult } from './types';
 
 /**
  * Creates the final response by combining the values from each course
@@ -15,7 +15,7 @@ import { CourseResult, Currency, PriceResult, NoShipping } from './types';
  * @param noShipping
  * @param noShippingMessage
  */
- export const collateResults = (
+export const collateResults = (
   countryCode: string,
   provinceCode: string | null,
   currency: Currency,

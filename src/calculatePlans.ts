@@ -7,7 +7,7 @@ import { Plan } from './types';
  * @param plans the existing payment plans
  * @param minimumPrice the new minimum price
  */
-export const calculatePlans = (plans: { full: Plan, part: Plan }, discountedCost: number, removePlanDiscounts?: boolean): [Plan, Plan] => {
+export const calculatePlans = (plans: { full: Plan; part: Plan }, discountedCost: number, removePlanDiscounts?: boolean): [Plan, Plan] => {
 
   const fullDiscount = removePlanDiscounts ? 0 : Math.min(discountedCost, plans.full.discount); // can't be larger than the minimum price
 

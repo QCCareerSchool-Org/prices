@@ -1,3 +1,6 @@
 import { CurrencyCode } from '../../types';
 
-export const studentDiscountAmount = (currencyCode: CurrencyCode): number => currencyCode === 'GBP' ? 25 : 50;
+const gbpDiscount = 25;
+const otherDiscount = 50;
+
+export const studentDiscountAmount = (currencyCode: CurrencyCode): number => (currencyCode === 'GBP' ? gbpDiscount : otherDiscount);

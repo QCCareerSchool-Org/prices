@@ -10,7 +10,7 @@ const publicKey = fs.readFileSync(path.join(__dirname, '../../../public.pem'), '
  * Determines if the discount options are valid
  * @param options the options
  */
- export const validateDiscounts = (options?: PriceQueryOptions): boolean => {
+export const validateDiscounts = (options?: PriceQueryOptions): boolean => {
   if (options?.discount && options?.discountSignature) {
     const verify = crypto.createVerify('SHA256');
     verify.update(JSON.stringify(options.discount));

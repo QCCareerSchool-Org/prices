@@ -1,7 +1,7 @@
 import Big from 'big.js';
 
-import { CourseResult, CurrencyCode, MapFunction, PriceQueryOptions } from '../../types';
 import { calculatePlans } from '../../calculatePlans';
+import { CourseResult, CurrencyCode, MapFunction, PriceQueryOptions } from '../../types';
 import { studentDiscountAmount } from './studentDiscountAmount';
 
 /**

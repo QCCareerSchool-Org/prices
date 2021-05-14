@@ -1,8 +1,8 @@
 import faker from 'faker';
 
 import { CourseResult, CurrencyCode, PriceQueryOptions } from '../../types';
-import { studentDiscountAmount } from './studentDiscountAmount';
 import { getStudentDiscountMap } from './getStudentDiscountMap';
+import { studentDiscountAmount } from './studentDiscountAmount';
 
 jest.mock('./studentDiscountAmount');
 

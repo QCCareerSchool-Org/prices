@@ -1,7 +1,7 @@
 import Big from 'big.js';
 
 import { calculatePlans } from '../../calculatePlans';
-import { promoCodeApplies, PromoCodeSpec, promoCodeSpecs } from '../../promoCodes';
+import { PromoCodeSpec, promoCodeSpecs, specApplies } from '../../promoCodes';
 import { CourseResult, MapFunction, PriceQueryOptions } from '../../types';
 import { shouldGetMultiCourseDiscount } from './shouldGetMultiCourseDiscount';
 
@@ -11,9 +11,7 @@ import { shouldGetMultiCourseDiscount } from './shouldGetMultiCourseDiscount';
  * @param options the PriceQueryOptions
  */
 export const getMultiCourseDiscountMap = (now: Date, options?: PriceQueryOptions): MapFunction<CourseResult, CourseResult> => {
-  const student = options?.discountAll ?? false;
-
-  const applies = (spec?: PromoCodeSpec) => spec && promoCodeApplies(spec, now, student, options?.promoCode, options?.school);
+  const applies = (spec?: PromoCodeSpec): boolean => typeof spec !== 'undefined' && specApplies(spec, now, options?.discountAll, options?.promoCode, options?.school);
 
   const skincare60Applies = applies(promoCodeSpecs.find(v => v.code === 'SKINCARE60'));
   const nathansDayApplies = applies(promoCodeSpecs.find(v => v.code === 'NATHANSDAY'));

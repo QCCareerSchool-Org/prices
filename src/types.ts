@@ -9,7 +9,7 @@ export type School = 'QC Career School' | 'QC Makeup Academy' | 'QC Design Schoo
 export interface PriceQueryOptions {
   noShipping?: boolean;
   discountAll?: boolean;
-  discount?: { [d in CurrencyCode]?: number; } & { default: number; };
+  discount?: { [d in CurrencyCode]?: number; } & { default: number };
   discountSignature?: string;
   MMFreeMW?: boolean;
   deluxeKit?: boolean;
@@ -61,7 +61,7 @@ export interface Price {
   /** the discounted price (before payment plan discount) */
   discountedCost: number;
   /** the payment plans */
-  plans: { full: Plan; part: Plan; }
+  plans: { full: Plan; part: Plan };
   /** what our cost for shipping would be if we shipped */
   shipping: number;
 }
