@@ -36,7 +36,7 @@ export const studentSupport50Specs: PromoCodeSpec[] = studentSupportNames.map<Pr
 export const promoCodeSpecs: PromoCodeSpec[] = [
   { code: 'SAVE50', student: 'DENIED', schools: [ 'QC Makeup Academy', 'QC Design School' ] },
   { code: 'ELITE', student: 'DENIED', schools: [ 'QC Makeup Academy' ] },
-  { code: 'ADVANCED100', student: 'DENIED', schools: [ 'QC Makeup Academy' ], end: new Date(Date.UTC(2021, 3, 19, 13)) },
+  { code: 'ADVANCED100', student: 'DENIED', schools: [ 'QC Makeup Academy' ], start: new Date(Date.UTC(2021, 4, 17, 13)), end: new Date(Date.UTC(2021, 5, 1, 13)) },
   { code: 'FREEPRO', student: 'DENIED' },
   { code: 'FOUNDIT', student: 'DENIED', schools: [ 'QC Makeup Academy' ], start: new Date(Date.UTC(2021, 2, 29, 13)), end: new Date(Date.UTC(2021, 3, 6, 4)) },
   { code: 'SPRING21', student: 'DENIED', schools: [ 'QC Makeup Academy' ], start: new Date(Date.UTC(2021, 3, 6, 13)) },
