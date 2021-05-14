@@ -1,4 +1,4 @@
-import { isMakeupAdvancedCourse } from '../../courses';
+import { isDesignCourse, isMakeupAdvancedCourse } from '../../courses';
 import { freeMap } from '../../lib/freeMap';
 import { PromoCodeSpec, promoCodeSpecs, specApplies } from '../../promoCodes';
 import { CourseResult, MapFunction, PriceQueryOptions } from '../../types';
@@ -12,7 +12,9 @@ export const getPromoCodeFreeCourseMap = (now: Date, options?: PriceQueryOptions
   const happyMayApplies = applies(promoCodeSpecs.find(v => v.code === 'HAPPYMAY'));
   const nathansDayApplies = applies(promoCodeSpecs.find(v => v.code === 'NATHANSDAY'));
   const mothersdayApplies = applies(promoCodeSpecs.find(v => v.code === 'MOTHERSDAY'));
+  const may21Applies = applies(promoCodeSpecs.find(v => v.code === 'MAY21'));
 
+  let may21Applied = false;
   let spring21Applied = false;
   let nathansDayApplied = false;
 
@@ -52,6 +54,13 @@ export const getPromoCodeFreeCourseMap = (now: Date, options?: PriceQueryOptions
 
     if (mothersdayApplies) {
       if (courseResult.code === 'MW' && array.some(c => c.code === 'MZ')) {
+        return freeMap(courseResult);
+      }
+    }
+
+    if (may21Applies && !may21Applied) {
+      if (isDesignCourse(courseResult.code) && array.filter(c => isDesignCourse(c.code)).length >= 2) {
+        may21Applied = true;
         return freeMap(courseResult);
       }
     }
