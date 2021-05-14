@@ -45,7 +45,7 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
   }
 
   // fan deck
-  if (options?.school === 'QC Design School' && (now.getTime() >= Date.UTC(2021, 4, 1, 12) && now.getTime() < Date.UTC(2021, 4, 3, 13))) {
+  if (options?.school === 'QC Design School' && (now.getTime() >= Date.UTC(2021, 4, 15, 12) && now.getTime() < Date.UTC(2021, 4, 17, 13))) {
     if (courses.length >= 1) {
       notes.push('fan deck');
       disclaimers.push('You\'ll receive the FREE Benjamin Moore color fan deck');
