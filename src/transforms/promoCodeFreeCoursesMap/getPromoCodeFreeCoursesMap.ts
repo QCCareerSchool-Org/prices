@@ -13,6 +13,7 @@ export const getPromoCodeFreeCourseMap = (now: Date, options?: PriceQueryOptions
   const nathansDayApplies = applies(promoCodeSpecs.find(v => v.code === 'NATHANSDAY'));
   const mothersdayApplies = applies(promoCodeSpecs.find(v => v.code === 'MOTHERSDAY'));
   const may21Applies = applies(promoCodeSpecs.find(v => v.code === 'MAY21'));
+  const levelUpApplies = applies(promoCodeSpecs.find(v => v.code === 'LEVELUP'));
 
   let may21Applied = false;
   let spring21Applied = false;
@@ -61,6 +62,12 @@ export const getPromoCodeFreeCourseMap = (now: Date, options?: PriceQueryOptions
     if (may21Applies && !may21Applied) {
       if (isDesignCourse(courseResult.code) && array.filter(c => isDesignCourse(c.code)).length >= 2) {
         may21Applied = true;
+        return freeMap(courseResult);
+      }
+    }
+
+    if (levelUpApplies) {
+      if (courseResult.code === 'VM' && array.some(c => c.code === 'MZ')) {
         return freeMap(courseResult);
       }
     }
