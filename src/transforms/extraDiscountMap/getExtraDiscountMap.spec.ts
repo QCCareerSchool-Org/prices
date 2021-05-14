@@ -1,8 +1,8 @@
 import faker from 'faker';
 
 import { CourseResult, CurrencyCode, PriceQueryOptions } from '../../types';
-import { validateDiscounts } from './validateDiscounts';
 import { getExtraDiscountMap } from './getExtraDiscountMap';
+import { validateDiscounts } from './validateDiscounts';
 
 jest.mock('./validateDiscounts');
 
@@ -38,7 +38,7 @@ describe('getExtraDiscountMap', () => {
   it('should throw an error if validateDiscounts returns false', () => {
     const currencyCode = faker.random.arrayElement<CurrencyCode>([ 'CAD', 'USD', 'GBP', 'AUD', 'NZD' ]);
     (validateDiscounts as jest.Mock).mockReturnValue(false);
-    expect(() => getExtraDiscountMap(currencyCode)).toThrowError('invalid discount signature');
+    expect(() => getExtraDiscountMap(currencyCode)).toThrow('invalid discount signature');
   });
 
   describe('the returned function', () => {

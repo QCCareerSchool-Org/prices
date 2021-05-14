@@ -1,14 +1,14 @@
 import * as HttpStatus from '@qccareerschool/http-status';
-import * as yup from 'yup';
 import express, { Request } from 'express';
+import * as yup from 'yup';
 
 import { asyncWrapper } from './lib/asyncWrapper';
-import { prices } from './prices';
-import { PriceQuery, PriceQueryOptions, PriceResult, School } from './types';
-import { pool } from './pool';
-import { oldGetPrices, OldPriceQuery, OldPriceResult } from './oldPrices';
 import { objectMap } from './lib/objectMap';
 import { logger } from './logger';
+import { oldGetPrices, OldPriceQuery, OldPriceResult } from './oldPrices';
+import { pool } from './pool';
+import { prices } from './prices';
+import { PriceQuery, PriceQueryOptions, PriceResult, School } from './types';
 
 // validate the parameters
 const priceSchema = yup.object<PriceQuery>({
@@ -77,7 +77,7 @@ const newPrices = async (req: Request): Promise<PriceResult> => {
     } catch (err) {
       throw new HttpStatus.BadRequest(err.message);
     }
-    return prices(connection, query.courses, query.countryCode, query.provinceCode, query.options);
+    return await prices(connection, query.courses, query.countryCode, query.provinceCode, query.options);
   } finally {
     connection.release();
   }
@@ -93,7 +93,7 @@ const oldPrices = async (req: Request): Promise<OldPriceResult> => {
     } catch (err) {
       throw new HttpStatus.BadRequest(err.message);
     }
-    return oldGetPrices(connection, query.courses, query.countryCode, query.provinceCode, query.discountAll, query.options);
+    return await oldGetPrices(connection, query.courses, query.countryCode, query.provinceCode, query.discountAll, query.options);
   } finally {
     connection.release();
   }

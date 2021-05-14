@@ -3,26 +3,26 @@ import cors from 'cors';
 import express from 'express';
 import helmet from 'helmet';
 
+import { errorHandler } from './handlers/errorHandler';
+import { httpErrorHandler } from './handlers/httpErrorHandler';
+import { versionMiddleware } from './handlers/versionMiddleware';
 import { logger } from './logger';
 import { router } from './router';
-import { httpErrorHandler } from './handlers/httpErrorHandler';
-import { errorHandler } from './handlers/errorHandler';
-import { versionMiddleware } from './handlers/versionMiddleware';
 
 const HTTP_PORT = 15004;
 
 const origin = [
-  /(?:.*\.)?localhost(?::\d{1,5})?$/,
-  /\.qcmakeupacademy\.com$/,
-  /\.qceventplanning\.com$/,
-  /\.qcdesignschool\.com$/,
-  /\.qccareerschool\.com$/,
-  /\.doggroomingcourse\.com$/,
-  /\.qcwellnessstudies\.com$/,
-  /\.winghill\.com$/,
+  /(?:.*\.)?localhost(?::\d{1,5})?$/iu,
+  /\.qcmakeupacademy\.com$/iu,
+  /\.qceventplanning\.com$/iu,
+  /\.qcdesignschool\.com$/iu,
+  /\.qccareerschool\.com$/iu,
+  /\.doggroomingcourse\.com$/iu,
+  /\.qcwellnessstudies\.com$/iu,
+  /\.winghill\.com$/iu,
   'https://blissful-hopper-b5c7db.netlify.com',
-  /www-qcwellnessstudies-com\.now\.sh$/,
-  /\.qccareerschool\.now\.sh$/,
+  /www-qcwellnessstudies-com\.now\.sh$/iu,
+  /\.qccareerschool\.now\.sh$/iu,
 ];
 
 const app = express();

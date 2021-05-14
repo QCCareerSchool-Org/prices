@@ -20,7 +20,7 @@ export const getExtraDiscountMap = (currencyCode: CurrencyCode, options?: PriceQ
 
   let remainingExtraDiscount = options?.discount ? options.discount[currencyCode] ?? options.discount.default : 0;
 
-  return (courseResult: CourseResult, index: number) => {
+  return (courseResult: CourseResult) => {
     // skip free courses
     if (courseResult.free) {
       return courseResult;

@@ -1,73 +1,106 @@
+import faker from 'faker';
+
 import { PriceQueryOptions } from '../../types';
 import { shouldGetMultiCourseDiscount } from './shouldGetMultiCourseDiscount';
 
 describe('shouldGetMultiCourseDiscount', () => {
 
-  it('should return true if options.discountAll is true, regardless of index', () => {
-    const now = new Date('2021-05-01');
-    const options: PriceQueryOptions = { discountAll: true };
-    expect(shouldGetMultiCourseDiscount(now, 0, options)).toBe(true);
-    expect(shouldGetMultiCourseDiscount(now, 1, options)).toBe(true);
-    expect(shouldGetMultiCourseDiscount(now, 2, options)).toBe(true);
-    expect(shouldGetMultiCourseDiscount(now, 14, options)).toBe(true);
-    expect(shouldGetMultiCourseDiscount(now, -2, options)).toBe(true);
-  });
+  describe('when the school is undefined', () => {
 
-  ([ 'QC Career School', 'QC Design School', 'QC Event School', 'QC Pet Studies', 'QC Wellness Studies', 'Winghill Writing School' ] as const).forEach(school => {
-    it(`should return true if options.school is '${school}' and index is greater than 0`, () => {
-      const now = new Date('2021-05-01');
-      const options: PriceQueryOptions = { school };
+    it('should return true if options.discountAll is true, regardless of index', () => {
+      const now = faker.date.recent();
+      const options: PriceQueryOptions = { discountAll: true };
+      expect(shouldGetMultiCourseDiscount(now, 0, options)).toBe(true);
       expect(shouldGetMultiCourseDiscount(now, 1, options)).toBe(true);
       expect(shouldGetMultiCourseDiscount(now, 2, options)).toBe(true);
       expect(shouldGetMultiCourseDiscount(now, 14, options)).toBe(true);
-    });
-
-    it(`should return false if options.school is '${school}' and index is not greater than 0`, () => {
-      const now = new Date('2021-05-01');
-      const options: PriceQueryOptions = { school };
-      expect(shouldGetMultiCourseDiscount(now, 0, options)).toBe(false);
-      expect(shouldGetMultiCourseDiscount(now, -2, options)).toBe(false);
+      expect(shouldGetMultiCourseDiscount(now, -2, options)).toBe(true);
     });
   });
 
-  it('should return true if options.school is \'QC Makeup Academy\' and options.promoCode is \'SAVE50\' and index is greater than 0', () => {
-    const options: PriceQueryOptions = { school: 'QC Makeup Academy', promoCode: 'SAVE50' };
-    const now = new Date('2021-05-01');
-    expect(shouldGetMultiCourseDiscount(now, 1, options)).toBe(true);
-    expect(shouldGetMultiCourseDiscount(now, 2, options)).toBe(true);
-    expect(shouldGetMultiCourseDiscount(now, 14, options)).toBe(true);
+  ([ 'QC Career School', 'QC Event School', 'QC Pet Studies', 'QC Wellness Studies', 'Winghill Writing School' ] as const).forEach(school => {
+
+    describe(`when the school is ${school}`, () => {
+
+      it('should return true if options.discountAll is true, regardless of index', () => {
+        const now = new Date('2021-05-01');
+        const options: PriceQueryOptions = { school, discountAll: true };
+        expect(shouldGetMultiCourseDiscount(now, 0, options)).toBe(true);
+        expect(shouldGetMultiCourseDiscount(now, 1, options)).toBe(true);
+        expect(shouldGetMultiCourseDiscount(now, 2, options)).toBe(true);
+        expect(shouldGetMultiCourseDiscount(now, 14, options)).toBe(true);
+        expect(shouldGetMultiCourseDiscount(now, -2, options)).toBe(true);
+      });
+
+      it('should return true if index is greater than 0', () => {
+        const now = new Date('2021-05-01');
+        const options: PriceQueryOptions = { school };
+        expect(shouldGetMultiCourseDiscount(now, 1, options)).toBe(true);
+        expect(shouldGetMultiCourseDiscount(now, 2, options)).toBe(true);
+        expect(shouldGetMultiCourseDiscount(now, 14, options)).toBe(true);
+      });
+
+      it('should return false if index is not greater than 0', () => {
+        const now = new Date('2021-05-01');
+        const options: PriceQueryOptions = { school };
+        expect(shouldGetMultiCourseDiscount(now, 0, options)).toBe(false);
+        expect(shouldGetMultiCourseDiscount(now, -2, options)).toBe(false);
+      });
+    });
   });
 
-  it('should return false if options.school is \'QC Makeup Academy\' and options.promoCode is \'SAVE50\' and index is not greater than 0', () => {
-    const now = new Date('2021-05-01');
-    const options: PriceQueryOptions = { school: 'QC Makeup Academy', promoCode: 'SAVE50' };
-    expect(shouldGetMultiCourseDiscount(now, 0, options)).toBe(false);
-    expect(shouldGetMultiCourseDiscount(now, -2, options)).toBe(false);
-  });
+  const schools = [
+    { school: 'QC Makeup Academy', startDate: Date.UTC(2021, 2, 29, 13) },
+    { school: 'QC Design School', startDate: Date.UTC(2021, 4, 17, 13) },
+  ] as const;
 
-  it('should return true if options.school is \'QC Makeup Academy\' and the date is less than 2021-03-28 and index is greater than 0', () => {
-    const options: PriceQueryOptions = { school: 'QC Makeup Academy' };
-    const now = new Date('2021-03-15');
-    expect(shouldGetMultiCourseDiscount(now, 1, options)).toBe(true);
-    expect(shouldGetMultiCourseDiscount(now, 2, options)).toBe(true);
-    expect(shouldGetMultiCourseDiscount(now, 14, options)).toBe(true);
-  });
+  schools.forEach(({ school, startDate }) => {
 
-  it('should return false if options.school is \'QC Makeup Academy\' and the date is less than 2021-03-28 and index is not greater than 0', () => {
-    const now = new Date('2021-03-15');
-    const options: PriceQueryOptions = { school: 'QC Makeup Academy' };
-    expect(shouldGetMultiCourseDiscount(now, 0, options)).toBe(false);
-    expect(shouldGetMultiCourseDiscount(now, -2, options)).toBe(false);
-  });
+    describe(`when the school is ${school}`, () => {
 
-  it('should return false if options.school is \'QC Makeup Academy\' and options.promoCode is not \'SAVE50\', regardless of index', () => {
-    const now = new Date('2021-05-01');
-    const options: PriceQueryOptions = { school: 'QC Makeup Academy' };
-    expect(shouldGetMultiCourseDiscount(now, 0, options)).toBe(false);
-    expect(shouldGetMultiCourseDiscount(now, 1, options)).toBe(false);
-    expect(shouldGetMultiCourseDiscount(now, 2, options)).toBe(false);
-    expect(shouldGetMultiCourseDiscount(now, 14, options)).toBe(false);
-    expect(shouldGetMultiCourseDiscount(now, -2, options)).toBe(false);
+      describe(`when the date is less than ${new Date(startDate).toISOString()}`, () => {
+        const now = new Date(startDate - 5000);
+
+        it('should return true if index is greater than 0', () => {
+          const options: PriceQueryOptions = { school };
+          expect(shouldGetMultiCourseDiscount(now, 1, options)).toBe(true);
+          expect(shouldGetMultiCourseDiscount(now, 2, options)).toBe(true);
+          expect(shouldGetMultiCourseDiscount(now, 14, options)).toBe(true);
+        });
+
+        it('should return false if index is not greater than 0', () => {
+          const options: PriceQueryOptions = { school };
+          expect(shouldGetMultiCourseDiscount(now, 0, options)).toBe(false);
+          expect(shouldGetMultiCourseDiscount(now, -2, options)).toBe(false);
+        });
+      });
+
+      describe(`when the date greater than or equal to ${new Date(startDate).toISOString()}`, () => {
+        const now = new Date(startDate);
+
+        it('should return true if options.promoCode is \'SAVE50\' and index is greater than 0', () => {
+          const options: PriceQueryOptions = { school, promoCode: 'SAVE50' };
+          expect(shouldGetMultiCourseDiscount(now, 1, options)).toBe(true);
+          expect(shouldGetMultiCourseDiscount(now, 2, options)).toBe(true);
+          expect(shouldGetMultiCourseDiscount(now, 14, options)).toBe(true);
+        });
+
+        it('should return false if options.promoCode is \'SAVE50\' and index is not greater than 0', () => {
+          const options: PriceQueryOptions = { school, promoCode: 'SAVE50' };
+          expect(shouldGetMultiCourseDiscount(now, 0, options)).toBe(false);
+          expect(shouldGetMultiCourseDiscount(now, -2, options)).toBe(false);
+        });
+
+        it('should return false if options.promoCode is not \'SAVE50\', regardless of index', () => {
+          const options: PriceQueryOptions = { school };
+          expect(shouldGetMultiCourseDiscount(now, 0, options)).toBe(false);
+          expect(shouldGetMultiCourseDiscount(now, 1, options)).toBe(false);
+          expect(shouldGetMultiCourseDiscount(now, 2, options)).toBe(false);
+          expect(shouldGetMultiCourseDiscount(now, 14, options)).toBe(false);
+          expect(shouldGetMultiCourseDiscount(now, -2, options)).toBe(false);
+        });
+      });
+    });
   });
 
   it('should return false if options.school some other value, regardless of promo code and index', () => {

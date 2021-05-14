@@ -526,9 +526,7 @@ describe('INTEGRATION prices', () => {
       },
       shipping: 497.45,
       disclaimers: [],
-      notes: [
-        'additional discount',
-      ],
+      notes: [ 'additional discount' ],
       promoWarnings: [],
       noShipping: 'ALLOWED',
       noShippingMessage: undefined,
@@ -693,9 +691,7 @@ describe('INTEGRATION prices', () => {
       },
       shipping: 497.45,
       disclaimers: [],
-      notes: [
-        'additional discount',
-      ],
+      notes: [ 'additional discount' ],
       promoWarnings: [],
       noShipping: 'ALLOWED',
       noShippingMessage: undefined,
@@ -868,9 +864,7 @@ describe('INTEGRATION prices', () => {
       },
       shipping: 497.45,
       disclaimers: [],
-      notes: [
-        'additional discount',
-      ],
+      notes: [ 'additional discount' ],
       promoWarnings: [],
       noShipping: 'APPLIED',
       noShippingMessage: 'You have selected to not receive physical course materials. The cost of your courses have been reduced accordingly. You will have access to electronic course materials through the Online Student Center.',
@@ -999,201 +993,3 @@ describe('INTEGRATION prices', () => {
     await expect(prices(connection as unknown as PoolConnection, [ 'ZU', 'HQ', 'UZ' ], 'CA', 'ON', options)).resolves.toEqual(expected);
   });
 });
-
-// jest.mock('../price-lookups', () => ({
-//   lookupPriceByCountryAndProvince: async () => [ {} ],
-//   lookupPriceByCountry: async () => [ {} ],
-// }));
-
-// describe('isMakeupCourse', () => {
-//   [ 'MM', 'MA', 'MZ', 'MK', 'SF', 'HS', 'AB', 'MW', 'PW', 'GB', 'SK' ].forEach((course) => {
-//     it(`should return true for ${course}`, () => {
-//       expect(isMakeupCourse(course)).toBe(true);
-//     });
-//   });
-
-//   it('should return false for other courses', () => {
-//     expect(isMakeupCourse('ZZ')).toBe(false);
-//   });
-// });
-
-// describe('getCalculatePrices', () => {
-
-//   it('should return a function', () => {
-//     const options = {};
-//     const noShipping = faker.random.arrayElement([ 'ALLOWED', 'APPLIED', 'REQUIRED', 'FORBIDDEN' ]) as 'ALLOWED' | 'APPLIED' | 'REQUIRED' | 'FORBIDDEN';
-//     const currencyCode = faker.random.arrayElement([ 'CAD', 'USD', 'GBP', 'AUD', 'NZD' ]) as 'CAD' | 'USD' | 'GBP' | 'AUD' | 'NZD';
-//     const freeCourses = [];
-//     const calculatePrices = getCalculatePrices(options, noShipping, currencyCode, freeCourses);
-//     expect(typeof calculatePrices).toBe('function');
-//   });
-
-//   describe('calculatePrices', () => {
-
-//     describe('when created with no special options and noShipping set to \'ALLOWED\'', () => {
-
-//       let calculatePrices;
-
-//       beforeEach(() => {
-//         const options = {};
-//         const noShipping = 'ALLOWED';
-//         const currencyCode = 'CAD';
-//         const freeCourses = [ 'YY', 'PE' ];
-//         calculatePrices = getCalculatePrices(options, noShipping, currencyCode, freeCourses);
-//       });
-
-//       it('should return a CourseResult', () => {
-//         const priceRows: PriceRow[] = [
-//           { currencyCode: 'CAD', cost: 1343, multiCourseDiscountRate: 0.25, deposit: 21, discount: 100, installments: 18, courseCode: 'Z$', courseName: 'Foo', shipping: 23 },
-//           { currencyCode: 'CAD', cost: 943, multiCourseDiscountRate: 0.25, deposit: 29, discount: 104, installments: 3, courseCode: 't2', courseName: 'Bar', shipping: 43 },
-//           { currencyCode: 'CAD', cost: 843, multiCourseDiscountRate: 0.45, deposit: 24, discount: 54, installments: 23, courseCode: 'YY', courseName: 'Baz', shipping: 31 },
-//         ];
-
-//         const courseResult1 = calculatePrices(priceRows[0], 0, priceRows);
-//         const courseResult2 = calculatePrices(priceRows[1], 1, priceRows);
-//         const courseResult3 = calculatePrices(priceRows[2], 2, priceRows);
-
-//         expect(courseResult1.multiCourseDiscount).toBe(0); // the first course doesn't get a multi-course discount
-
-//         expect(courseResult1).toEqual({
-//           code: 'Z$',
-//           name: 'Foo',
-//           primary: true,
-//           free: false,
-//           cost: 1343,
-//           multiCourseDiscount: 0,
-//           promoDiscount: 0,
-//           shippingDiscount: 0,
-//           discountedCost: 1343,
-//           plans: {
-//             full: { discount: 100, deposit: 1243, installmentSize: 0, installments: 0, remainder: 0, total: 1243, originalDeposit: 1243, originalInstallments: 0 },
-//             part: { discount: 0, deposit: 21, installmentSize: 73.44, installments: 18, remainder: 0.08, total: 1343, originalDeposit: 21, originalInstallments: 18 },
-//           },
-//           shipping: 23,
-//         });
-
-//         expect(courseResult2.plans.full.discount).toBe(0); // no course discount courses after the first
-//         expect(courseResult2.plans.part.installments).toBe(18); // number installments should be taken from first course
-
-//         expect(courseResult2).toEqual({
-//           code: 't2',
-//           name: 'Bar',
-//           primary: false,
-//           free: false,
-//           cost: 943,
-//           multiCourseDiscount: 235.75,
-//           promoDiscount: 0,
-//           shippingDiscount: 0,
-//           discountedCost: 707.25,
-//           plans: {
-//             full: { discount: 0, deposit: 707.25, installmentSize: 0, installments: 0, remainder: 0, total: 707.25, originalDeposit: 707.25, originalInstallments: 0 },
-//             part: { discount: 0, deposit: 29, installmentSize: 37.68, installments: 18, remainder: 0.01, total: 707.25, originalDeposit: 29, originalInstallments: 18 },
-//           },
-//           shipping: 43,
-//         });
-
-//         expect(courseResult3.free).toBe(true);
-
-//         expect(courseResult3).toEqual({
-//           code: 'YY',
-//           name: 'Baz',
-//           primary: false,
-//           free: true,
-//           cost: 843,
-//           multiCourseDiscount: 843,
-//           promoDiscount: 0,
-//           shippingDiscount: 0,
-//           discountedCost: 0,
-//           plans: {
-//             full: { discount: 0, deposit: 0, installmentSize: 0, installments: 0, remainder: 0, total: 0, originalDeposit: 0, originalInstallments: 0 },
-//             part: { discount: 0, deposit: 0, installmentSize: 0, installments: 0, remainder: 0, total: 0, originalDeposit: 0, originalInstallments: 0 },
-//           },
-//           shipping: 0,
-//         });
-//       });
-//     });
-
-//     describe('when created with no special options and noShipping set to \'REQUIRED\'', () => {
-
-//       let calculatePrices;
-
-//       beforeEach(() => {
-//         const options = {};
-//         const noShipping = 'REQUIRED';
-//         const currencyCode = 'CAD';
-//         const freeCourses = [ 'YY', 'PE' ];
-//         calculatePrices = getCalculatePrices(options, noShipping, currencyCode, freeCourses);
-//       });
-
-//       it('should return a CourseResult', () => {
-//         const priceRows: PriceRow[] = [
-//           { currencyCode: 'CAD', cost: 1343, multiCourseDiscountRate: 0.25, deposit: 21, discount: 100, installments: 18, courseCode: 'Z$', courseName: 'Foo', shipping: 23 },
-//           { currencyCode: 'CAD', cost: 943, multiCourseDiscountRate: 0.25, deposit: 29, discount: 104, installments: 3, courseCode: 't2', courseName: 'Bar', shipping: 43 },
-//           { currencyCode: 'CAD', cost: 843, multiCourseDiscountRate: 0.45, deposit: 24, discount: 54, installments: 23, courseCode: 'YY', courseName: 'Baz', shipping: 31 },
-//         ];
-
-//         const courseResult1 = calculatePrices(priceRows[0], 0, priceRows);
-//         const courseResult2 = calculatePrices(priceRows[1], 1, priceRows);
-//         const courseResult3 = calculatePrices(priceRows[2], 2, priceRows);
-
-//         expect(courseResult1.multiCourseDiscount).toBe(0); // the first course doesn't get a multi-course discount
-
-//         expect(courseResult1).toEqual({
-//           code: 'Z$',
-//           name: 'Foo',
-//           primary: true,
-//           free: false,
-//           cost: 1343,
-//           multiCourseDiscount: 0,
-//           promoDiscount: 0,
-//           shippingDiscount: 23,
-//           discountedCost: 1320,
-//           plans: {
-//             full: { discount: 100, deposit: 1220, installmentSize: 0, installments: 0, remainder: 0, total: 1220, originalDeposit: 1220, originalInstallments: 0 },
-//             part: { discount: 0, deposit: 21, installmentSize: 72.16, installments: 18, remainder: 0.12, total: 1320, originalDeposit: 21, originalInstallments: 18 },
-//           },
-//           shipping: 23,
-//         });
-
-//         expect(courseResult2.plans.full.discount).toBe(0); // no course discount courses after the first
-//         expect(courseResult2.plans.part.installments).toBe(18); // number installments should be taken from first course
-
-//         expect(courseResult2).toEqual({
-//           code: 't2',
-//           name: 'Bar',
-//           primary: false,
-//           free: false,
-//           cost: 943,
-//           multiCourseDiscount: 235.75,
-//           promoDiscount: 0,
-//           shippingDiscount: 43,
-//           discountedCost: 664.25,
-//           plans: {
-//             full: { discount: 0, deposit: 664.25, installmentSize: 0, installments: 0, remainder: 0, total: 664.25, originalDeposit: 664.25, originalInstallments: 0 },
-//             part: { discount: 0, deposit: 29, installmentSize: 35.29, installments: 18, remainder: 0.03, total: 664.25, originalDeposit: 29, originalInstallments: 18 },
-//           },
-//           shipping: 43,
-//         });
-
-//         expect(courseResult3.free).toBe(true);
-
-//         expect(courseResult3).toEqual({
-//           code: 'YY',
-//           name: 'Baz',
-//           primary: false,
-//           free: true,
-//           cost: 843,
-//           multiCourseDiscount: 843,
-//           promoDiscount: 0,
-//           shippingDiscount: 0,
-//           discountedCost: 0,
-//           plans: {
-//             full: { discount: 0, deposit: 0, installmentSize: 0, installments: 0, remainder: 0, total: 0, originalDeposit: 0, originalInstallments: 0 },
-//             part: { discount: 0, deposit: 0, installmentSize: 0, installments: 0, remainder: 0, total: 0, originalDeposit: 0, originalInstallments: 0 },
-//           },
-//           shipping: 0,
-//         });
-//       });
-//     });
-//   });
-// });

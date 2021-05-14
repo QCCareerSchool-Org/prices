@@ -6,7 +6,7 @@ import { CurrencyCode } from './types';
  *
  * @param countryCode the country code
  */
- export const defaultCurrencyCode = (countryCode: string): CurrencyCode => {
+export const defaultCurrencyCode = (countryCode: string): CurrencyCode => {
   if (countryCode === 'CA') {
     return 'CAD';
   } else if (gbpCountry(countryCode)) {
@@ -15,7 +15,6 @@ import { CurrencyCode } from './types';
     return 'AUD';
   } else if (nzdCountry(countryCode)) {
     return 'NZD';
-  } else {
-    return 'USD';
   }
+  return 'USD';
 };

@@ -1,3 +1,4 @@
+import { PromoCodeSpec, promoCodeSpecs, specApplies } from '../../promoCodes';
 import { PriceQueryOptions } from '../../types';
 
 /**
@@ -11,16 +12,33 @@ export const shouldGetMultiCourseDiscount = (now: Date, index: number, options?:
     return true;
   }
 
-  // if this is a course after the first course...
-  if (index > 0) {
-    // and the school is 'QC Career School', 'QC Design School', etc. the course gets the multi-course discount
-    if (options?.school === 'QC Career School' || options?.school === 'QC Design School' || options?.school === 'QC Event School' || options?.school === 'QC Pet Studies' || options?.school === 'QC Wellness Studies' || options?.school === 'Winghill Writing School') {
-      return true;
-    }
-    // and the school is 'QC Makeup Academy' and the promo code is 'SAVE50' or the date is less than 2021-03-29 at 9am the course gets the multi-course discount
-    if (options?.school === 'QC Makeup Academy' && (options?.promoCode === 'SAVE50' || now.getTime() < Date.UTC(2021, 2, 29, 13))) {
-      return true;
-    }
+  // if this is the first course then no discount applies
+  if (index < 1) {
+    return false;
+  }
+
+  const applies = (spec?: PromoCodeSpec): boolean => typeof spec !== 'undefined' && specApplies(spec, now, options?.discountAll, options?.promoCode, options?.school);
+
+  const save50Applies = applies(promoCodeSpecs.find(p => p.code === 'SAVE50'));
+
+  // if the SAVE50 promo code applies the course gets the multi-course-discount
+  if (save50Applies) {
+    return true;
+  }
+
+  // if the school is 'QC Career School', 'QC Event School', etc. the course gets the multi-course discount
+  if (options?.school === 'QC Career School' || options?.school === 'QC Event School' || options?.school === 'QC Pet Studies' || options?.school === 'QC Wellness Studies' || options?.school === 'Winghill Writing School') {
+    return true;
+  }
+
+  // and the school is 'QC Design School' and the date is before May 17, 2021 at 09:00 the course gets the multi-course discount
+  if (options?.school === 'QC Design School' && now.getTime() < Date.UTC(2021, 4, 17, 13)) {
+    return true;
+  }
+
+  // and the school is 'QC Makeup Academy' and the date is before than March 29, 2021 at 09:00 the course gets the multi-course discount
+  if (options?.school === 'QC Makeup Academy' && now.getTime() < Date.UTC(2021, 2, 29, 13)) {
+    return true;
   }
 
   // otherwise no multi-course discount

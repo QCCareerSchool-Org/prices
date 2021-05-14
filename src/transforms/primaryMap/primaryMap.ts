@@ -14,22 +14,21 @@ import { CourseResult } from '../../types';
 export const primaryMap = (c: CourseResult, i: number, a: CourseResult[]): CourseResult => {
   if (i === 0) {
     return { ...c, primary: true };
-  } else {
-    const partInstallments = a[0].plans.part.installments;
-    const partInstallmentSize = parseFloat(Big(c.discountedCost).minus(c.plans.part.deposit).div(partInstallments).round(2, 0).toFixed(2));
-    const partRemainder = parseFloat(Big(c.discountedCost).minus(c.plans.part.deposit).minus(Big(partInstallmentSize).times(partInstallments)).toFixed(2));
-    return {
-      ...c,
-      plans: {
-        ...c.plans,
-        part: {
-          ...c.plans.part,
-          installments: partInstallments,
-          installmentSize: partInstallmentSize,
-          remainder: partRemainder,
-          originalInstallments: partInstallments,
-        },
-      },
-    };
   }
+  const partInstallments = a[0].plans.part.installments;
+  const partInstallmentSize = parseFloat(Big(c.discountedCost).minus(c.plans.part.deposit).div(partInstallments).round(2, 0).toFixed(2));
+  const partRemainder = parseFloat(Big(c.discountedCost).minus(c.plans.part.deposit).minus(Big(partInstallmentSize).times(partInstallments)).toFixed(2));
+  return {
+    ...c,
+    plans: {
+      ...c.plans,
+      part: {
+        ...c.plans.part,
+        installments: partInstallments,
+        installmentSize: partInstallmentSize,
+        remainder: partRemainder,
+        originalInstallments: partInstallments,
+      },
+    },
+  };
 };

@@ -2,25 +2,30 @@ import { noShipCountry } from '@qccareerschool/helper-functions';
 import * as HttpStatus from '@qccareerschool/http-status';
 import { PoolConnection } from 'promise-mysql';
 
-import { courseSort } from './transforms/courseSort/courseSort';
-import { getExtraDiscountMap } from './transforms/extraDiscountMap/getExtraDiscountMap';
-import { getDefaultFreeCourseMap } from './transforms/defaultFreeCourseMap/getDefaultFreeCourseMap';
-import { getMultiCourseDiscountMap } from './transforms/multiCourseDiscountMap/getMultiCourseDiscountMap';
-import { priceRowToCourseResultMap } from './transforms/priceRowToCourseResultMap/priceRowToCourseResultMap';
-import { primaryMap } from './transforms/primaryMap/primaryMap';
-import { getOverridesMap } from './transforms/overridesMap/getOverridesMap';
-import { getShippingMap } from './transforms/shippingMap/getShippingMap';
-import { getStudentDiscountMap } from './transforms/studentDiscountMap/getStudentDiscountMap';
 import { collateResults } from './collateResults';
 import { defaultCurrencyCode } from './defaultCurrencyCode';
-import { notesAndDisclaimers } from './notesAndDisclaimers';
 import { lookupCurrency } from './lookupCurrency';
 import { lookupPrice } from './lookupPrice';
 import { noShippingMessage } from './noShippingMessage';
+import { notesAndDisclaimers } from './notesAndDisclaimers';
 import { promoCodeRecognized } from './promoCodes';
-import { NoShipping, PriceQueryOptions, PriceResult } from './types';
+import { courseSort } from './transforms/courseSort/courseSort';
+import { getDefaultFreeDesignExistingStudentMap } from './transforms/defaultFreeCourseMap/design/existingStudentMap';
+import { getDefaultFreeDesignNewStudentMap } from './transforms/defaultFreeCourseMap/design/newStudentMap';
+import { getDefaultFreeEventExistingStudentMap } from './transforms/defaultFreeCourseMap/event/existingStudentMap';
+import { getDefaultFreeEventNewStudentMap } from './transforms/defaultFreeCourseMap/event/newStudentMap';
+import { getDefaultFreePetExistingStudentMap } from './transforms/defaultFreeCourseMap/pet/existingStudentMap';
+import { getDefaultFreePetNewStudentMap } from './transforms/defaultFreeCourseMap/pet/newStudentMap';
+import { getExtraDiscountMap } from './transforms/extraDiscountMap/getExtraDiscountMap';
+import { getMultiCourseDiscountMap } from './transforms/multiCourseDiscountMap/getMultiCourseDiscountMap';
+import { getOverridesMap } from './transforms/overridesMap/getOverridesMap';
+import { priceRowToCourseResultMap } from './transforms/priceRowToCourseResultMap/priceRowToCourseResultMap';
+import { primaryMap } from './transforms/primaryMap/primaryMap';
 import { getPromoCodeDiscountsMap } from './transforms/promoCodeDiscountsMap/getPromoCodeDiscountsMap';
 import { getPromoCodeFreeCourseMap } from './transforms/promoCodeFreeCoursesMap/getPromoCodeFreeCoursesMap';
+import { getShippingMap } from './transforms/shippingMap/getShippingMap';
+import { getStudentDiscountMap } from './transforms/studentDiscountMap/getStudentDiscountMap';
+import { CourseResult, NoShipping, PriceQueryOptions, PriceResult } from './types';
 
 export async function prices(
   connection: PoolConnection,
@@ -30,11 +35,12 @@ export async function prices(
   options?: PriceQueryOptions,
 ): Promise<PriceResult> {
   // look up all the prices from the database
-  const priceRows = await Promise.all(courses
-    .map(c => c.toUpperCase()) // convert all course codes to upper case for easier comparison later
-    .filter(c => countryCode !== 'CA' || provinceCode !== 'ON' || c !== 'DG' && c !== 'FA') // don't allow people from Ontario to enroll in DG or FA
-    .filter((item, pos, self) => self.indexOf(item) === pos) // strip out any duplicate courses
-    .map(course => lookupPrice(connection, course, countryCode, provinceCode)) // convert to priceRow promises
+  const priceRows = await Promise.all(
+    courses
+      .map(c => c.toUpperCase()) // convert all course codes to upper case for easier comparison later
+      .filter(c => countryCode !== 'CA' || provinceCode !== 'ON' || (c !== 'DG' && c !== 'FA')) // don't allow people from Ontario to enroll in DG or FA
+      .filter((item, pos, self) => self.indexOf(item) === pos) // strip out any duplicate courses
+      .map(async course => lookupPrice(connection, course, countryCode, provinceCode)), // convert to priceRow promises
   );
 
   // determine the currency we'll be using
@@ -58,14 +64,21 @@ export async function prices(
     ? options?.dateOverride ?? new Date()
     : new Date();
 
-  // prepare the courses result
+  const freeCourseMap = options?.school === 'QC Design School'
+    ? options?.discountAll === true ? getDefaultFreeDesignExistingStudentMap(now) : getDefaultFreeDesignNewStudentMap(now)
+    : options?.school === 'QC Event School'
+      ? options?.discountAll === true ? getDefaultFreeEventExistingStudentMap(now) : getDefaultFreeEventNewStudentMap(now)
+      : options?.school === 'QC Pet Studies'
+        ? options?.discountAll === true ? getDefaultFreePetExistingStudentMap(now) : getDefaultFreePetNewStudentMap(now)
+        : (c: CourseResult) => c; // identity function (do nothing)
+
   const courseResults = priceRows
     .map(priceRowToCourseResultMap) // convert to a course result
-    .sort((a, b) => a.cost - b.cost) // sort by cost in ascending order
-    .map(getDefaultFreeCourseMap(now, options)) // determine which courses should be free
-    .sort((a, b) => a.free === b.free ? a.cost - b.cost : a.free ? 1 : -1) // sort by free in ascending order, then cost in ascending order
+    .sort((a, b) => a.cost - b.cost) // sort by cost in ascending order (cheapest first)
+    .map(freeCourseMap) // determine which courses shoul be free by default
+    .sort((a, b) => (a.free === b.free ? a.cost - b.cost : a.free ? 1 : -1)) // sort by free in ascending order (free last), then cost in ascending order (cheapest first)
     .map(getPromoCodeFreeCourseMap(now, options)) // determine which courses should be free based on promo codes
-    .sort((a, b) => a.free === b.free ? b.cost - a.cost : a.free ? 1 : -1) // sort by free in ascending order, then cost in descending order
+    .sort((a, b) => (a.free === b.free ? b.cost - a.cost : a.free ? 1 : -1)) // sort by free in ascending order (free last), then cost in descending order (cheapest last)
     .map(primaryMap) // mark first course primary and adjust other courses' installments to match the primary course
     .map(getShippingMap(noShipping)) // apply shipping discounts
     .map(getMultiCourseDiscountMap(now, options)) // apply multi-course discounts

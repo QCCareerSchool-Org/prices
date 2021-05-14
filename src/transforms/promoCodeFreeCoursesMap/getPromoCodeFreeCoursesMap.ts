@@ -1,12 +1,10 @@
 import { isMakeupAdvancedCourse } from '../../courses';
-import { promoCodeSpecs, promoCodeApplies, PromoCodeSpec } from '../../promoCodes';
+import { freeMap } from '../../lib/freeMap';
+import { PromoCodeSpec, promoCodeSpecs, specApplies } from '../../promoCodes';
 import { CourseResult, MapFunction, PriceQueryOptions } from '../../types';
-import { freeMap } from '../defaultFreeCourseMap/getDefaultFreeCourseMap';
 
 export const getPromoCodeFreeCourseMap = (now: Date, options?: PriceQueryOptions): MapFunction<CourseResult, CourseResult> => {
-  const student = options?.discountAll ?? false;
-
-  const applies = (spec?: PromoCodeSpec) => spec && promoCodeApplies(spec, now, student, options?.promoCode, options?.school);
+  const applies = (spec?: PromoCodeSpec): boolean => typeof spec !== 'undefined' && specApplies(spec, now, options?.discountAll, options?.promoCode, options?.school);
 
   const foundItApplies = applies(promoCodeSpecs.find(v => v.code === 'FOUNDIT'));
   const freeProApplies = applies(promoCodeSpecs.find(v => v.code === 'FREEPRO'));

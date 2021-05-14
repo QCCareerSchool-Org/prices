@@ -1,11 +1,12 @@
+/* eslint-disable camelcase */
+import crypto from 'crypto';
+import fs from 'fs';
+import path from 'path';
 import * as helpers from '@qccareerschool/helper-functions';
 import * as HttpStatus from '@qccareerschool/http-status';
 import { Big } from 'big.js';
-import crypto from 'crypto';
 import debug from 'debug';
 import { PoolConnection } from 'promise-mysql';
-import fs from 'fs';
-import path from 'path';
 
 const publicKey = fs.readFileSync(path.join(__dirname, '../public.pem'), 'utf8');
 
@@ -55,9 +56,9 @@ export const oldGetPrices = async (
   const now = new Date();
   const PRECISION = 2;
 
-  ////////////////////////////////////////////////////////////////////////////////
+  // //////////////////////////////////////////////////////////////////////////////
   // handle inputs
-  ////////////////////////////////////////////////////////////////////////////////
+  // //////////////////////////////////////////////////////////////////////////////
 
   // normalize course codes to uppercase
   for (let i = 0; i < courses.length; i++) {
@@ -103,9 +104,9 @@ export const oldGetPrices = async (
     }
   }
 
-  ////////////////////////////////////////////////////////////////////////////////
+  // //////////////////////////////////////////////////////////////////////////////
   // start with a default currency based on the country (this could change once we look up prices)
-  ////////////////////////////////////////////////////////////////////////////////
+  // //////////////////////////////////////////////////////////////////////////////
 
   let currency: ICurrency;
 
@@ -146,9 +147,9 @@ export const oldGetPrices = async (
     };
   }
 
-  ////////////////////////////////////////////////////////////////////////////////
+  // //////////////////////////////////////////////////////////////////////////////
   // initialize the result
-  ////////////////////////////////////////////////////////////////////////////////
+  // //////////////////////////////////////////////////////////////////////////////
   const result: OldPriceResult = {
     cost: 0,
     secondaryDiscount: 0,
@@ -164,26 +165,26 @@ export const oldGetPrices = async (
     noShipping: false,
     numCourses: 0,
     courses: {},
-    discountAll: (typeof options?.discountAll !== 'undefined' && options?.discountAll === true ? true : false),
+    discountAll: (!!(typeof options?.discountAll !== 'undefined' && options?.discountAll === true)),
     complete: false,
     noShipCountry: helpers.noShipCountry(countryCode),
   };
 
-  ////////////////////////////////////////////////////////////////////////////////
+  // //////////////////////////////////////////////////////////////////////////////
   // figure out promotions
-  ////////////////////////////////////////////////////////////////////////////////
+  // //////////////////////////////////////////////////////////////////////////////
 
   const freeCourses: string[] = []; // array of courses that should be free
 
   if (typeof options?.MMFreeMW !== 'undefined' && options?.MMFreeMW === true) {
-    if (courses.indexOf('MM') !== -1 || courses.indexOf('MZ') !== -1) {
+    if (courses.includes('MM') || courses.includes('MZ')) {
       freeCourses.push('MW');
       result.notes.push('free MW course');
     }
   }
 
   if (typeof options?.deluxeKit !== 'undefined' && options?.deluxeKit === true) {
-    if (courses.indexOf('MM') !== -1) {
+    if (courses.includes('MM')) {
       result.notes.push('deluxe kit');
       result.disclaimers.push('You will recieve the deluxe makeup kit with your Master Makeup Artistry course.');
     }
@@ -194,14 +195,14 @@ export const oldGetPrices = async (
   }
 
   // pet promotion
-  if (courses.indexOf('DG') !== -1) {
+  if (courses.includes('DG')) {
     freeCourses.push('FA');
   }
 
   // event promotion
   let foundationCount = 0;
   [ 'EP', 'CP', 'CE', 'WP' ].forEach(course => {
-    if (courses.indexOf(course) !== -1) {
+    if (courses.includes(course)) {
       foundationCount++;
     }
   });
@@ -235,7 +236,7 @@ export const oldGetPrices = async (
   if (now >= new Date('2020-03-11T10:00:00-04:00')) {
     let freeMakeupSelected = false;
     if (courses.includes('MZ')) {
-      [ 'PW', 'MW', 'GB', 'SK'  ].forEach(c => {
+      [ 'PW', 'MW', 'GB', 'SK' ].forEach(c => {
         if (!freeMakeupSelected && courses.includes(c)) {
           freeCourses.push(c);
           freeMakeupSelected = true;
@@ -246,9 +247,9 @@ export const oldGetPrices = async (
 
   logger(freeCourses);
 
-  ////////////////////////////////////////////////////////////////////////////////
+  // //////////////////////////////////////////////////////////////////////////////
   // go through the courses array and get the prices from the database
-  ////////////////////////////////////////////////////////////////////////////////
+  // //////////////////////////////////////////////////////////////////////////////
 
   let primaryCourse = '';
   let totalCost = Big(0);
@@ -265,10 +266,10 @@ export const oldGetPrices = async (
 
   if (courses.length) {
 
-    ////////////////////////////////////////////////////////////////////////////////
+    // //////////////////////////////////////////////////////////////////////////////
     // validate the course currencies and shipping statuses and figure out the
     // primary course and set free courses
-    ////////////////////////////////////////////////////////////////////////////////
+    // //////////////////////////////////////////////////////////////////////////////
 
     primaryCourse = courses[0]; // course code of the most expensive course--default to first course
     let highestCost = result.courses[courses[0]].baseCost; // the cost of the most expensive course
@@ -297,7 +298,7 @@ export const oldGetPrices = async (
         throw new HttpStatus.InternalServerError('Shipping mismatch');
       }
 
-      if (freeCourses.indexOf(course) !== -1) { // mark this course as free
+      if (freeCourses.includes(course)) { // mark this course as free
         result.courses[course].free = true;
         result.courses[course].secondaryDiscount = 1.0;
         result.courses[course].secondaryDiscountAmount = result.courses[course].baseCost;
@@ -350,9 +351,9 @@ export const oldGetPrices = async (
 
   }
 
-  ////////////////////////////////////////////////////////////////////////////////
+  // //////////////////////////////////////////////////////////////////////////////
   // campaigns
-  ////////////////////////////////////////////////////////////////////////////////
+  // //////////////////////////////////////////////////////////////////////////////
 
   if (typeof options?.discount !== 'undefined') {
 
@@ -648,46 +649,46 @@ export const oldGetPrices = async (
 
   } // if (courses.length)
 
-  ////////////////////////////////////////////////////////////////////////////////
+  // //////////////////////////////////////////////////////////////////////////////
   // add disclaimers
   //
   // Note: These strings may be inserted as raw HTML by the front end application
   // Do not include any unescaped user input in them (preferably do not include
   // any user input at all). Also ensure that they are valid HTML with proper
   // closing tags.
-  ////////////////////////////////////////////////////////////////////////////////
+  // //////////////////////////////////////////////////////////////////////////////
 
-  if (courses.indexOf('DG') !== -1 && helpers.audCountry(countryCode)) {
+  if (courses.includes('DG') && helpers.audCountry(countryCode)) {
     result.disclaimers.push('The WAHL clippers and attachment combs will not be provided with your course. ' +
       'QC only supplies the North American version, which is not compatible with power outlets in your country. ' +
       'Your course has therefore been discounted by $280 so that you may purchase your own clippers and combs.');
   }
 
-  if (courses.indexOf('DG') !== -1 && helpers.gbpCountry(countryCode)) {
+  if (courses.includes('DG') && helpers.gbpCountry(countryCode)) {
     result.disclaimers.push('The WAHL clippers and attachment combs will not be provided with your course. ' +
       'QC only supplies the North American version, which is not compatible with power outlets in your country. ' +
       'Your course has therefore been discounted by £150 so that you may purchase your own clippers and combs.');
   }
 
-  if (courses.indexOf('DG') !== -1 && countryCode === 'NZ') {
+  if (courses.includes('DG') && countryCode === 'NZ') {
     result.disclaimers.push('The WAHL clippers and attachment combs will not be provided with your course. ' +
       'QC only supplies the North American version, which is not compatible with power outlets in your country. ' +
       'Your course has therefore been discounted by $300 so that you may purchase your own clippers and combs.');
   }
 
-  if (courses.indexOf('EB') !== -1) {
+  if (courses.includes('EB')) {
     result.disclaimers.push('The Accelerate Your Business Workshop includes electronic course material only.');
   }
 
-  if (courses.indexOf('FC') !== -1) {
+  if (courses.includes('FC')) {
     result.disclaimers.push('The Professional Caregiving Course includes electronic course material only.');
   }
 
-  if (courses.indexOf('FL') !== -1) {
+  if (courses.includes('FL')) {
     result.disclaimers.push('The Festivals &amp; Live Events Course requires corporate event training.');
   }
 
-  if (courses.indexOf('PE') !== -1) {
+  if (courses.includes('PE')) {
     result.disclaimers.push('The Promotional Event Planning Course requires corporate event training.');
   }
 
@@ -704,9 +705,9 @@ export const oldGetPrices = async (
       `<a style="color:inherit" href="tel:${tel}">${tel}.`;
   }
 
-  ////////////////////////////////////////////////////////////////////////////////
+  // //////////////////////////////////////////////////////////////////////////////
   // calculate the deposits and installments
-  ////////////////////////////////////////////////////////////////////////////////
+  // //////////////////////////////////////////////////////////////////////////////
 
   let totalDepositFull = Big(0);
   let totalDepositAccelerated = Big(0);
@@ -1001,7 +1002,7 @@ WHERE
       },
       countryCode: price.country_code,
       provinceCode: price.province_code,
-      noShipping: price.no_shipping === 0 ? false : true,
+      noShipping: price.no_shipping !== 0,
       currency: {
         code: price.currency_code,
         symbol: price.currency_symbol,
@@ -1017,8 +1018,8 @@ WHERE
 
 }
 
-function makeupCourse(course: string) {
-  return [ 'MM', 'MA', 'MZ', 'MK', 'SF', 'HS', 'AB', 'MW', 'PW', 'GB', 'SK' ].indexOf(course) !== -1;
+function makeupCourse(course: string): boolean {
+  return [ 'MM', 'MA', 'MZ', 'MK', 'SF', 'HS', 'AB', 'MW', 'PW', 'GB', 'SK' ].includes(course);
 }
 
 /**
@@ -1026,7 +1027,7 @@ function makeupCourse(course: string) {
  * @param num the number to round off
  * @param precision the number of decimal places
  */
-function round(num: number, precision: number) {
+function round(num: number, precision: number): number {
   const factor = Math.pow(10, precision);
   const tempNumber = num * factor;
   const roundedTempNumber = Math.round(tempNumber);

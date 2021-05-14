@@ -23,12 +23,12 @@ WHERE
 export async function lookupPriceByCountryAndProvince(connection: PoolConnection, courseCode: string, countryCode: string | null, provinceCode: string | null): Promise<PriceRow[]> {
   if (countryCode === null) {
     const sql = `${sqlLookupPrice} AND country_code IS NULL AND province_code IS NULL`;
-    return await connection.query(sql, [ courseCode ]);
+    return connection.query(sql, [ courseCode ]);
   } else if (provinceCode === null) {
     const sql = `${sqlLookupPrice} AND country_code = ? AND province_code IS NULL`;
-    return await connection.query(sql, [ courseCode, countryCode ]);
-  } else {
-    const sql = `${sqlLookupPrice} AND country_code = ? AND province_code = ?`;
-    return await connection.query(sql, [ courseCode, countryCode, provinceCode ]);
+    return connection.query(sql, [ courseCode, countryCode ]);
   }
+  const sql = `${sqlLookupPrice} AND country_code = ? AND province_code = ?`;
+  return connection.query(sql, [ courseCode, countryCode, provinceCode ]);
+
 }

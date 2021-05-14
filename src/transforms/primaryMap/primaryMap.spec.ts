@@ -79,7 +79,7 @@ describe('primaryMap', () => {
   });
 
   [ true, false ].forEach(p => {
-    it(`should leave the primary value unchanged as ${p ? 'true' : 'false' } if the index is not 0`, () => {
+    it(`should leave the primary value unchanged as ${p ? 'true' : 'false'} if the index is not 0`, () => {
       const courseResults: CourseResult[] = [
         {
           code: 'ZU',

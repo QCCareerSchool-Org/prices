@@ -1,6 +1,6 @@
 import { audCountry, gbpCountry, nzdCountry } from '@qccareerschool/helper-functions';
 import { isMakeupAdvancedCourse } from './courses';
-import { promoCodeApplies, PromoCodeSpec, promoCodeSpecs } from './promoCodes';
+import { PromoCodeSpec, promoCodeSpecs, specApplies } from './promoCodes';
 import { NoShipping, PriceQueryOptions } from './types';
 
 /**
@@ -18,9 +18,7 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
   const disclaimers: string[] = [];
   const promoWarnings: string[] = [];
 
-  const applies = (spec?: PromoCodeSpec) => spec && promoCodeApplies(spec, now, student, options?.promoCode, options?.school);
-
-  const student = options?.discountAll ?? false;
+  const applies = (spec?: PromoCodeSpec): boolean => typeof spec !== 'undefined' && specApplies(spec, now, options?.discountAll, options?.promoCode, options?.school);
 
   // studentDiscount option
   if (options?.studentDiscount) {
