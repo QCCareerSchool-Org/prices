@@ -52,6 +52,14 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
     }
   }
 
+  // Aisle Planner software
+  if (options?.school === 'QC Event School' && (now.getTime() >= Date.UTC(2021, 4, 17, 13) && now.getTime() < Date.UTC(2021, 5, 1, 13))) {
+    if (courses.length >= 1) {
+      notes.push('Aisle Planner software');
+      disclaimers.push('You\'ll receive a FREE 6-month subscription to Aisle Planner, an all-in-one event planning software');
+    }
+  }
+
   // ELITE promo code
   if (applies(promoCodeSpecs.find(p => p.code === 'ELITE'))) {
     if (noShipping === 'ALLOWED' || noShipping === 'FORBIDDEN') {
