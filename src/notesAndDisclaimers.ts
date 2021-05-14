@@ -164,6 +164,17 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
     }
   }
 
+  // LEVELUP promo code
+  if (applies(promoCodeSpecs.find(p => p.code === 'LEVELUP'))) {
+    if (!courses.includes('MZ') && !courses.includes('VM')) {
+      promoWarnings.push('You have entered the <strong>LEVELUP</strong> promo code but have not selected the <strong>Master Makeup Artistry</strong> and <strong>Virtual Makeup</strong> courses.');
+    } else if (!courses.includes('MZ')) {
+      promoWarnings.push('You have entered the <strong>LEVELUP</strong> promo code but have not selected the <strong>Master Makeup Artistry</strong> course.');
+    } else if (!courses.includes('VM')) {
+      promoWarnings.push('You have entered the <strong>LEVELUP</strong> promo code but have not selected the <strong>Virtual Makeup</strong> course.');
+    }
+  }
+
   if (courses.includes('DG') && audCountry(countryCode)) {
     disclaimers.push('The WAHL clippers and attachment combs will not be provided with your course. ' +
       'QC only supplies the North American version, which is not compatible with power outlets in your country. ' +
