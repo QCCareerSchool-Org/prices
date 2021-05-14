@@ -13,7 +13,7 @@ export const shouldGetMultiCourseDiscount = (now: Date, index: number, options?:
   }
 
   // if this is the first course then no discount applies
-  if (index === 0) {
+  if (index < 1) {
     return false;
   }
 

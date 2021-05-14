@@ -55,7 +55,7 @@ describe('getDefaultFreeDesignNewStudentMap', () => {
     let freeCoursesMap: MapFunction<CourseResult, CourseResult>;
 
     describe('before May 17, 2021 at 09:00', () => {
-      const now = new Date(Date.UTC(2021, 4, 16));
+      const now = new Date(Date.UTC(2021, 4, 16)); // May 16, 2021 at 12:00
 
       beforeEach(() => {
         freeCoursesMap = getDefaultFreeDesignNewStudentMap(now);
@@ -110,7 +110,7 @@ describe('getDefaultFreeDesignNewStudentMap', () => {
     });
 
     describe('after May 17, 2021 at 09:00', () => {
-      const now = new Date(Date.UTC(2021, 4, 17, 13));
+      const now = new Date(Date.UTC(2021, 4, 17, 13)); // May 17, 2021 at 09:00
 
       beforeEach(() => {
         freeCoursesMap = getDefaultFreeDesignNewStudentMap(now);
