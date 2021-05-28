@@ -150,6 +150,7 @@ module.exports = {
     '@typescript-eslint/member-delimiter-style': 'error',
     '@typescript-eslint/member-ordering': 'error',
     '@typescript-eslint/method-signature-style': 'error',
+    '@typescript-eslint/no-floating-promises': 'error',
     '@typescript-eslint/no-var-requires': 'off', // needed for dynamic require
     '@typescript-eslint/prefer-for-of': 'error',
     '@typescript-eslint/prefer-includes': 'error',
