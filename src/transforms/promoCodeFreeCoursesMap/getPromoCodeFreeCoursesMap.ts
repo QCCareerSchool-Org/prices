@@ -14,10 +14,15 @@ export const getPromoCodeFreeCourseMap = (now: Date, options?: PriceQueryOptions
   const mothersdayApplies = applies(promoCodeSpecs.find(v => v.code === 'MOTHERSDAY'));
   const may21Applies = applies(promoCodeSpecs.find(v => v.code === 'MAY21'));
   const levelUpApplies = applies(promoCodeSpecs.find(v => v.code === 'LEVELUP'));
+  const weekendMakeupApplies = applies(promoCodeSpecs.find(v => v.code === 'WEEKEND' && v.schools?.includes('QC Makeup Academy')));
+  const weekendDesignApplies = applies(promoCodeSpecs.find(v => v.code === 'WEEKEND' && v.schools?.includes('QC Design School')));
+  const june21DesignApplies = applies(promoCodeSpecs.find(v => v.code === 'JUNE21' && v.schools?.includes('QC Design School')));
 
   let may21Applied = false;
   let spring21Applied = false;
   let nathansDayApplied = false;
+  let weekendDesignApplied = false;
+  let june21DesignApplied = false;
 
   return (courseResult: CourseResult, index: number, array: CourseResult[]): CourseResult => {
 
@@ -68,6 +73,26 @@ export const getPromoCodeFreeCourseMap = (now: Date, options?: PriceQueryOptions
 
     if (levelUpApplies) {
       if (courseResult.code === 'VM' && array.some(c => c.code === 'MZ')) {
+        return freeMap(courseResult);
+      }
+    }
+
+    if (weekendMakeupApplies) {
+      if (courseResult.code === 'VM' && array.some(c => c.code === 'MZ')) {
+        return freeMap(courseResult);
+      }
+    }
+
+    if (weekendDesignApplies && !weekendDesignApplied) {
+      if (isDesignCourse(courseResult.code) && array.filter(c => isDesignCourse(c.code)).length >= 2) {
+        weekendDesignApplied = true;
+        return freeMap(courseResult);
+      }
+    }
+
+    if (june21DesignApplies && !june21DesignApplied) {
+      if (isDesignCourse(courseResult.code) && array.filter(c => isDesignCourse(c.code)).length >= 2) {
+        june21DesignApplied = true;
         return freeMap(courseResult);
       }
     }

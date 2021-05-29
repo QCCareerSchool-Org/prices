@@ -37,7 +37,7 @@ export const promoCodeSpecs: PromoCodeSpec[] = [
   { code: 'SAVE50', student: 'DENIED', schools: [ 'QC Makeup Academy', 'QC Design School' ] },
   { code: 'ELITE', student: 'DENIED', schools: [ 'QC Makeup Academy' ] },
   { code: 'ADVANCED100', student: 'DENIED', schools: [ 'QC Makeup Academy' ], start: new Date(Date.UTC(2021, 4, 17, 13)), end: new Date(Date.UTC(2021, 5, 1, 13)) },
-  { code: 'FREEPRO', student: 'DENIED' },
+  { code: 'FREEPRO', student: 'DENIED', schools: [ 'QC Makeup Academy' ] },
   { code: 'FOUNDIT', student: 'DENIED', schools: [ 'QC Makeup Academy' ], start: new Date(Date.UTC(2021, 2, 29, 13)), end: new Date(Date.UTC(2021, 3, 6, 4)) },
   { code: 'SPRING21', student: 'DENIED', schools: [ 'QC Makeup Academy' ], start: new Date(Date.UTC(2021, 3, 6, 13)) },
   { code: 'HAPPYMAY', student: 'DENIED', schools: [ 'QC Makeup Academy' ], start: new Date(Date.UTC(2021, 4, 1, 12)), end: new Date(Date.UTC(2021, 4, 3, 13)) },
@@ -47,6 +47,9 @@ export const promoCodeSpecs: PromoCodeSpec[] = [
   { code: 'SPRING100', student: 'DENIED', schools: [ 'QC Design School' ], start: new Date(Date.UTC(2021, 4, 17, 13)), end: new Date(Date.UTC(2021, 5, 1, 13)) }, // May 17 at 09:00 to June 1 at 09:00
   { code: 'MAY21', student: 'DENIED', schools: [ 'QC Design School' ], start: new Date(Date.UTC(2021, 4, 17, 13)), end: new Date(Date.UTC(2021, 5, 1, 13)) }, // May 17 at 09:00 to June 1 at 09:00
   { code: 'LEVELUP', student: 'DENIED', schools: [ 'QC Makeup Academy' ], start: new Date(Date.UTC(2021, 4, 15, 13)), end: new Date(Date.UTC(2021, 4, 17, 13)) }, // May 15 at 08:00 to May 17 at 09:00
+  { code: 'WEEKEND', student: 'DENIED', schools: [ 'QC Makeup Academy' ], start: new Date(Date.UTC(2021, 4, 29, 12)), end: new Date(Date.UTC(2021, 5, 1, 13)) }, // May 28 at 08:00 to June 1 at 09:00
+  { code: 'WEEKEND', student: 'DENIED', schools: [ 'QC Design School' ], start: new Date(Date.UTC(2021, 4, 29, 12)), end: new Date(Date.UTC(2021, 5, 1, 13)) }, // May 28 at 08:00 to June 1 at 09:00
+  { code: 'JUNE21', student: 'DENIED', schools: [ 'QC Design School' ], start: new Date(Date.UTC(2021, 5, 1, 13)) }, // June 1 at 09:00
   ...studentSupport50Specs,
 ];
 

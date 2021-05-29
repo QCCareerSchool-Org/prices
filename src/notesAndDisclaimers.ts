@@ -1,5 +1,5 @@
 import { audCountry, gbpCountry, nzdCountry } from '@qccareerschool/helper-functions';
-import { isMakeupAdvancedCourse } from './courses';
+import { isDesignCourse, isMakeupAdvancedCourse } from './courses';
 import { PromoCodeSpec, promoCodeSpecs, specApplies } from './promoCodes';
 import { NoShipping, PriceQueryOptions } from './types';
 
@@ -180,6 +180,41 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
       promoWarnings.push('You have entered the <strong>LEVELUP</strong> promo code but have not selected the <strong>Master Makeup Artistry</strong> course.');
     } else if (!courses.includes('VM')) {
       promoWarnings.push('You have entered the <strong>LEVELUP</strong> promo code but have not selected the <strong>Virtual Makeup</strong> course.');
+    }
+  }
+
+  // WEEKEND promo (Makeup)
+  if (applies(promoCodeSpecs.find(v => v.code === 'WEEKEND' && v.schools?.includes('QC Makeup Academy')))) {
+    if (!courses.includes('MZ') && !courses.includes('VM')) {
+      promoWarnings.push('You entered the <strong>WEEKEND</strong> promo code, but you did not select the Master Makeup Artistry or Virtual Makeup courses');
+    } else if (!courses.includes('MZ')) {
+      promoWarnings.push('You entered the <strong>WEEKEND</strong> promo code, but you did not select the Master Makeup Artistry course');
+    } else if (!courses.includes('VM')) {
+      promoWarnings.push('You entered the <strong>WEEKEND</strong> promo code, but you did not select the Virtual Makeup course');
+    }
+    if (noShipping === 'ALLOWED' || noShipping === 'FORBIDDEN') {
+      notes.push('elite makeup kit');
+      disclaimers.push('You will receive the <strong>elite makeup kit upgrade</strong> (includes a highlight palette, contour palette, eyebrow palette, 4-pack of false lashes, a makeup travel bag, and a stainless steel palette with spatula).');
+    } else if (noShipping === 'APPLIED') {
+      promoWarnings.push('You entered the <strong>WEEKEND</strong> promo code, but have chosen to not have any materials shipped. You will not receive any makeup kits.');
+    } else if (noShipping === 'REQUIRED') {
+      promoWarnings.push('You entered the <strong>WEEKEND</strong> promo code, but we do not ship to your country. You will not receive any makeup kits.');
+    }
+  }
+
+  // WEEKEND promo (Design)
+  if (applies(promoCodeSpecs.find(v => v.code === 'WEEKEND' && v.schools?.includes('QC Design School')))) {
+    if (courses.filter(c => isDesignCourse(c)).length < 2) {
+      promoWarnings.push('You have entered the <strong>WEEKEND</strong> promo code but have not selected more than one design course. Select additional courses above to take advantage of this promotion.');
+    }
+    notes.push('fan deck');
+    disclaimers.push('You\'ll receive the FREE Sherwin-Williams color fan deck');
+  }
+
+  // JUNE21 promo (Design)
+  if (applies(promoCodeSpecs.find(v => v.code === 'JUNE21' && v.schools?.includes('QC Design School')))) {
+    if (courses.filter(c => isDesignCourse(c)).length < 2) {
+      promoWarnings.push('You have entered the <strong>WEEKEND</strong> promo code but have not selected more than one design course. Select additional courses above to take advantage of this promotion.');
     }
   }
 
