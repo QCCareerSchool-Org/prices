@@ -214,7 +214,7 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
   // JUNE21 promo (Design)
   if (applies(promoCodeSpecs.find(v => v.code === 'JUNE21' && v.schools?.includes('QC Design School')))) {
     if (courses.filter(c => isDesignCourse(c)).length < 2) {
-      promoWarnings.push('You have entered the <strong>WEEKEND</strong> promo code but have not selected more than one design course. Select additional courses above to take advantage of this promotion.');
+      promoWarnings.push('You have entered the <strong>JUNE21</strong> promo code but have not selected more than one design course. Select additional courses above to take advantage of this promotion.');
     }
   }
 
