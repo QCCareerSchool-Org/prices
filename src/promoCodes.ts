@@ -44,7 +44,7 @@ export const promoCodeSpecs: PromoCodeSpec[] = [
   { code: 'SKINCARE60', student: 'DENIED', schools: [ 'QC Makeup Academy' ], start: new Date(Date.UTC(2021, 4, 3, 13)), end: new Date(Date.UTC(2021, 4, 17, 13)) },
   { code: 'NATHANSDAY', student: 'DENIED', schools: [ 'QC Makeup Academy' ], start: new Date(Date.UTC(2021, 3, 30, 13)), end: new Date(Date.UTC(2021, 4, 3, 13)) },
   { code: 'MOTHERSDAY', student: 'DENIED', schools: [ 'QC Makeup Academy' ], start: new Date(Date.UTC(2021, 4, 5, 4)), end: new Date(Date.UTC(2021, 5, 1, 13)) }, // May 5 at 00:00 to June 1 at 09:00
-  { code: 'SPRING100', student: 'DENIED', schools: [ 'QC Design School' ], start: new Date(Date.UTC(2021, 4, 17, 13)), end: new Date(Date.UTC(2021, 5, 1, 13)) }, // May 17 at 09:00 to June 1 at 09:00
+  { code: 'SPRING100', student: 'DENIED', schools: [ 'QC Design School' ], start: new Date(Date.UTC(2021, 5, 1, 13)), end: new Date(Date.UTC(2021, 5, 12, 4)) }, // June 1 at 09:00 to June 12 at 00:00
   { code: 'MAY21', student: 'DENIED', schools: [ 'QC Design School' ], start: new Date(Date.UTC(2021, 4, 17, 13)), end: new Date(Date.UTC(2021, 5, 1, 13)) }, // May 17 at 09:00 to June 1 at 09:00
   { code: 'LEVELUP', student: 'DENIED', schools: [ 'QC Makeup Academy' ], start: new Date(Date.UTC(2021, 4, 15, 13)), end: new Date(Date.UTC(2021, 4, 17, 13)) }, // May 15 at 08:00 to May 17 at 09:00
   { code: 'WEEKEND', student: 'DENIED', schools: [ 'QC Makeup Academy' ], start: new Date(Date.UTC(2021, 4, 29, 12)), end: new Date(Date.UTC(2021, 5, 1, 13)) }, // May 28 at 08:00 to June 1 at 09:00
