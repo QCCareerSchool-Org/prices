@@ -1,4 +1,4 @@
-import { isDesignCourse, isMakeupAdvancedCourse } from '../../courses';
+import { isDesignCourse, isEventFoundationCourse, isEventSpecialtyCourse, isMakeupAdvancedCourse } from '../../courses';
 import { freeMap } from '../../lib/freeMap';
 import { PromoCodeSpec, promoCodeSpecs, specApplies } from '../../promoCodes';
 import { CourseResult, MapFunction, PriceQueryOptions } from '../../types';
@@ -17,12 +17,18 @@ export const getPromoCodeFreeCourseMap = (now: Date, options?: PriceQueryOptions
   const weekendMakeupApplies = applies(promoCodeSpecs.find(v => v.code === 'WEEKEND' && v.schools?.includes('QC Makeup Academy')));
   const weekendDesignApplies = applies(promoCodeSpecs.find(v => v.code === 'WEEKEND' && v.schools?.includes('QC Design School')));
   const june21DesignApplies = applies(promoCodeSpecs.find(v => v.code === 'JUNE21' && v.schools?.includes('QC Design School')));
+  const wedding21Applies = applies(promoCodeSpecs.find(v => v.code === 'WEDDING21'));
+  const expertApplies = applies(promoCodeSpecs.find(v => v.code === 'EXPERT'));
+  const bonusgiftApplies = applies(promoCodeSpecs.find(v => v.code === 'BONUSGIFT'));
+  const summer21Applies = applies(promoCodeSpecs.find(v => v.code === 'SUMMER21'));
 
   let may21Applied = false;
   let spring21Applied = false;
   let nathansDayApplied = false;
   let weekendDesignApplied = false;
   let june21DesignApplied = false;
+  let expertApplied = false;
+  let summer21Applied = false;
 
   return (courseResult: CourseResult, index: number, array: CourseResult[]): CourseResult => {
 
@@ -93,6 +99,26 @@ export const getPromoCodeFreeCourseMap = (now: Date, options?: PriceQueryOptions
     if (june21DesignApplies && !june21DesignApplied) {
       if (isDesignCourse(courseResult.code) && array.filter(c => isDesignCourse(c.code)).length >= 2) {
         june21DesignApplied = true;
+        return freeMap(courseResult);
+      }
+    }
+
+    if (wedding21Applies || bonusgiftApplies) {
+      if ((courseResult.code === 'DW' || courseResult.code === 'LW') && array.some(c => c.code === 'EP')) {
+        return freeMap(courseResult);
+      }
+    }
+
+    if (expertApplies && !expertApplied) {
+      if (isEventSpecialtyCourse(courseResult.code) && array.some(c => isEventFoundationCourse(c.code))) {
+        expertApplied = true;
+        return freeMap(courseResult);
+      }
+    }
+
+    if (summer21Applies && !summer21Applied) {
+      if (isEventSpecialtyCourse(courseResult.code) && array.some(c => isEventFoundationCourse(c.code))) {
+        summer21Applied = true;
         return freeMap(courseResult);
       }
     }

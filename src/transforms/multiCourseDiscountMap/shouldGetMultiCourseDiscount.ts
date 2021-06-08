@@ -26,17 +26,22 @@ export const shouldGetMultiCourseDiscount = (now: Date, index: number, options?:
     return true;
   }
 
-  // if the school is 'QC Career School', 'QC Event School', etc. the course gets the multi-course discount
-  if (options?.school === 'QC Career School' || options?.school === 'QC Event School' || options?.school === 'QC Pet Studies' || options?.school === 'QC Wellness Studies' || options?.school === 'Winghill Writing School') {
+  // if the school is 'QC Career School', 'QC Pet Studies', etc. the course gets the multi-course discount
+  if (options?.school === 'QC Career School' || options?.school === 'QC Pet Studies' || options?.school === 'QC Wellness Studies' || options?.school === 'Winghill Writing School') {
     return true;
   }
 
-  // and the school is 'QC Design School' and the date is before May 17, 2021 at 09:00 the course gets the multi-course discount
+  // if the school is 'QC Event School' and the date is before June 9, 2021 at 09:00 the course gets the multi-course discount
+  if (options?.school === 'QC Event School' && now.getTime() < Date.UTC(2021, 5, 9, 13)) {
+    return true;
+  }
+
+  // if the school is 'QC Design School' and the date is before May 17, 2021 at 09:00 the course gets the multi-course discount
   if (options?.school === 'QC Design School' && now.getTime() < Date.UTC(2021, 4, 17, 13)) {
     return true;
   }
 
-  // and the school is 'QC Makeup Academy' and the date is before than March 29, 2021 at 09:00 the course gets the multi-course discount
+  // if the school is 'QC Makeup Academy' and the date is before than March 29, 2021 at 09:00 the course gets the multi-course discount
   if (options?.school === 'QC Makeup Academy' && now.getTime() < Date.UTC(2021, 2, 29, 13)) {
     return true;
   }

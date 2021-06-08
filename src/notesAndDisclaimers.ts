@@ -1,5 +1,5 @@
 import { audCountry, gbpCountry, nzdCountry } from '@qccareerschool/helper-functions';
-import { isDesignCourse, isMakeupAdvancedCourse } from './courses';
+import { isDesignCourse, isEventFoundationCourse, isEventSpecialtyCourse, isMakeupAdvancedCourse } from './courses';
 import { PromoCodeSpec, promoCodeSpecs, specApplies } from './promoCodes';
 import { NoShipping, PriceQueryOptions } from './types';
 
@@ -215,6 +215,44 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
   if (applies(promoCodeSpecs.find(v => v.code === 'JUNE21' && v.schools?.includes('QC Design School')))) {
     if (courses.filter(c => isDesignCourse(c)).length < 2) {
       promoWarnings.push('You have entered the <strong>JUNE21</strong> promo code but have not selected more than one design course. Select additional courses above to take advantage of this promotion.');
+    }
+  }
+
+  // WEDDING21 promo (Event)
+  if (applies(promoCodeSpecs.find(v => v.code === 'WEDDING21'))) {
+    if (!courses.includes('EP')) {
+      promoWarnings.push('You have entered the <strong>WEDDING21</strong> promo code but have not selected the <strong>Event & Wedding Planning Course</strong> course.');
+    } else if (!courses.includes('LW') || !courses.includes('DW')) {
+      promoWarnings.push('You have entered the <strong>WEDDING21</strong> promo code but have not selected both the <strong>Luxury Wedding Planning</strong> and <strong>Destination Wedding Plannin</strong> courses.');
+    }
+  }
+
+  // BONUSGIFT promo (Event)
+  if (applies(promoCodeSpecs.find(v => v.code === 'BONUSGIFT'))) {
+    notes.push('leather portfolio');
+    disclaimers.push('You\'ll receive the FREE leather protfolio');
+    if (!courses.includes('EP')) {
+      promoWarnings.push('You have entered the <strong>BONUSGIFT</strong> promo code but have not selected the <strong>Event & Wedding Planning Course</strong> course.');
+    } else if (!courses.includes('LW') || !courses.includes('DW')) {
+      promoWarnings.push('You have entered the <strong>BONUSGIFT</strong> promo code but have not selected both the <strong>Luxury Wedding Planning</strong> and <strong>Destination Wedding Plannin</strong> courses.');
+    }
+  }
+
+  // EXPERT promo (Event)
+  if (applies(promoCodeSpecs.find(v => v.code === 'EXPERT'))) {
+    if (!courses.some(c => isEventFoundationCourse(c))) {
+      promoWarnings.push('You have entered the <strong>EXPERT</strong> promo code but have not selected a Foundation course.');
+    } else if (!courses.some(c => isEventSpecialtyCourse(c))) {
+      promoWarnings.push('You have entered the <strong>EXPERT</strong> promo code but have not selected a Specialty course.');
+    }
+  }
+
+  // SUMMER21 promo (Event)
+  if (applies(promoCodeSpecs.find(v => v.code === 'SUMMER21'))) {
+    if (!courses.some(c => isEventFoundationCourse(c))) {
+      promoWarnings.push('You have entered the <strong>SUMMER21</strong> promo code but have not selected a Foundation course.');
+    } else if (!courses.some(c => isEventSpecialtyCourse(c))) {
+      promoWarnings.push('You have entered the <strong>SUMMER21</strong> promo code but have not selected a Specialty course.');
     }
   }
 
