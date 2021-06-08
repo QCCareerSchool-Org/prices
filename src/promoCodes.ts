@@ -23,9 +23,9 @@ export type PromoCodeSpec = {
   end?: Date;
 };
 
-const studentSupportNames = [ 'NATHAN', 'AMANDA', 'ANDREW', 'ANNIE', 'CHARLOTTE', 'EMILY', 'GINA', 'HEATHER', 'JESS', 'KAYLA', 'PAMELA', 'SASHA', 'SHANNON' ];
+const studentSupportNames = [ 'NATHAN', 'AMANDA', 'ANDREW', 'ANNIE', 'CHARLOTTE', 'EMILY', 'GINA', 'HEATHER', 'TAYLOR', 'KAYLA', 'PAMELA', 'SASHA', 'SHANNON' ];
 
-const studentSupportSchools: School[] = [ 'QC Makeup Academy', 'QC Design School' ];
+const studentSupportSchools: School[] = [ 'QC Makeup Academy', 'QC Design School', 'QC Event School' ];
 
 export const studentSupport50Specs: PromoCodeSpec[] = studentSupportNames.map<PromoCodeSpec>(name => ({
   code: name + '50',
@@ -34,7 +34,7 @@ export const studentSupport50Specs: PromoCodeSpec[] = studentSupportNames.map<Pr
 } as const));
 
 export const promoCodeSpecs: PromoCodeSpec[] = [
-  { code: 'SAVE50', student: 'DENIED', schools: [ 'QC Makeup Academy', 'QC Design School' ] },
+  { code: 'SAVE50', student: 'DENIED', schools: [ 'QC Makeup Academy', 'QC Design School', 'QC Event School' ] },
   { code: 'ELITE', student: 'DENIED', schools: [ 'QC Makeup Academy' ] },
   { code: 'ADVANCED100', student: 'DENIED', schools: [ 'QC Makeup Academy' ], start: new Date(Date.UTC(2021, 4, 17, 13)), end: new Date(Date.UTC(2021, 5, 1, 13)) },
   { code: 'FREEPRO', student: 'DENIED', schools: [ 'QC Makeup Academy' ] },
@@ -50,6 +50,10 @@ export const promoCodeSpecs: PromoCodeSpec[] = [
   { code: 'WEEKEND', student: 'DENIED', schools: [ 'QC Makeup Academy' ], start: new Date(Date.UTC(2021, 4, 29, 12)), end: new Date(Date.UTC(2021, 5, 1, 13)) }, // May 28 at 08:00 to June 1 at 09:00
   { code: 'WEEKEND', student: 'DENIED', schools: [ 'QC Design School' ], start: new Date(Date.UTC(2021, 4, 29, 12)), end: new Date(Date.UTC(2021, 5, 1, 13)) }, // May 28 at 08:00 to June 1 at 09:00
   { code: 'JUNE21', student: 'DENIED', schools: [ 'QC Design School' ], start: new Date(Date.UTC(2021, 5, 1, 13)) }, // June 1 at 09:00
+  { code: 'WEDDING21', student: 'DENIED', schools: [ 'QC Event School' ], start: new Date(2021, 5, 9, 9), end: new Date(2021, 5, 28, 9) }, // June 9 at 09:00 to June 28 at 09:00
+  { code: 'EXPERT', student: 'DENIED', schools: [ 'QC Event School' ], start: new Date(2021, 5, 9, 9), end: new Date(2021, 5, 28, 9) }, // June 9 at 09:00 to June 28 at 09:00
+  { code: 'SUMMER21', student: 'DENIED', schools: [ 'QC Event School' ], start: new Date(2021, 5, 9, 9), end: new Date(2021, 5, 28, 9) }, // June 9 at 09:00 to June 28 at 09:00
+  { code: 'BONUSGIFT', student: 'DENIED', schools: [ 'QC Event School' ], start: new Date(2021, 5, 12, 8), end: new Date(2021, 5, 14, 9) }, // June 12 at 08:00 to June 14 at 09:00
   ...studentSupport50Specs,
 ];
 
