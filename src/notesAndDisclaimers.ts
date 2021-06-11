@@ -1,5 +1,5 @@
 import { audCountry, gbpCountry, nzdCountry } from '@qccareerschool/helper-functions';
-import { isDesignCourse, isEventFoundationCourse, isEventSpecialtyCourse, isMakeupAdvancedCourse } from './courses';
+import { isDesignCourse, isEventFoundationCourse, isEventSpecialtyCourse, isMakeupAdvancedCourse, isMakeupFoundationCourse } from './courses';
 import { PromoCodeSpec, promoCodeSpecs, specApplies } from './promoCodes';
 import { NoShipping, PriceQueryOptions } from './types';
 
@@ -227,14 +227,30 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
     }
   }
 
-  // BONUSGIFT promo (Event)
+  // BONUSGIFT promo (Event, Makeup, Design)
   if (applies(promoCodeSpecs.find(v => v.code === 'BONUSGIFT'))) {
-    notes.push('leather portfolio');
-    disclaimers.push('You\'ll receive the FREE leather protfolio');
-    if (!courses.includes('EP')) {
-      promoWarnings.push('You have entered the <strong>BONUSGIFT</strong> promo code but have not selected the <strong>Event & Wedding Planning Course</strong> course.');
-    } else if (!courses.includes('LW') || !courses.includes('DW')) {
-      promoWarnings.push('You have entered the <strong>BONUSGIFT</strong> promo code but have not selected both the <strong>Luxury Wedding Planning</strong> and <strong>Destination Wedding Plannin</strong> courses.');
+    if (options?.school === 'QC Event School') {
+      notes.push('leather portfolio');
+      disclaimers.push('You\'ll receive the FREE leather protfolio');
+      if (!courses.includes('EP')) {
+        promoWarnings.push('You have entered the <strong>BONUSGIFT</strong> promo code but have not selected the <strong>Event & Wedding Planning Course</strong> course.');
+      } else if (!courses.includes('LW') || !courses.includes('DW')) {
+        promoWarnings.push('You have entered the <strong>BONUSGIFT</strong> promo code but have not selected both the <strong>Luxury Wedding Planning</strong> and <strong>Destination Wedding Plannin</strong> courses.');
+      }
+    } else if (options?.school === 'QC Makeup Academy') {
+      notes.push('elite makeup kit');
+      disclaimers.push('You\'ll receive the FREE 11-piece elite makeup kit');
+      if (!courses.includes('MZ')) {
+        promoWarnings.push('You have entered the <strong>BONUSGIFT</strong> promo code but have not selected the <strong>Master Makeup Artistry</strong> course.');
+      } else if (!courses.includes('MW')) {
+        promoWarnings.push('You have entered the <strong>BONUSGIFT</strong> promo code but have not selected the <strong>Pro Makeup Workshop</strong>.');
+      }
+    } else if (options?.school === 'QC Design School') {
+      notes.push('leather portfolio');
+      disclaimers.push('You\'ll receive the FREE leather protfolio');
+      if (courses.length < 2) {
+        promoWarnings.push('You have entered the <strong>BONUSGIFT</strong> promo code but have not selected more than one course.');
+      }
     }
   }
 
@@ -248,11 +264,20 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
   }
 
   // SUMMER21 promo (Event)
-  if (applies(promoCodeSpecs.find(v => v.code === 'SUMMER21'))) {
+  if (applies(promoCodeSpecs.find(v => v.code === 'SUMMER21' && v.schools?.includes('QC Event School')))) {
     if (!courses.some(c => isEventFoundationCourse(c))) {
       promoWarnings.push('You have entered the <strong>SUMMER21</strong> promo code but have not selected a Foundation course.');
     } else if (!courses.some(c => isEventSpecialtyCourse(c))) {
       promoWarnings.push('You have entered the <strong>SUMMER21</strong> promo code but have not selected a Specialty course.');
+    }
+  }
+
+  // SUMMER21 promo (Makeup)
+  if (applies(promoCodeSpecs.find(v => v.code === 'SUMMER21' && v.schools?.includes('QC Makeup Academy')))) {
+    if (!courses.some(c => isMakeupFoundationCourse(c))) {
+      promoWarnings.push('You have entered the <strong>SUMMER21</strong> promo code but have not selected a Foundation course.');
+    } else if (!courses.some(c => isMakeupAdvancedCourse(c))) {
+      promoWarnings.push('You have entered the <strong>SUMMER21</strong> promo code but have not selected an Advanced course.');
     }
   }
 
