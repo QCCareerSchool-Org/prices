@@ -281,6 +281,15 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
     }
   }
 
+  // SUMMER21 promo (Design)
+  if (applies(promoCodeSpecs.find(v => v.code === 'SUMMER21' && v.schools?.includes('QC Design School')))) {
+    notes.push('leather portfolio');
+    disclaimers.push('You\'ll receive the FREE leather protfolio');
+    if (courses.length < 2) {
+      promoWarnings.push('You have entered the <strong>SUMMER21</strong> promo code but have not selected more than one course.');
+    }
+  }
+
   if (courses.includes('DG') && audCountry(countryCode)) {
     disclaimers.push('The WAHL clippers and attachment combs will not be provided with your course. ' +
       'QC only supplies the North American version, which is not compatible with power outlets in your country. ' +

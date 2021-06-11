@@ -22,6 +22,7 @@ export const getPromoCodeFreeCourseMap = (now: Date, options?: PriceQueryOptions
   const bonusgiftApplies = applies(promoCodeSpecs.find(v => v.code === 'BONUSGIFT'));
   const summer21EventApplies = applies(promoCodeSpecs.find(v => v.code === 'SUMMER21' && v.schools?.includes('QC Event School')));
   const summer21MakeupApplies = applies(promoCodeSpecs.find(v => v.code === 'SUMMER21' && v.schools?.includes('QC Makeup Academy')));
+  const summer21DesignApplies = applies(promoCodeSpecs.find(v => v.code === 'SUMMER21' && v.schools?.includes('QC Design School')));
 
   let may21Applied = false;
   let spring21Applied = false;
@@ -32,6 +33,7 @@ export const getPromoCodeFreeCourseMap = (now: Date, options?: PriceQueryOptions
   let summer21EventApplied = false;
   let summer21MakeupApplied = false;
   let bonusgiftApplied = false;
+  let summer21DesignApplied = false;
 
   return (courseResult: CourseResult, index: number, array: CourseResult[]): CourseResult => {
 
@@ -146,6 +148,13 @@ export const getPromoCodeFreeCourseMap = (now: Date, options?: PriceQueryOptions
     if (summer21MakeupApplies && !summer21MakeupApplied) {
       if (isMakeupSpecialtyCourse(courseResult.code) && array.some(c => isMakeupFoundationCourse(c.code))) {
         summer21MakeupApplied = true;
+        return freeMap(courseResult);
+      }
+    }
+
+    if (summer21DesignApplies && !summer21DesignApplied) {
+      if (isDesignCourse(courseResult.code) && array.filter(c => isDesignCourse(c.code)).length >= 2) {
+        summer21DesignApplied = true;
         return freeMap(courseResult);
       }
     }
