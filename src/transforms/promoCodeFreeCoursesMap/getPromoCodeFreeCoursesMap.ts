@@ -146,7 +146,7 @@ export const getPromoCodeFreeCourseMap = (now: Date, options?: PriceQueryOptions
     }
 
     if (summer21MakeupApplies && !summer21MakeupApplied) {
-      if (isMakeupSpecialtyCourse(courseResult.code) && array.some(c => isMakeupFoundationCourse(c.code))) {
+      if (isMakeupAdvancedCourse(courseResult.code) && array.some(c => isMakeupFoundationCourse(c.code))) {
         summer21MakeupApplied = true;
         return freeMap(courseResult);
       }
