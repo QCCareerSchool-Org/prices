@@ -23,6 +23,7 @@ export const getPromoCodeFreeCourseMap = (now: Date, options?: PriceQueryOptions
   const summer21EventApplies = applies(promoCodeSpecs.find(v => v.code === 'SUMMER21' && v.schools?.includes('QC Event School')));
   const summer21MakeupApplies = applies(promoCodeSpecs.find(v => v.code === 'SUMMER21' && v.schools?.includes('QC Makeup Academy')));
   const summer21DesignApplies = applies(promoCodeSpecs.find(v => v.code === 'SUMMER21' && v.schools?.includes('QC Design School')));
+  const fathersdayApplies = applies(promoCodeSpecs.find(v => v.code === 'FATHERSDAY'));
 
   let may21Applied = false;
   let spring21Applied = false;
@@ -34,6 +35,7 @@ export const getPromoCodeFreeCourseMap = (now: Date, options?: PriceQueryOptions
   let summer21MakeupApplied = false;
   let bonusgiftApplied = false;
   let summer21DesignApplied = false;
+  let fathersdayApplied = false;
 
   return (courseResult: CourseResult, index: number, array: CourseResult[]): CourseResult => {
 
@@ -155,6 +157,27 @@ export const getPromoCodeFreeCourseMap = (now: Date, options?: PriceQueryOptions
     if (summer21DesignApplies && !summer21DesignApplied) {
       if (isDesignCourse(courseResult.code) && array.filter(c => isDesignCourse(c.code)).length >= 2) {
         summer21DesignApplied = true;
+        return freeMap(courseResult);
+      }
+    }
+
+    if (fathersdayApplies && !fathersdayApplied && options?.school === 'QC Event School') {
+      if (isEventSpecialtyCourse(courseResult.code) && array.some(c => isEventFoundationCourse(c.code))) {
+        fathersdayApplied = true;
+        return freeMap(courseResult);
+      }
+    }
+
+    if (fathersdayApplies && !fathersdayApplied && options?.school === 'QC Makeup Academy') {
+      if (isMakeupAdvancedCourse(courseResult.code) && array.some(c => isMakeupFoundationCourse(c.code))) {
+        fathersdayApplied = true;
+        return freeMap(courseResult);
+      }
+    }
+
+    if (fathersdayApplies && !fathersdayApplied && options?.school === 'QC Design School') {
+      if (isDesignCourse(courseResult.code) && array.filter(c => isDesignCourse(c.code)).length >= 2) {
+        fathersdayApplied = true;
         return freeMap(courseResult);
       }
     }
