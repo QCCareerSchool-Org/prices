@@ -291,7 +291,7 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
   }
 
   // FATHERSDAY promo (Design)
-  if (applies(promoCodeSpecs.find(v => v.code === 'SUMMER21')) && options?.school === 'QC Design School') {
+  if (applies(promoCodeSpecs.find(v => v.code === 'FATHERSDAY')) && options?.school === 'QC Design School') {
     disclaimers.push('You\'ll receive the deluxe design kit');
     notes.push('deluxe design kit');
   }
