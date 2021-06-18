@@ -290,6 +290,12 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
     }
   }
 
+  // FATHERSDAY promo (Design)
+  if (applies(promoCodeSpecs.find(v => v.code === 'SUMMER21')) && options?.school === 'QC Design School') {
+    disclaimers.push('You\'ll receive the deluxe design kit');
+    notes.push('deluxe design kit');
+  }
+
   if (courses.includes('DG') && audCountry(countryCode)) {
     disclaimers.push('The WAHL clippers and attachment combs will not be provided with your course. ' +
       'QC only supplies the North American version, which is not compatible with power outlets in your country. ' +
