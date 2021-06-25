@@ -296,6 +296,37 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
     notes.push('deluxe design kit');
   }
 
+  // DIVEIN promo (Makeup)
+  if (applies(promoCodeSpecs.find(v => v.code === 'DIVEIN')) && options?.school === 'QC Makeup Academy') {
+    disclaimers.push('You\'ll receive the free leather portfolio');
+    notes.push('leather portfolio');
+    if (!courses.includes('MZ')) {
+      promoWarnings.push('You have entered the <strong>DIVEIN</strong> promo code but have not selected Master Makeup Artistry.');
+    } else if (!courses.some(c => isMakeupAdvancedCourse(c))) {
+      promoWarnings.push('You have entered the <strong>DIVEIN</strong> promo code but have not selected an Advanced course.');
+    }
+  }
+
+  // DIVEIN promo (Design)
+  if (applies(promoCodeSpecs.find(v => v.code === 'DIVEIN')) && options?.school === 'QC Design School') {
+    disclaimers.push('You\'ll receive the free color fan deck');
+    notes.push('fan deck');
+    if (courses.length < 2) {
+      promoWarnings.push('You have entered the <strong>DIVEIN</strong> promo code but but have not selected more than one course.');
+    }
+  }
+
+  // DIVEIN promo (Event)
+  if (applies(promoCodeSpecs.find(v => v.code === 'DIVEIN')) && options?.school === 'QC Event School') {
+    disclaimers.push('You\'ll receive the free leather portfolio');
+    notes.push('leather portfolio');
+    if (!courses.some(c => isEventFoundationCourse(c))) {
+      promoWarnings.push('You have entered the <strong>DIVEIN</strong> promo code but have not selected a Foundation course.');
+    } else if (!courses.some(c => isEventSpecialtyCourse(c))) {
+      promoWarnings.push('You have entered the <strong>DIVEIN</strong> promo code but have not selected a Specialty course.');
+    }
+  }
+
   if (courses.includes('DG') && audCountry(countryCode)) {
     disclaimers.push('The WAHL clippers and attachment combs will not be provided with your course. ' +
       'QC only supplies the North American version, which is not compatible with power outlets in your country. ' +
