@@ -309,8 +309,9 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
 
   // DIVEIN promo (Design)
   if (applies(promoCodeSpecs.find(v => v.code === 'DIVEIN')) && options?.school === 'QC Design School') {
-    disclaimers.push('You\'ll receive the free color fan deck');
+    disclaimers.push('You\'ll receive the free color fan deck and free leather portfolio');
     notes.push('fan deck');
+    notes.push('leather portfolio');
     if (courses.length < 2) {
       promoWarnings.push('You have entered the <strong>DIVEIN</strong> promo code but but have not selected more than one course.');
     }
