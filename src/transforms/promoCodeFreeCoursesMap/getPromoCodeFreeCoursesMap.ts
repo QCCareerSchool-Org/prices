@@ -24,6 +24,7 @@ export const getPromoCodeFreeCourseMap = (now: Date, options?: PriceQueryOptions
   const summer21MakeupApplies = applies(promoCodeSpecs.find(v => v.code === 'SUMMER21' && v.schools?.includes('QC Makeup Academy')));
   const summer21DesignApplies = applies(promoCodeSpecs.find(v => v.code === 'SUMMER21' && v.schools?.includes('QC Design School')));
   const fathersdayApplies = applies(promoCodeSpecs.find(v => v.code === 'FATHERSDAY'));
+  const diveInApplies = applies(promoCodeSpecs.find(v => v.code === 'DIVEIN'));
 
   let may21Applied = false;
   let spring21Applied = false;
@@ -36,6 +37,7 @@ export const getPromoCodeFreeCourseMap = (now: Date, options?: PriceQueryOptions
   let bonusgiftApplied = false;
   let summer21DesignApplied = false;
   let fathersdayApplied = false;
+  let diveInApplied = false;
 
   return (courseResult: CourseResult, index: number, array: CourseResult[]): CourseResult => {
 
@@ -178,6 +180,27 @@ export const getPromoCodeFreeCourseMap = (now: Date, options?: PriceQueryOptions
     if (fathersdayApplies && !fathersdayApplied && options?.school === 'QC Design School') {
       if (isDesignCourse(courseResult.code) && array.filter(c => isDesignCourse(c.code)).length >= 2) {
         fathersdayApplied = true;
+        return freeMap(courseResult);
+      }
+    }
+
+    if (diveInApplies && !diveInApplied && options?.school === 'QC Makeup Academy') {
+      if (isMakeupAdvancedCourse(courseResult.code) && array.filter(c => c.code === 'MZ')) {
+        diveInApplied = true;
+        return freeMap(courseResult);
+      }
+    }
+
+    if (diveInApplies && !diveInApplied && options?.school === 'QC Design School') {
+      if (isDesignCourse(courseResult.code) && array.filter(c => isDesignCourse(c.code)).length >= 2) {
+        diveInApplied = true;
+        return freeMap(courseResult);
+      }
+    }
+
+    if (diveInApplies && !diveInApplied && options?.school === 'QC Event School') {
+      if (isEventSpecialtyCourse(courseResult.code) && array.some(c => isEventFoundationCourse(c.code))) {
+        diveInApplied = true;
         return freeMap(courseResult);
       }
     }
