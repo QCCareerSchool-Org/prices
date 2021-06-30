@@ -18,8 +18,8 @@ try {
   };
 
   const discount = {
-    default: 200,
-    GBP: 150,
+    default: 154,
+    // GBP: 150,
   };
   const sig = createSignature(JSON.stringify(discount));
   if (!verifySignature(JSON.stringify(discount), sig)) {
