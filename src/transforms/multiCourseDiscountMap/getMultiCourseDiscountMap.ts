@@ -15,6 +15,7 @@ export const getMultiCourseDiscountMap = (now: Date, options?: PriceQueryOptions
 
   const skincare60Applies = applies(promoCodeSpecs.find(v => v.code === 'SKINCARE60'));
   const nathansDayApplies = applies(promoCodeSpecs.find(v => v.code === 'NATHANSDAY'));
+  const wedding21MakeupApplies = applies(promoCodeSpecs.find(v => v.code === 'WEDDING21' && v.schools?.includes('QC Makeup Academy')));
 
   return (courseResult: CourseResult, index: number, array: CourseResult[]) => {
     // skip free courses
@@ -23,7 +24,12 @@ export const getMultiCourseDiscountMap = (now: Date, options?: PriceQueryOptions
     }
 
     // skip courses that shouldn't get the multi-course discount
-    if (!(nathansDayApplies && index > 0) && !(skincare60Applies && index > 0 && courseResult.code === 'SK' && array.find(c => c.code === 'MZ')) && !shouldGetMultiCourseDiscount(now, index, options)) {
+    if (
+      !(nathansDayApplies && index > 0) &&
+      !(skincare60Applies && index > 0 && courseResult.code === 'SK' && array.find(c => c.code === 'MZ')) &&
+      !(wedding21MakeupApplies && index > 0 && courseResult.code === 'HS' && array.find(c => c.code === 'MZ')) &&
+      !shouldGetMultiCourseDiscount(now, index, options)
+    ) {
       return courseResult;
     }
 
