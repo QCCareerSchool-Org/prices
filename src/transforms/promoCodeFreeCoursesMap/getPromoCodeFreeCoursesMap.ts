@@ -17,7 +17,7 @@ export const getPromoCodeFreeCourseMap = (now: Date, options?: PriceQueryOptions
   const weekendMakeupApplies = applies(promoCodeSpecs.find(v => v.code === 'WEEKEND' && v.schools?.includes('QC Makeup Academy')));
   const weekendDesignApplies = applies(promoCodeSpecs.find(v => v.code === 'WEEKEND' && v.schools?.includes('QC Design School')));
   const june21DesignApplies = applies(promoCodeSpecs.find(v => v.code === 'JUNE21' && v.schools?.includes('QC Design School')));
-  const wedding21Applies = applies(promoCodeSpecs.find(v => v.code === 'WEDDING21'));
+  const wedding21EventApplies = applies(promoCodeSpecs.find(v => v.code === 'WEDDING21' && v.schools?.includes('QC Event School')));
   const expertApplies = applies(promoCodeSpecs.find(v => v.code === 'EXPERT'));
   const bonusgiftApplies = applies(promoCodeSpecs.find(v => v.code === 'BONUSGIFT'));
   const summer21EventApplies = applies(promoCodeSpecs.find(v => v.code === 'SUMMER21' && v.schools?.includes('QC Event School')));
@@ -112,7 +112,7 @@ export const getPromoCodeFreeCourseMap = (now: Date, options?: PriceQueryOptions
       }
     }
 
-    if (wedding21Applies) {
+    if (wedding21EventApplies) {
       if ((courseResult.code === 'DW' || courseResult.code === 'LW') && array.some(c => c.code === 'EP')) {
         return freeMap(courseResult);
       }

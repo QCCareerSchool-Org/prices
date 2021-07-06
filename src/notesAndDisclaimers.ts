@@ -219,7 +219,7 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
   }
 
   // WEDDING21 promo (Event)
-  if (applies(promoCodeSpecs.find(v => v.code === 'WEDDING21'))) {
+  if (applies(promoCodeSpecs.find(v => v.code === 'WEDDING21' && v.schools?.includes('QC Event School')))) {
     if (!courses.includes('EP')) {
       promoWarnings.push('You have entered the <strong>WEDDING21</strong> promo code but have not selected the <strong>Event & Wedding Planning Course</strong> course.');
     } else if (!courses.includes('LW') || !courses.includes('DW')) {
@@ -325,6 +325,22 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
       promoWarnings.push('You have entered the <strong>DIVEIN</strong> promo code but have not selected a Foundation course.');
     } else if (!courses.some(c => isEventSpecialtyCourse(c))) {
       promoWarnings.push('You have entered the <strong>DIVEIN</strong> promo code but have not selected a Specialty course.');
+    }
+  }
+
+  // WEDDING21 promo (Makeup)
+  if (applies(promoCodeSpecs.find(v => v.code === 'WEDDING21' && v.schools?.includes('QC Makeup Academy')))) {
+    if (options?.discountAll) {
+      disclaimers.push('You\'ll receive the six-piece makeup kit');
+      notes.push('6-piece kit');
+    } else {
+      if (!courses.includes('MZ')) {
+        promoWarnings.push('You have entered the <strong>WEDDING21</strong> promo code but have not selected the <strong>Master Makeup Artistry</strong> course.');
+      } else {
+        disclaimers.push('You\'ll receive the five-piece bridal makeup kit and hair styling wand');
+        notes.push('5-piece kit');
+        notes.push('hair styling wand');
+      }
     }
   }
 
