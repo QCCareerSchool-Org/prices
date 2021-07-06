@@ -23,37 +23,37 @@ export const getMultiCourseDiscountMap = (now: Date, options?: PriceQueryOptions
       return courseResult;
     }
 
-    // skip courses that shouldn't get the multi-course discount
     if (
-      !(nathansDayApplies && index > 0) &&
-      !(skincare60Applies && index > 0 && courseResult.code === 'SK' && array.find(c => c.code === 'MZ')) &&
-      !(wedding21MakeupApplies && index > 0 && courseResult.code === 'HS' && array.find(c => c.code === 'MZ')) &&
-      !shouldGetMultiCourseDiscount(now, index, options)
+      shouldGetMultiCourseDiscount(now, index, options) ||
+      (nathansDayApplies && index > 0) ||
+      (skincare60Applies && courseResult.code === 'SK' && array.find(c => c.code === 'MZ')) ||
+      (wedding21MakeupApplies && courseResult.code === 'HS' && array.find(c => c.code === 'MZ'))
     ) {
-      return courseResult;
+
+      // subtract all the discounts we have so far (use `shipping` instead of `shippingDiscount`) from the cost to determine the lowest possible price we might display (before payment-plan discounts)
+      const minimumPrice = parseFloat(Big(courseResult.cost).minus(courseResult.shipping).minus(courseResult.multiCourseDiscount).minus(courseResult.promoDiscount).toFixed(2));
+
+      // the amount we'd like to give
+      const desiredMultiCourseDiscount = skincare60Applies && courseResult.code === 'SK' && array.find(c => c.code === 'MZ')
+        ? parseFloat(Big(courseResult.cost).times(0.6).toFixed(2))
+        : parseFloat(Big(courseResult.cost).times(courseResult.multiCourseDiscountRate).toFixed(2));
+
+      // the true amount we'll give
+      const multiCourseDiscount = Math.min(minimumPrice, desiredMultiCourseDiscount);
+
+      const discountedCost = parseFloat(Big(courseResult.cost).minus(courseResult.shippingDiscount).minus(multiCourseDiscount).minus(courseResult.promoDiscount).toFixed(2));
+
+      const [ full, part ] = calculatePlans(courseResult.plans, discountedCost, true);
+
+      return {
+        ...courseResult,
+        multiCourseDiscount,
+        discountedCost,
+        discountMessage: multiCourseDiscount === desiredMultiCourseDiscount ? null : `${Math.round(multiCourseDiscount / courseResult.cost * 100)}% Discount`, // override the discount message if we gave a different discount
+        plans: { full, part },
+      };
     }
 
-    // subtract all the discounts we have so far (use `shipping` instead of `shippingDiscount`) from the cost to determine the lowest possible price we might display (before payment-plan discounts)
-    const minimumPrice = parseFloat(Big(courseResult.cost).minus(courseResult.shipping).minus(courseResult.multiCourseDiscount).minus(courseResult.promoDiscount).toFixed(2));
-
-    // the amount we'd like to give
-    const desiredMultiCourseDiscount = skincare60Applies && courseResult.code === 'SK' && array.find(c => c.code === 'MZ')
-      ? parseFloat(Big(courseResult.cost).times(0.6).toFixed(2))
-      : parseFloat(Big(courseResult.cost).times(courseResult.multiCourseDiscountRate).toFixed(2));
-
-    // the true amount we'll give
-    const multiCourseDiscount = Math.min(minimumPrice, desiredMultiCourseDiscount);
-
-    const discountedCost = parseFloat(Big(courseResult.cost).minus(courseResult.shippingDiscount).minus(multiCourseDiscount).minus(courseResult.promoDiscount).toFixed(2));
-
-    const [ full, part ] = calculatePlans(courseResult.plans, discountedCost, true);
-
-    return {
-      ...courseResult,
-      multiCourseDiscount,
-      discountedCost,
-      discountMessage: multiCourseDiscount === desiredMultiCourseDiscount ? null : `${Math.round(multiCourseDiscount / courseResult.cost * 100)}% Discount`, // override the discount message if we gave a different discount
-      plans: { full, part },
-    };
+    return courseResult;
   };
 };
