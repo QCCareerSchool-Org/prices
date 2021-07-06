@@ -341,7 +341,7 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
         notes.push('5-piece kit');
         notes.push('hair styling wand');
         if (!courses.includes('HS')) {
-          promoWarnings.push('Did you know you can also enroll in the <strong>Hair Styling Essentials</strong> course at 50% off?');
+          promoWarnings.push('<p>Promo code applied: <strong>WEDDING21</strong></p><p class="mb-0">Did you know you can also enroll in the <strong>Hair Styling Essentials</strong> course at 50% off?</p>');
         }
       }
     }
