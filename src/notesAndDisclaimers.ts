@@ -340,6 +340,9 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
         disclaimers.push('You\'ll receive the five-piece bridal makeup kit and hair styling wand');
         notes.push('5-piece kit');
         notes.push('hair styling wand');
+        if (!courses.includes('HS')) {
+          promoWarnings.push('You have entered the <strong>WEDDING21</strong> promo code but have not selected the <strong>Hair Styling Essentials</strong> course.');
+        }
       }
     }
   }
