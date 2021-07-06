@@ -344,6 +344,26 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
     }
   }
 
+  // DELUXE promo
+  if (applies(promoCodeSpecs.find(v => v.code === 'DELUXE'))) {
+    disclaimers.push('You\'ll receive the free deluxe design kit');
+    notes.push('deluxe design kit');
+    if (courses.length < 2) {
+      promoWarnings.push('You have entered the <strong>DELUXE</strong> promo code but but have not selected more than one course.');
+    }
+  }
+
+  // WEDDINGSZN promo
+  if (applies(promoCodeSpecs.find(v => v.code === 'WEDDINGSZN'))) {
+    disclaimers.push('You\'ll receive the free leather portfolio');
+    notes.push('leather portfolio');
+    if (!courses.some(c => isEventFoundationCourse(c))) {
+      promoWarnings.push('You have entered the <strong>WEDDINGSZN</strong> promo code but have not selected a Foundation course.');
+    } else if (!courses.some(c => isEventSpecialtyCourse(c))) {
+      promoWarnings.push('You have entered the <strong>WEDDINGSZN</strong> promo code but have not selected a Specialty course.');
+    }
+  }
+
   if (courses.includes('DG') && audCountry(countryCode)) {
     disclaimers.push('The WAHL clippers and attachment combs will not be provided with your course. ' +
       'QC only supplies the North American version, which is not compatible with power outlets in your country. ' +
