@@ -7,7 +7,7 @@ export const noShippingMessage = (noShipping: NoShipping, courses: string[], cou
   if (noShipping === 'REQUIRED') {
     const tel = telephoneNumber(countryCode);
     return 'Due to international shipping restrictions, <strong>we do not ship</strong> physical ' +
-      'course materials' + (courses.some(c => isMakeupCourse(c)) ? ', <u>including makeup kits</u>, ' : ' ') +
+      'course materials or bonus items' + (courses.some(c => isMakeupCourse(c)) ? ', <u>including makeup kits</u>, ' : ' ') +
       'to your country. The cost of your course' + (courses.length > 1 ? 's have ' : ' has ') +
       'been reduced accordingly. You will have access to electronic course materials through the Online Student Center.' +
       (courses.some(c => isDesignCourse(c)) ? ' You will need to source your own design tools to complete your assignments. Please refer to your welcome email for more information.' : '') +
@@ -15,7 +15,7 @@ export const noShippingMessage = (noShipping: NoShipping, courses: string[], cou
       ` For more information please contact the School at <a style="color:inherit;white-space:nowrap;" href="tel:${tel}">${tel}.`;
   } else if (noShipping === 'APPLIED') {
     return 'You have selected to not receive physical ' +
-      'course materials' + (courses.some(c => isMakeupCourse(c)) ? ', <u>including makeup kits</u>' : '') + '. ' +
+      'course materials or bonus items' + (courses.some(c => isMakeupCourse(c)) ? ', <u>including makeup kits</u>' : '') + '. ' +
       'The cost of your course' + (courses.length > 1 ? 's have ' : ' has ') +
       'been reduced accordingly. You will have access to electronic course materials through the Online Student Center.' +
       (courses.some(c => isDesignCourse(c)) ? ' You will need to source your own design tools to complete your assignments. Please refer to your welcome email for more information.' : '') +
