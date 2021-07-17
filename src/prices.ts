@@ -84,7 +84,7 @@ export async function prices(
     .map(getMultiCourseDiscountMap(now, options)) // apply multi-course discounts
     .map(getStudentDiscountMap(currencyCode, options)) // apply student promotional discounts
     .map(getExtraDiscountMap(currencyCode, options)) // apply extra promotional discounts
-    .map(getPromoCodeDiscountsMap(now, options)) // apply promotional discounts based on promo codes
+    .map(getPromoCodeDiscountsMap(now, currencyCode, options)) // apply promotional discounts based on promo codes
     .map(getOverridesMap(courses, options?.depositOverrides, options?.installmentsOverride)) // update the courseResults based on the sales agent's overrides
     .sort(courseSort); // sort by primary, free, cost, discounted cost
 
