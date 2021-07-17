@@ -27,6 +27,7 @@ export const getPromoCodeFreeCourseMap = (now: Date, options?: PriceQueryOptions
   const diveInApplies = applies(promoCodeSpecs.find(v => v.code === 'DIVEIN'));
   const deluxeApplies = applies(promoCodeSpecs.find(v => v.code === 'DELUXE'));
   const weddingsznApplies = applies(promoCodeSpecs.find(v => v.code === 'WEDDINGSZN'));
+  const deluxe21Applies = applies(promoCodeSpecs.find(v => v.code === 'DELUXE21'));
 
   let may21Applied = false;
   let spring21Applied = false;
@@ -42,6 +43,7 @@ export const getPromoCodeFreeCourseMap = (now: Date, options?: PriceQueryOptions
   let diveInApplied = false;
   let deluxeApplied = false;
   let weddingsznApplied = false;
+  let deluxe21Applied = false;
 
   return (courseResult: CourseResult, index: number, array: CourseResult[]): CourseResult => {
 
@@ -219,6 +221,13 @@ export const getPromoCodeFreeCourseMap = (now: Date, options?: PriceQueryOptions
     if (weddingsznApplies && !weddingsznApplied) {
       if (isEventSpecialtyCourse(courseResult.code) && array.some(c => isEventFoundationCourse(c.code))) {
         weddingsznApplied = true;
+        return freeMap(courseResult);
+      }
+    }
+
+    if (deluxe21Applies && !deluxe21Applied) {
+      if (isDesignCourse(courseResult.code) && array.filter(c => isDesignCourse(c.code)).length >= 2) {
+        deluxe21Applied = true;
         return freeMap(courseResult);
       }
     }

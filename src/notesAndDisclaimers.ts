@@ -267,8 +267,12 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
   if (applies(promoCodeSpecs.find(v => v.code === 'SUMMER21' && v.schools?.includes('QC Event School')))) {
     if (!courses.some(c => isEventFoundationCourse(c))) {
       promoWarnings.push('You have entered the <strong>SUMMER21</strong> promo code but have not selected a Foundation course.');
-    } else if (!courses.some(c => isEventSpecialtyCourse(c))) {
-      promoWarnings.push('You have entered the <strong>SUMMER21</strong> promo code but have not selected a Specialty course.');
+    } else {
+      disclaimers.push('You\'ll recieve the FREE leather portfolio');
+      notes.push('leather portfolio');
+      if (!courses.some(c => isEventSpecialtyCourse(c))) {
+        promoWarnings.push('You have entered the <strong>SUMMER21</strong> promo code but have not selected a Specialty course.');
+      }
     }
   }
 
@@ -376,6 +380,12 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
       promoWarnings.push(`Unfortunately the <strong>QCLASHES</strong> code is not valid with the course${courses.length === 1 ? '' : 's'} you have selected.`);
       promoWarnings.push('Please chose at least one course from Master Makeup Artistry, Skincare, Airbrush Makeup Workshop, Special FX Makeup, Hair Styling Essentials, or Global Beauty.');
     }
+  }
+
+  // DELUXE21 promo
+  if (applies(promoCodeSpecs.find(v => v.code === 'DELUXE21'))) {
+    disclaimers.push('You\'ll recieve the FREE color fan deck');
+    notes.push('fan deck');
   }
 
   if (courses.includes('DG') && audCountry(countryCode)) {
