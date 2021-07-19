@@ -388,6 +388,68 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
     notes.push('fan deck');
   }
 
+  // GLOWUP promo
+  if (applies(promoCodeSpecs.find(v => v.code === 'GLOWUP'))) {
+    if (!courses.includes('MZ')) {
+      promoWarnings.push('You have entered the <strong>GLOWUP</strong> promo code but have not selected the <strong>Master Makeup Artistry</strong> course.');
+    } else {
+      if (!courses.includes('MW')) {
+        promoWarnings.push('You have entered the <strong>GLOWUP</strong> promo code but have not selected the <strong>Pro Makeup Workshop</strong>.');
+      }
+      disclaimers.push('You\'ll recieve the FREE elite makeup kit upgrade');
+      notes.push('elite kit');
+    }
+  }
+
+  // FASTPASS promo
+  if (applies(promoCodeSpecs.find(v => v.code === 'FASTPASS'))) {
+    if (!courses.some(c => isEventFoundationCourse(c))) {
+      promoWarnings.push('You have entered the <strong>FASTPASS</strong> promo code but have not selected a foundation course.');
+    } else {
+      if (!courses.includes('LW') && !courses.includes('VE')) {
+        promoWarnings.push('You have entered the <strong>FASTPASS</strong> promo code but have not selected the <strong>Luxury Wedding Planning</strong> course or <strong>Virtual Event Training</strong> program.');
+      } else if (!courses.includes('LW')) {
+        promoWarnings.push('You have entered the <strong>FASTPASS</strong> promo code but have not selected the <strong>Luxury Wedding Planning</strong> course.');
+      } else if (!courses.includes('VE')) {
+        promoWarnings.push('You have entered the <strong>FASTPASS</strong> promo code but have not selected the <strong>Virtual Event Training</strong> program.');
+      }
+    }
+  }
+
+  // JULY21 promo
+  if (applies(promoCodeSpecs.find(v => v.code === 'JULY21'))) {
+    const designCourseCount = courses.filter(c => isDesignCourse(c)).length;
+    if (designCourseCount === 0) {
+      promoWarnings.push('You have entered the <strong>JULY21</strong> promo code but have not selected any courses.');
+    } else if (designCourseCount === 1) {
+      promoWarnings.push('You have entered the <strong>JULY21</strong> promo code but have not selected a second course.');
+    }
+  }
+
+  // Design built-in student offer: laser tape measure
+  if (options?.school === 'QC Design School' && options.discountAll && (now >= new Date(2021, 6, 19, 9, 30) && now < new Date(2021, 6, 31))) {
+    if (courses.length >= 1) {
+      notes.push('laser tape measure');
+      disclaimers.push('You\'ll receive the FREE laser tape measure');
+    }
+  }
+
+  // Event built-in student offer: leather portfolio
+  if (options?.school === 'QC Event School' && options.discountAll && (now >= new Date(2021, 6, 19, 9, 30) && now < new Date(2021, 6, 31))) {
+    if (courses.length >= 1) {
+      notes.push('leather portfolio');
+      disclaimers.push('You\'ll receive the FREE leather portfolio');
+    }
+  }
+
+  // Makeup built-in student offer: six-piece kit
+  if (options?.school === 'QC Makeup Academy' && options.discountAll && (now >= new Date(2021, 6, 19, 9, 30) && now < new Date(2021, 6, 31))) {
+    if (courses.length >= 1) {
+      notes.push('6-piece makeup kit');
+      disclaimers.push('You\'ll receive the six-piece makeup kit');
+    }
+  }
+
   if (courses.includes('DG') && audCountry(countryCode)) {
     disclaimers.push('The WAHL clippers and attachment combs will not be provided with your course. ' +
       'QC only supplies the North American version, which is not compatible with power outlets in your country. ' +
