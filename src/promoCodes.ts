@@ -65,6 +65,9 @@ export const promoCodeSpecs: PromoCodeSpec[] = [
   { code: 'WEDDINGSZN', student: 'DENIED', schools: [ 'QC Event School' ], start: new Date(2021, 6, 6, 10, 30), end: new Date(2021, 6, 17, 23, 59, 59, 999) }, // July 6 at 10:30 to July 17 at 23:59:59.999
   { code: 'QCLASHES', student: 'ALLOWED', schools: [ 'QC Makeup Academy' ] },
   { code: 'DELUXE21', student: 'DENIED', schools: [ 'QC Design School' ], start: new Date(2021, 6, 17, 8), end: new Date(2021, 6, 20) }, // July 17 at 08:00 to July 20 at 00:00
+  { code: 'GLOWUP', student: 'DENIED', schools: [ 'QC Makeup Academy' ], start: new Date(2021, 6, 19, 9, 30), end: new Date(2021, 6, 31) }, // July 19 at 09:30 to July 31 at 00:00
+  { code: 'FASTPASS', student: 'DENIED', schools: [ 'QC Event School' ], start: new Date(2021, 6, 19, 9, 30), end: new Date(2021, 6, 31) }, // July 19 at 09:30 to July 31 at 00:00
+  { code: 'JULY21', student: 'DENIED', schools: [ 'QC Design School' ], start: new Date(2021, 6, 19, 9, 30), end: new Date(2021, 6, 31) }, // July 19 at 09:30 to July 31 at 00:00
   ...studentSupport50Specs,
 ];
 

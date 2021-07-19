@@ -28,6 +28,9 @@ export const getPromoCodeFreeCourseMap = (now: Date, options?: PriceQueryOptions
   const deluxeApplies = applies(promoCodeSpecs.find(v => v.code === 'DELUXE'));
   const weddingsznApplies = applies(promoCodeSpecs.find(v => v.code === 'WEDDINGSZN'));
   const deluxe21Applies = applies(promoCodeSpecs.find(v => v.code === 'DELUXE21'));
+  const glowupApplies = applies(promoCodeSpecs.find(v => v.code === 'GLOWUP'));
+  const fastpassApplies = applies(promoCodeSpecs.find(v => v.code === 'FASTPASS'));
+  const july21Applies = applies(promoCodeSpecs.find(v => v.code === 'JULY21'));
 
   let may21Applied = false;
   let spring21Applied = false;
@@ -44,6 +47,7 @@ export const getPromoCodeFreeCourseMap = (now: Date, options?: PriceQueryOptions
   let deluxeApplied = false;
   let weddingsznApplied = false;
   let deluxe21Applied = false;
+  let july21Applied = false;
 
   return (courseResult: CourseResult, index: number, array: CourseResult[]): CourseResult => {
 
@@ -228,6 +232,25 @@ export const getPromoCodeFreeCourseMap = (now: Date, options?: PriceQueryOptions
     if (deluxe21Applies && !deluxe21Applied) {
       if (isDesignCourse(courseResult.code) && array.filter(c => isDesignCourse(c.code)).length >= 2) {
         deluxe21Applied = true;
+        return freeMap(courseResult);
+      }
+    }
+
+    if (glowupApplies) {
+      if (courseResult.code === 'MW' && array.some(c => c.code === 'MZ')) {
+        return freeMap(courseResult);
+      }
+    }
+
+    if (fastpassApplies) {
+      if ((courseResult.code === 'LW' || courseResult.code === 'VE') && array.some(c => isEventFoundationCourse(c.code))) {
+        return freeMap(courseResult);
+      }
+    }
+
+    if (july21Applies && !july21Applied) {
+      if (array.filter(c => isDesignCourse(c.code)).length >= 2) {
+        july21Applied = true;
         return freeMap(courseResult);
       }
     }
