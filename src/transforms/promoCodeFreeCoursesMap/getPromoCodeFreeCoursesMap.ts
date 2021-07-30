@@ -40,7 +40,7 @@ export const getPromoCodeFreeCourseMap = (now: Date, options?: PriceQueryOptions
   let expertApplied = false;
   let summer21EventApplied = false;
   let summer21MakeupApplied = false;
-  let bonusgiftApplied = false;
+  const bonusgiftApplied = false;
   let summer21DesignApplied = false;
   let fathersdayApplied = false;
   let diveInApplied = false;
@@ -129,19 +129,8 @@ export const getPromoCodeFreeCourseMap = (now: Date, options?: PriceQueryOptions
     }
 
     if (bonusgiftApplies) {
-      if (options?.school === 'QC Makeup Academy') {
-        if (courseResult.code === 'MW' && array.some(c => c.code === 'MZ')) {
-          return freeMap(courseResult);
-        }
-      } else if (options?.school === 'QC Event School') {
-        if ((courseResult.code === 'DW' || courseResult.code === 'LW') && array.some(c => c.code === 'EP')) {
-          return freeMap(courseResult);
-        }
-      } else if (options?.school === 'QC Design School' && !bonusgiftApplied) {
-        if (isDesignCourse(courseResult.code) && array.filter(c => isDesignCourse(c.code)).length >= 2) {
-          bonusgiftApplied = true;
-          return freeMap(courseResult);
-        }
+      if ((courseResult.code === 'VE' || courseResult.code === 'LW') && array.some(c => isEventFoundationCourse(c.code))) {
+        return freeMap(courseResult);
       }
     }
 

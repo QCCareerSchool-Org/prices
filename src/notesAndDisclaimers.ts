@@ -62,13 +62,17 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
 
   // ELITE promo code
   if (applies(promoCodeSpecs.find(p => p.code === 'ELITE'))) {
-    if (noShipping === 'ALLOWED' || noShipping === 'FORBIDDEN') {
-      notes.push('elite makeup kit');
-      disclaimers.push('You will receive the <strong>elite makeup kit upgrade</strong> (includes a highlight palette, contour palette, eyebrow palette, 4-pack of false lashes, a makeup travel bag, and a stainless steel palette with spatula).');
-    } else if (noShipping === 'APPLIED') {
+    if (noShipping === 'APPLIED') {
       promoWarnings.push('You entered the <strong>ELITE</strong> promo code, but have chosen to not have any materials shipped. You will not receive any makeup kits.');
     } else if (noShipping === 'REQUIRED') {
       promoWarnings.push('You entered the <strong>ELITE</strong> promo code, but we do not ship to your country. You will not receive any makeup kits.');
+    } else if (noShipping === 'ALLOWED' || noShipping === 'FORBIDDEN') {
+      if (!courses.includes('MZ')) {
+        promoWarnings.push('You have entered the <strong>ELITE</strong> promo code but have not selected the <strong>Master Makeup Artistry</strong> course.');
+      } else {
+        notes.push('elite makeup kit');
+        disclaimers.push('You will receive the <strong>elite makeup kit upgrade</strong> (includes a highlight palette, contour palette, eyebrow palette, 4-pack of false lashes, a makeup travel bag, and a stainless steel palette with spatula).');
+      }
     }
   }
 
@@ -229,27 +233,13 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
 
   // BONUSGIFT promo (Event, Makeup, Design)
   if (applies(promoCodeSpecs.find(v => v.code === 'BONUSGIFT'))) {
-    if (options?.school === 'QC Event School') {
+    if (!courses.some(c => isEventFoundationCourse(c))) {
+      promoWarnings.push('You have entered the <strong>BONUSGIFT</strong> promo code but have not selected a <strong>Foundation course</strong>.');
+    } else {
       notes.push('leather portfolio');
       disclaimers.push('You\'ll receive the FREE leather protfolio');
-      if (!courses.includes('EP')) {
-        promoWarnings.push('You have entered the <strong>BONUSGIFT</strong> promo code but have not selected the <strong>Event & Wedding Planning Course</strong> course.');
-      } else if (!courses.includes('LW') || !courses.includes('DW')) {
-        promoWarnings.push('You have entered the <strong>BONUSGIFT</strong> promo code but have not selected both the <strong>Luxury Wedding Planning</strong> and <strong>Destination Wedding Plannin</strong> courses.');
-      }
-    } else if (options?.school === 'QC Makeup Academy') {
-      notes.push('elite makeup kit');
-      disclaimers.push('You\'ll receive the FREE 11-piece elite makeup kit');
-      if (!courses.includes('MZ')) {
-        promoWarnings.push('You have entered the <strong>BONUSGIFT</strong> promo code but have not selected the <strong>Master Makeup Artistry</strong> course.');
-      } else if (!courses.includes('MW')) {
-        promoWarnings.push('You have entered the <strong>BONUSGIFT</strong> promo code but have not selected the <strong>Pro Makeup Workshop</strong>.');
-      }
-    } else if (options?.school === 'QC Design School') {
-      notes.push('leather portfolio');
-      disclaimers.push('You\'ll receive the FREE leather protfolio');
-      if (courses.length < 2) {
-        promoWarnings.push('You have entered the <strong>BONUSGIFT</strong> promo code but have not selected more than one course.');
+      if (!courses.includes('LW') || !courses.includes('VE')) {
+        promoWarnings.push('You have entered the <strong>BONUSGIFT</strong> promo code but have not selected both the <strong>Luxury Wedding Planning</strong> course and the <strong>Vitual Event Training</strong> program.');
       }
     }
   }
@@ -448,6 +438,13 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
       notes.push('6-piece makeup kit');
       disclaimers.push('You\'ll receive the six-piece makeup kit');
     }
+  }
+
+  // DESIGN21 promo
+  if (applies(promoCodeSpecs.find(v => v.code === 'DESIGN21'))) {
+    notes.push('deluxe kit');
+    notes.push('leather portfolio');
+    disclaimers.push('You\'ll get the free deluxe kit and leather portfolio');
   }
 
   if (courses.includes('DG') && audCountry(countryCode)) {
