@@ -1,4 +1,5 @@
 import { audCountry, gbpCountry, nzdCountry } from '@qccareerschool/helper-functions';
+import e from 'express';
 import { isDesignCourse, isEventFoundationCourse, isEventSpecialtyCourse, isMakeupAdvancedCourse, isMakeupFoundationCourse } from './courses';
 import { PromoCodeSpec, promoCodeSpecs, specApplies } from './promoCodes';
 import { NoShipping, PriceQueryOptions } from './types';
@@ -423,6 +424,21 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
     } else {
       disclaimers.push('You will receive the FREE VIP Career Catalyst Workshop');
       notes.push('career catalyst workshop');
+    }
+  }
+
+  // TRIPLETHREAT
+  if (applies(promoCodeSpecs.find(v => v.code === 'TRIPLETHREAT'))) {
+    if (!courses.some(c => isEventFoundationCourse(c))) {
+      promoWarnings.push('You have entered the <strong>TRIPLETHREAT</strong> promo code but have not selected a <strong>Foundation</strong> course.');
+    } else {
+      const specialtyCount = courses.filter(c => isEventSpecialtyCourse(c)).length;
+      if (specialtyCount === 0) {
+        promoWarnings.push('You have entered the <strong>TRIPLETHREAT</strong> promo code but have not selected any FREE <strong>Specialty</strong> courses.');
+      } else if (specialtyCount === 1) {
+        promoWarnings.push('Promo code <strong>TRIPLETHREAT</strong> applied.');
+        promoWarnings.push('Remember you can select another FREE <strong>Specialty</strong> course.');
+      }
     }
   }
 

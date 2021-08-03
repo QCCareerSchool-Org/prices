@@ -31,6 +31,7 @@ export const getPromoCodeFreeCourseMap = (now: Date, options?: PriceQueryOptions
   const glowupApplies = applies(promoCodeSpecs.find(v => v.code === 'GLOWUP'));
   const fastpassApplies = applies(promoCodeSpecs.find(v => v.code === 'FASTPASS'));
   const july21Applies = applies(promoCodeSpecs.find(v => v.code === 'JULY21'));
+  const tripleThreatApplies = applies(promoCodeSpecs.find(v => v.code === 'TRIPLETHREAT'));
 
   let may21Applied = false;
   let spring21Applied = false;
@@ -240,6 +241,12 @@ export const getPromoCodeFreeCourseMap = (now: Date, options?: PriceQueryOptions
     if (july21Applies && !july21Applied) {
       if (array.filter(c => isDesignCourse(c.code)).length >= 2) {
         july21Applied = true;
+        return freeMap(courseResult);
+      }
+    }
+
+    if (tripleThreatApplies) {
+      if ((courseResult.code === 'DW' || courseResult.code === 'LW') && array.some(c => isEventFoundationCourse(c.code))) {
         return freeMap(courseResult);
       }
     }
