@@ -51,7 +51,7 @@ export const promoCodeSpecs: PromoCodeSpec[] = [
   { code: 'WEEKEND', student: 'DENIED', schools: [ 'QC Design School' ], start: new Date(Date.UTC(2021, 4, 29, 12)), end: new Date(Date.UTC(2021, 5, 1, 13)) }, // May 28 at 08:00 to June 1 at 09:00
   { code: 'JUNE21', student: 'DENIED', schools: [ 'QC Design School' ], start: new Date(Date.UTC(2021, 5, 1, 13)) }, // June 1 at 09:00
   { code: 'WEDDING21', student: 'DENIED', schools: [ 'QC Event School' ], start: new Date(2021, 5, 9, 9), end: new Date(2021, 5, 28, 9) }, // June 9 at 09:00 to June 28 at 09:00
-  { code: 'EXPERT', student: 'DENIED', schools: [ 'QC Event School' ], start: new Date(2021, 5, 9, 9), end: new Date(2021, 5, 28, 9) }, // June 9 at 09:00 to June 28 at 09:00
+  { code: 'EXPERT', student: 'DENIED', schools: [ 'QC Event School' ] },
   { code: 'SUMMER21', student: 'DENIED', schools: [ 'QC Event School' ], start: new Date(2021, 6, 17, 8), end: new Date(2021, 6, 20) }, // July 17 at 08:00 to July 20 at 00:00
   { code: 'SUMMER21', student: 'DENIED', schools: [ 'QC Makeup Academy' ], start: new Date(2021, 5, 14, 9), end: new Date(2021, 5, 28, 9) }, // June 14 at 09:00 to June 28 at 09:00
   { code: 'SUMMER21', student: 'DENIED', schools: [ 'QC Design School' ], start: new Date(2021, 5, 14, 9), end: new Date(2021, 5, 28, 9) }, // June 14 at 09:00 to June 28 at 09:00
