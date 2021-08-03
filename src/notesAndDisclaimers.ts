@@ -442,6 +442,22 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
     }
   }
 
+  // DELUXE200
+  if (applies(promoCodeSpecs.find(v => v.code === 'DELUXE200'))) {
+    if (!courses.some(c => isDesignCourse(c))) {
+      promoWarnings.push('You have entered the <strong>DELUXE200</strong> promo code but have not selected any design courses.');
+    } else if (noShipping === 'APPLIED') {
+      promoWarnings.push('Promo code <strong>DELUXE200</strong> applied.');
+      promoWarnings.push('Because you have elected to not receive physical materials, the <strong>deluxe kit</strong> will not be shipped.');
+    } else if (noShipping === 'REQUIRED') {
+      promoWarnings.push('Promo code <strong>DELUXE200</strong> applied.');
+      promoWarnings.push('Because we do not ship physical materials to your location, the <strong>deluxe kit</strong> will not be shipped.');
+    } else {
+      disclaimers.push('You\'ll receive the free deluxe design kit');
+      notes.push('deluxe design kit');
+    }
+  }
+
   // Design built-in student offer: laser tape measure
   if (options?.school === 'QC Design School' && options.discountAll && (now >= new Date(2021, 6, 19, 9, 30) && now < new Date(2021, 6, 31))) {
     if (courses.length >= 1) {
