@@ -239,7 +239,7 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
       notes.push('leather portfolio');
       disclaimers.push('You\'ll receive the FREE leather protfolio');
       if (!courses.includes('LW') || !courses.includes('VE')) {
-        promoWarnings.push('You have entered the <strong>BONUSGIFT</strong> promo code but have not selected both the <strong>Luxury Wedding Planning</strong> course and the <strong>Vitual Event Training</strong> program.');
+        promoWarnings.push('You have entered the <strong>BONUSGIFT</strong> promo code but have not selected both the <strong>Luxury Wedding & Event Planning</strong> course and the <strong>Virtual Event Training</strong> program.');
       }
     }
   }
@@ -413,6 +413,16 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
       promoWarnings.push('You have entered the <strong>JULY21</strong> promo code but have not selected any courses.');
     } else if (designCourseCount === 1) {
       promoWarnings.push('You have entered the <strong>JULY21</strong> promo code but have not selected a second course.');
+    }
+  }
+
+  // VIP2021
+  if (applies(promoCodeSpecs.find(v => v.code === 'VIP2021'))) {
+    if (!courses.includes('MZ')) {
+      promoWarnings.push('You have entered the <strong>VIP2021</strong> promo code but have not selected the <strong>Master Makeup Artistry</strong> course.');
+    } else {
+      disclaimers.push('You will receive the FREE VIP Career Catalyst Workshop');
+      notes.push('career catalyst workshop');
     }
   }
 
