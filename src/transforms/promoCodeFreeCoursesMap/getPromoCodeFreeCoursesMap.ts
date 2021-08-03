@@ -41,7 +41,6 @@ export const getPromoCodeFreeCourseMap = (now: Date, options?: PriceQueryOptions
   let expertApplied = false;
   let summer21EventApplied = false;
   let summer21MakeupApplied = false;
-  const bonusgiftApplied = false;
   let summer21DesignApplied = false;
   let fathersdayApplied = false;
   let diveInApplied = false;
@@ -49,6 +48,7 @@ export const getPromoCodeFreeCourseMap = (now: Date, options?: PriceQueryOptions
   let weddingsznApplied = false;
   let deluxe21Applied = false;
   let july21Applied = false;
+  let tripleThreatAppliedCount = 0;
 
   return (courseResult: CourseResult, index: number, array: CourseResult[]): CourseResult => {
 
@@ -245,8 +245,9 @@ export const getPromoCodeFreeCourseMap = (now: Date, options?: PriceQueryOptions
       }
     }
 
-    if (tripleThreatApplies) {
-      if ((courseResult.code === 'DW' || courseResult.code === 'LW') && array.some(c => isEventFoundationCourse(c.code))) {
+    if (tripleThreatApplies && tripleThreatAppliedCount < 2) {
+      if (isEventSpecialtyCourse(courseResult.code) && array.some(c => isEventFoundationCourse(c.code))) {
+        tripleThreatAppliedCount++;
         return freeMap(courseResult);
       }
     }
