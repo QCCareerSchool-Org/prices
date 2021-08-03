@@ -55,7 +55,7 @@ export const promoCodeSpecs: PromoCodeSpec[] = [
   { code: 'SUMMER21', student: 'DENIED', schools: [ 'QC Event School' ], start: new Date(2021, 6, 17, 8), end: new Date(2021, 6, 20) }, // July 17 at 08:00 to July 20 at 00:00
   { code: 'SUMMER21', student: 'DENIED', schools: [ 'QC Makeup Academy' ], start: new Date(2021, 5, 14, 9), end: new Date(2021, 5, 28, 9) }, // June 14 at 09:00 to June 28 at 09:00
   { code: 'SUMMER21', student: 'DENIED', schools: [ 'QC Design School' ], start: new Date(2021, 5, 14, 9), end: new Date(2021, 5, 28, 9) }, // June 14 at 09:00 to June 28 at 09:00
-  { code: 'BONUSGIFT', student: 'DENIED', schools: [ 'QC Event School' ], start: new Date(2021, 6, 31, 8), end: new Date(2021, 7, 3) }, // July 31 at 08:00 to August 3 at 00:00
+  { code: 'BONUSGIFT', student: 'DENIED', schools: [ 'QC Event School' ], start: new Date(2021, 6, 31, 8), end: new Date(2021, 7, 5) }, // July 31 at 08:00 to August 5 at 00:00
   { code: 'DESIGN100', student: 'DENIED', schools: [ 'QC Design School' ], start: new Date(2021, 5, 14, 9) }, // June 14 at 09:00
   { code: 'FATHERSDAY', student: 'DENIED', schools: [ 'QC Makeup Academy', 'QC Event School', 'QC Design School' ], start: new Date(2021, 5, 18, 9, 30), end: new Date(2021, 5, 21, 0) }, // June 18 at 09:30 to June 21 at 00:00
   { code: 'DIVEIN', student: 'DENIED', schools: [ 'QC Makeup Academy', 'QC Design School', 'QC Event School' ], start: new Date(2021, 5, 30, 10), end: new Date(2021, 5, 30, 23, 59, 59, 999) }, // June 30 at 10:00 to June 30 at 23:59:59.999
@@ -68,7 +68,7 @@ export const promoCodeSpecs: PromoCodeSpec[] = [
   { code: 'GLOWUP', student: 'DENIED', schools: [ 'QC Makeup Academy' ], start: new Date(2021, 6, 19, 9, 30), end: new Date(2021, 6, 31) }, // July 19 at 09:30 to July 31 at 00:00
   { code: 'FASTPASS', student: 'DENIED', schools: [ 'QC Event School' ], start: new Date(2021, 6, 19, 9, 30), end: new Date(2021, 6, 31) }, // July 19 at 09:30 to July 31 at 00:00
   { code: 'JULY21', student: 'DENIED', schools: [ 'QC Design School' ], start: new Date(2021, 6, 19, 9, 30), end: new Date(2021, 6, 31) }, // July 19 at 09:30 to July 31 at 00:00
-  { code: 'DESIGN21', student: 'DENIED', schools: [ 'QC Design School' ], start: new Date(2021, 6, 31, 8), end: new Date(2021, 7, 3) }, // July 31 at 08:00 to August 3 at 00:00
+  { code: 'DESIGN21', student: 'DENIED', schools: [ 'QC Design School' ], start: new Date(2021, 6, 31, 8), end: new Date(2021, 7, 5) }, // July 31 at 08:00 to August 5 at 00:00
   ...studentSupport50Specs,
 ];
 
