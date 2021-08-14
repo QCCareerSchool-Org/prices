@@ -458,6 +458,18 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
     }
   }
 
+  // ELITEVIP
+  if (applies(promoCodeSpecs.find(v => v.code === 'ELITEVIP'))) {
+    if (!courses.includes('MZ')) {
+      promoWarnings.push('You have entered the <strong>ELITEVIP</strong> promo code but have not selected the <strong>Master Makeup Artistry</strong> course.');
+    } else {
+      disclaimers.push('You will receive the FREE VIP Career Catalyst session');
+      disclaimers.push('You will receive the elite makeup kit upgrade');
+      notes.push('career catalyst workshop');
+      notes.push('elite kit');
+    }
+  }
+
   // Design built-in student offer: laser tape measure
   if (options?.school === 'QC Design School' && options.discountAll && (now >= new Date(2021, 6, 19, 9, 30) && now < new Date(2021, 6, 31))) {
     if (courses.length >= 1) {
