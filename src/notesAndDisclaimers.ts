@@ -232,7 +232,7 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
     }
   }
 
-  // BONUSGIFT promo (Event, Makeup, Design)
+  // BONUSGIFT promo
   if (applies(promoCodeSpecs.find(v => v.code === 'BONUSGIFT'))) {
     if (!courses.some(c => isEventFoundationCourse(c))) {
       promoWarnings.push('You have entered the <strong>BONUSGIFT</strong> promo code but have not selected a <strong>Foundation course</strong>.');
