@@ -68,7 +68,7 @@ export const promoCodeSpecs: PromoCodeSpec[] = [
   { code: 'GLOWUP', student: 'DENIED', schools: [ 'QC Makeup Academy' ], start: new Date(2021, 6, 19, 9, 30), end: new Date(2021, 6, 31) }, // July 19 at 09:30 to July 31 at 00:00
   { code: 'FASTPASS', student: 'DENIED', schools: [ 'QC Event School' ], start: new Date(2021, 6, 19, 9, 30), end: new Date(2021, 6, 31) }, // July 19 at 09:30 to July 31 at 00:00
   { code: 'JULY21', student: 'DENIED', schools: [ 'QC Design School' ], start: new Date(2021, 6, 19, 9, 30), end: new Date(2021, 6, 31) }, // July 19 at 09:30 to July 31 at 00:00
-  { code: 'DESIGN21', student: 'DENIED', schools: [ 'QC Design School' ], start: new Date(2021, 6, 31, 8), end: new Date(2021, 7, 5) }, // July 31 at 08:00 to August 5 at 00:00
+  { code: 'DESIGN21', student: 'DENIED', schools: [ 'QC Design School' ], start: new Date(2021, 7, 14), end: new Date(2021, 7, 17) }, // August 14 at 00:00 to August 17 at 00:00
   { code: 'VIP2021', student: 'DENIED', schools: [ 'QC Makeup Academy' ], start: new Date(2021, 7, 3), end: new Date(2021, 7, 14, 8) }, // August 3 at 00:00 to August 14 at 08:00
   { code: 'TRIPLETHREAT', student: 'DENIED', schools: [ 'QC Event School' ], start: new Date(2021, 7, 3), end: new Date(2021, 7, 14, 8) }, // August 3 at 00:00 to August 14 at 08:00
   { code: 'DELUXE200', student: 'DENIED', schools: [ 'QC Design School' ], start: new Date(2021, 7, 3), end: new Date(2021, 7, 14, 8) }, // August 3 at 00:00 to August 14 at 08:00
