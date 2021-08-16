@@ -501,6 +501,47 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
     disclaimers.push('You\'ll get the free deluxe kit and leather portfolio');
   }
 
+  // BACK2SCHOOL promo
+  if (applies(promoCodeSpecs.find(v => v.code === 'BACK2SCHOOL'))) {
+    switch (options?.school) {
+      case 'QC Makeup Academy':
+        if (!courses.includes('MZ')) {
+          promoWarnings.push('You have entered the <strong>BACK2SCHOOL</strong> promo code but have not selected the <strong>Master Makeup Artistry</strong> course.');
+        } else {
+          notes.push('back-to-school kit');
+          disclaimers.push('You\'ll get the free back-to-school kit');
+        }
+        break;
+      case 'QC Event School':
+        if (!courses.includes('EP')) {
+          promoWarnings.push('You have entered the <strong>BACK2SCHOOL</strong> promo code but have not selected the <strong>Event &amp; Wedding Planning</strong> course.');
+        } else {
+          notes.push('back-to-school kit');
+          disclaimers.push('You\'ll get the free back-to-school kit');
+          if (!courses.some(c => isEventSpecialtyCourse(c))) {
+            promoWarnings.push('Promo code <strong>BACK2SCHOOL</strong> applied.');
+            promoWarnings.push('You have not yet selected a FREE <strong>Specialty</strong> course.');
+          }
+        }
+        break;
+      case 'QC Design School':
+        if (courses.length === 0) {
+          promoWarnings.push('You have entered the <strong>BACK2SCHOOL</strong> promo code but have not selected any course.');
+        } else {
+          notes.push('back-to-school kit');
+          disclaimers.push('You\'ll get the free back-to-school kit');
+          if (courses.length < 2) {
+            promoWarnings.push('Promo code <strong>BACK2SCHOOL</strong> applied.');
+            promoWarnings.push('You have not yet selected a FREE second course.');
+          }
+        }
+        break;
+    }
+
+    notes.push('leather portfolio');
+
+  }
+
   if (courses.includes('DG') && audCountry(countryCode)) {
     disclaimers.push('The WAHL clippers and attachment combs will not be provided with your course. ' +
       'QC only supplies the North American version, which is not compatible with power outlets in your country. ' +

@@ -32,6 +32,8 @@ export const getPromoCodeFreeCourseMap = (now: Date, options?: PriceQueryOptions
   const fastpassApplies = applies(promoCodeSpecs.find(v => v.code === 'FASTPASS'));
   const july21Applies = applies(promoCodeSpecs.find(v => v.code === 'JULY21'));
   const tripleThreatApplies = applies(promoCodeSpecs.find(v => v.code === 'TRIPLETHREAT'));
+  const back2schoolEventApplies = applies(promoCodeSpecs.find(v => v.code === 'BACK2SCHOOL' && v.schools?.includes('QC Event School')));
+  const back2schoolDesignApplies = applies(promoCodeSpecs.find(v => v.code === 'BACK2SCHOOL' && v.schools?.includes('QC Design School')));
 
   let may21Applied = false;
   let spring21Applied = false;
@@ -49,6 +51,8 @@ export const getPromoCodeFreeCourseMap = (now: Date, options?: PriceQueryOptions
   let deluxe21Applied = false;
   let july21Applied = false;
   let tripleThreatAppliedCount = 0;
+  let back2schoolEventApplied = false;
+  let back2schoolDesignApplied = false;
 
   return (courseResult: CourseResult, index: number, array: CourseResult[]): CourseResult => {
 
@@ -248,6 +252,20 @@ export const getPromoCodeFreeCourseMap = (now: Date, options?: PriceQueryOptions
     if (tripleThreatApplies && tripleThreatAppliedCount < 2) {
       if (isEventSpecialtyCourse(courseResult.code) && array.some(c => isEventFoundationCourse(c.code))) {
         tripleThreatAppliedCount++;
+        return freeMap(courseResult);
+      }
+    }
+
+    if (back2schoolDesignApplies && !back2schoolDesignApplied) {
+      if (isDesignCourse(courseResult.code) && array.filter(c => isDesignCourse(c.code)).length >= 2) {
+        back2schoolDesignApplied = true;
+        return freeMap(courseResult);
+      }
+    }
+
+    if (back2schoolEventApplies && !back2schoolEventApplied) {
+      if (isEventSpecialtyCourse(courseResult.code) && array.some(c => c.code === 'EP')) {
+        back2schoolEventApplied = true;
         return freeMap(courseResult);
       }
     }
