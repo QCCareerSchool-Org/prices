@@ -537,9 +537,6 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
         }
         break;
     }
-
-    notes.push('leather portfolio');
-
   }
 
   if (courses.includes('DG') && audCountry(countryCode)) {
