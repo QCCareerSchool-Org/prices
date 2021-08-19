@@ -505,7 +505,11 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
   if (applies(promoCodeSpecs.find(v => v.code === 'BACK2SCHOOL'))) {
     switch (options?.school) {
       case 'QC Makeup Academy':
-        if (!courses.includes('MZ')) {
+        if (noShipping === 'APPLIED') {
+          promoWarnings.push('You entered the <strong>BACK2SCHOOL</strong> promo code, but have chosen to not have any materials shipped. You will not receive any physical materials, including the Back-to-School Kit.');
+        } else if (noShipping === 'REQUIRED') {
+          promoWarnings.push('You entered the <strong>BACK2SCHOOL</strong> promo code, but we do not ship to your country. You will not receive any physical materials, including the Back-to-School Kit.');
+        } else if (!courses.includes('MZ')) {
           promoWarnings.push('You have entered the <strong>BACK2SCHOOL</strong> promo code but have not selected the <strong>Master Makeup Artistry</strong> course.');
         } else {
           notes.push('back-to-school kit');
@@ -513,7 +517,11 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
         }
         break;
       case 'QC Event School':
-        if (!courses.includes('EP')) {
+        if (noShipping === 'APPLIED') {
+          promoWarnings.push('You entered the <strong>BACK2SCHOOL</strong> promo code, but have chosen to not have any materials shipped. You will not receive any physical materials, including the Back-to-School Kit.');
+        } else if (noShipping === 'REQUIRED') {
+          promoWarnings.push('You entered the <strong>BACK2SCHOOL</strong> promo code, but we do not ship to your country. You will not receive any physical materials, including the Back-to-School Kit.');
+        } else if (!courses.includes('EP')) {
           promoWarnings.push('You have entered the <strong>BACK2SCHOOL</strong> promo code but have not selected the <strong>Event &amp; Wedding Planning</strong> course.');
         } else {
           notes.push('back-to-school kit');
@@ -525,7 +533,11 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
         }
         break;
       case 'QC Design School':
-        if (courses.length === 0) {
+        if (noShipping === 'APPLIED') {
+          promoWarnings.push('You entered the <strong>BACK2SCHOOL</strong> promo code, but have chosen to not have any materials shipped. You will not receive any physical materials, including the Back-to-School Kit.');
+        } else if (noShipping === 'REQUIRED') {
+          promoWarnings.push('You entered the <strong>BACK2SCHOOL</strong> promo code, but we do not ship to your country. You will not receive any physical materials, including the Back-to-School Kit.');
+        } else if (courses.length === 0) {
           promoWarnings.push('You have entered the <strong>BACK2SCHOOL</strong> promo code but have not selected any course.');
         } else {
           notes.push('back-to-school kit');
