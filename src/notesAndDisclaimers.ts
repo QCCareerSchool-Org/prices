@@ -551,6 +551,12 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
     }
   }
 
+  if (options?.school === 'QC Pet Studies' || options?.school === 'QC Wellness Studies') {
+    if (noShipping === 'FORBIDDEN' || noShipping === 'ALLOWED') {
+      notes.push('back-to-school kit');
+    }
+  }
+
   if (courses.includes('DG') && audCountry(countryCode)) {
     disclaimers.push('The WAHL clippers and attachment combs will not be provided with your course. ' +
       'QC only supplies the North American version, which is not compatible with power outlets in your country. ' +
