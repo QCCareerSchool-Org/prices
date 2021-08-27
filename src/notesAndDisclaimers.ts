@@ -557,6 +557,30 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
     }
   }
 
+  // SCHOOLKIT promo
+  if (applies(promoCodeSpecs.find(v => v.code === 'SCHOOLKIT'))) {
+    switch (options?.school) {
+      case 'QC Makeup Academy':
+        break;
+      case 'QC Event School':
+        break;
+      case 'QC Design School':
+        break;
+    }
+  }
+
+  // BCK2S promo
+  if (applies(promoCodeSpecs.find(v => v.code === 'BCK2S'))) {
+    switch (options?.school) {
+      case 'QC Makeup Academy':
+        break;
+      case 'QC Event School':
+        break;
+      case 'QC Design School':
+        break;
+    }
+  }
+
   if (courses.includes('DG') && audCountry(countryCode)) {
     disclaimers.push('The WAHL clippers and attachment combs will not be provided with your course. ' +
       'QC only supplies the North American version, which is not compatible with power outlets in your country. ' +
