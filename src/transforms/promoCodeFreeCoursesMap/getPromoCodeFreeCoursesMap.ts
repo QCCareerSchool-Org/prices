@@ -34,6 +34,10 @@ export const getPromoCodeFreeCourseMap = (now: Date, options?: PriceQueryOptions
   const tripleThreatApplies = applies(promoCodeSpecs.find(v => v.code === 'TRIPLETHREAT'));
   const back2schoolEventApplies = applies(promoCodeSpecs.find(v => v.code === 'BACK2SCHOOL' && v.schools?.includes('QC Event School')));
   const back2schoolDesignApplies = applies(promoCodeSpecs.find(v => v.code === 'BACK2SCHOOL' && v.schools?.includes('QC Design School')));
+  const schoolKitEventApplies = applies(promoCodeSpecs.find(v => v.code === 'SCHOOLKIT' && v.schools?.includes('QC Event School')));
+  const bck2sEventApplies = applies(promoCodeSpecs.find(v => v.code === 'BCK2S' && v.schools?.includes('QC Event School')));
+  const schoolKitDesignApplies = applies(promoCodeSpecs.find(v => v.code === 'SCHOOLKIT' && v.schools?.includes('QC Event School')));
+  const bck2sDesignApplies = applies(promoCodeSpecs.find(v => v.code === 'BCK2S' && v.schools?.includes('QC Event School')));
 
   let may21Applied = false;
   let spring21Applied = false;
@@ -53,6 +57,10 @@ export const getPromoCodeFreeCourseMap = (now: Date, options?: PriceQueryOptions
   let tripleThreatAppliedCount = 0;
   let back2schoolEventApplied = false;
   let back2schoolDesignApplied = false;
+  let schoolKitEventApplied = false;
+  let bck2sEventApplied = false;
+  let schoolKitDesignApplied = false;
+  let bck2sDesignApplied = false;
 
   return (courseResult: CourseResult, index: number, array: CourseResult[]): CourseResult => {
 
@@ -266,6 +274,34 @@ export const getPromoCodeFreeCourseMap = (now: Date, options?: PriceQueryOptions
     if (back2schoolEventApplies && !back2schoolEventApplied) {
       if (isEventSpecialtyCourse(courseResult.code) && array.some(c => c.code === 'EP')) {
         back2schoolEventApplied = true;
+        return freeMap(courseResult);
+      }
+    }
+
+    if (schoolKitEventApplies && !schoolKitEventApplied) {
+      if (isEventSpecialtyCourse(courseResult.code) && array.some(c => c.code === 'EP')) {
+        schoolKitEventApplied = true;
+        return freeMap(courseResult);
+      }
+    }
+
+    if (bck2sEventApplies && !bck2sEventApplied) {
+      if (isEventSpecialtyCourse(courseResult.code) && array.some(c => c.code === 'EP')) {
+        bck2sEventApplied = true;
+        return freeMap(courseResult);
+      }
+    }
+
+    if (schoolKitDesignApplies && !schoolKitDesignApplied) {
+      if (isDesignCourse(courseResult.code) && array.filter(c => isDesignCourse(c.code)).length >= 2) {
+        schoolKitDesignApplied = true;
+        return freeMap(courseResult);
+      }
+    }
+
+    if (bck2sDesignApplies && !bck2sDesignApplied) {
+      if (isDesignCourse(courseResult.code) && array.filter(c => isDesignCourse(c.code)).length >= 2) {
+        bck2sDesignApplied = true;
         return freeMap(courseResult);
       }
     }
