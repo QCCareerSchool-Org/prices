@@ -561,11 +561,55 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
   if (applies(promoCodeSpecs.find(v => v.code === 'SCHOOLKIT'))) {
     switch (options?.school) {
       case 'QC Makeup Academy':
+        if (!courses.includes('MZ')) {
+          promoWarnings.push('You have selected the <strong>SCHOOLKIT</strong> promo code but have not selected the <strong>Master Makeup Artistry</strong> course');
+        } else {
+          if (noShipping === 'APPLIED') {
+            promoWarnings.push('You entered the <strong>SCHOOLKIT</strong> promo code, but have chosen to not have any materials shipped. You will not receive any physical materials, including the Back-to-School Kit and elite makeup kit.');
+          } else if (noShipping === 'REQUIRED') {
+            promoWarnings.push('You entered the <strong>SCHOOLKIT</strong> promo code, but we do not ship to your country. You will not receive any physical materials, including the Back-to-School Kit and elite makeup kit.');
+          } else {
+            disclaimers.push('You will recieve the FREE Back-to-School Kit and elite makeup kit');
+            notes.push('Back-to-School Kit (totebag + notebook)', 'elite makeup kit');
+          }
+        }
         break;
       case 'QC Event School':
+        if (!courses.includes('EP')) {
+          promoWarnings.push('You have selected the <strong>SCHOOLKIT</strong> promo code but have not selected the <strong>Event &amp; Wedding Planning</strong> course');
+        } else {
+          if (noShipping === 'APPLIED') {
+            promoWarnings.push('You entered the <strong>SCHOOLKIT</strong> promo code, but have chosen to not have any materials shipped. You will not receive any physical materials, including the UPGRADED Back-to-School Kit.');
+          } else if (noShipping === 'REQUIRED') {
+            promoWarnings.push('You entered the <strong>SCHOOLKIT</strong> promo code, but we do not ship to your country. You will not receive any physical materials, including the UPGRADED Back-to-School Kit.');
+          } else {
+            disclaimers.push('You will recieve the UPGRADED Back-to-School Kit. This kit includes a QC tote bag, notebook, and leather portfolio.');
+            notes.push('Back-to-School Kit (totebag + notebook)', 'leather portfolio');
+          }
+          if (!courses.some(c => isEventSpecialtyCourse(c))) {
+            promoWarnings.push('You have selected the <strong>SCHOOLKIT</strong> promo code but have not selected a specialty course');
+          }
+        }
         break;
-      case 'QC Design School':
+      case 'QC Design School': {
+        const courseCount = courses.length;
+        if (courseCount === 0) {
+          promoWarnings.push('You have selected the <strong>SCHOOLKIT</strong> promo code but have not selected your courses');
+        } else {
+          if (noShipping === 'APPLIED') {
+            promoWarnings.push('You entered the <strong>SCHOOLKIT</strong> promo code, but have chosen to not have any materials shipped. You will not receive any physical materials, including the Back-to-School Kit and the Deluxe Design Kit.');
+          } else if (noShipping === 'REQUIRED') {
+            promoWarnings.push('You entered the <strong>SCHOOLKIT</strong> promo code, but we do not ship to your country. You will not receive any physical materials, including the Back-to-School Kit and the Deluxe Design Kit.');
+          } else {
+            disclaimers.push('You will recieve The Back-to-School Kit and the Deluxe Design Kit.');
+            notes.push('Back-to-School Kit (totebag, notebook)', 'Deluxe Design Kit');
+          }
+          if (courseCount === 1) {
+            promoWarnings.push('You have selected the <strong>SCHOOLKIT</strong> promo code but have not selected your FREE second course');
+          }
+        }
         break;
+      }
     }
   }
 
@@ -573,11 +617,55 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
   if (applies(promoCodeSpecs.find(v => v.code === 'BCK2S'))) {
     switch (options?.school) {
       case 'QC Makeup Academy':
+        if (!courses.includes('MZ')) {
+          promoWarnings.push('You have selected the <strong>BCK2S</strong> promo code but have not selected the <strong>Master Makeup Artistry</strong> course');
+        } else {
+          if (noShipping === 'APPLIED') {
+            promoWarnings.push('You entered the <strong>BCK2S</strong> promo code, but have chosen to not have any materials shipped. You will not receive any physical materials, including the Grab-and-Go Kit and Smokey Eye Brush Set.');
+          } else if (noShipping === 'REQUIRED') {
+            promoWarnings.push('You entered the <strong>BCK2S</strong> promo code, but we do not ship to your country. You will not receive any physical materials, including the Grab-and-Go Kit and Smokey Eye Brush Set.');
+          } else {
+            disclaimers.push('You will recieve the FREE Grab-and-Go Kit and the Smokey Eye Brush Set');
+            notes.push('Grab-and-Go Kit (totebag, notebook, pencil)', 'smokey eye brush set (4 pack of ANISA brushes)');
+          }
+        }
         break;
       case 'QC Event School':
+        if (!courses.includes('EP')) {
+          promoWarnings.push('You have selected the <strong>BCK2S</strong> promo code but have not selected the <strong>Event &amp; Wedding Planning</strong> course');
+        } else {
+          if (noShipping === 'APPLIED') {
+            promoWarnings.push('You entered the <strong>BCK2S</strong> promo code, but have chosen to not have any materials shipped. You will not receive any physical materials, including the Grab-and-Go Kit.');
+          } else if (noShipping === 'REQUIRED') {
+            promoWarnings.push('You entered the <strong>BCK2S</strong> promo code, but we do not ship to your country. You will not receive any physical materials, including the Grab-and-Go Kit.');
+          } else {
+            disclaimers.push('You will recieve the Grab-and-Go Kit. This kit includes a QC tote bag, notebook, and pencil.');
+            notes.push('Grab-and-Go Kit (totebag, notebook, pencil)');
+          }
+          if (!courses.some(c => isEventSpecialtyCourse(c))) {
+            promoWarnings.push('You have selected the <strong>BCK2S</strong> promo code but have not selected a specialty course');
+          }
+        }
         break;
-      case 'QC Design School':
+      case 'QC Design School': {
+        const courseCount = courses.length;
+        if (courseCount === 0) {
+          promoWarnings.push('You have selected the <strong>BCK2S</strong> promo code but have not selected your courses');
+        } else {
+          if (noShipping === 'APPLIED') {
+            promoWarnings.push('You entered the <strong>BCK2S</strong> promo code, but have chosen to not have any materials shipped. You will not receive any physical materials, including the Grab-and-Go Kit.');
+          } else if (noShipping === 'REQUIRED') {
+            promoWarnings.push('You entered the <strong>BCK2S</strong> promo code, but we do not ship to your country. You will not receive any physical materials, including the Grab-and-Go Kit.');
+          } else {
+            disclaimers.push('You will recieve the Grab-and-Go Kit. This kit includes a QC tote bag, notebook, and pencil.');
+            notes.push('Grab-and-Go Kit (totebag, notebook, pencil)');
+          }
+          if (courseCount === 1) {
+            promoWarnings.push('You have selected the <strong>BCK2S</strong> promo code but have not selected your FREE second course');
+          }
+        }
         break;
+      }
     }
   }
 
