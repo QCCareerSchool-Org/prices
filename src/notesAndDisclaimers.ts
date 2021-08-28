@@ -259,7 +259,7 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
     if (!courses.some(c => isEventFoundationCourse(c))) {
       promoWarnings.push('You have entered the <strong>SUMMER21</strong> promo code but have not selected a Foundation course.');
     } else {
-      disclaimers.push('You\'ll recieve the FREE leather portfolio');
+      disclaimers.push('You\'ll receive the FREE leather portfolio');
       notes.push('leather portfolio');
       if (!courses.some(c => isEventSpecialtyCourse(c))) {
         promoWarnings.push('You have entered the <strong>SUMMER21</strong> promo code but have not selected a Specialty course.');
@@ -375,7 +375,7 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
 
   // DELUXE21 promo
   if (applies(promoCodeSpecs.find(v => v.code === 'DELUXE21'))) {
-    disclaimers.push('You\'ll recieve the FREE color fan deck');
+    disclaimers.push('You\'ll receive the FREE color fan deck');
     notes.push('fan deck');
   }
 
@@ -387,7 +387,7 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
       if (!courses.includes('MW')) {
         promoWarnings.push('You have entered the <strong>GLOWUP</strong> promo code but have not selected the <strong>Pro Makeup Workshop</strong>.');
       }
-      disclaimers.push('You\'ll recieve the FREE elite makeup kit upgrade');
+      disclaimers.push('You\'ll receive the FREE elite makeup kit upgrade');
       notes.push('elite kit');
     }
   }
@@ -569,7 +569,7 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
           } else if (noShipping === 'REQUIRED') {
             promoWarnings.push('You entered the <strong>SCHOOLKIT</strong> promo code, but we do not ship to your country. You will not receive any physical materials, including the Back-to-School Kit and elite makeup kit.');
           } else {
-            disclaimers.push('You will recieve the FREE Back-to-School Kit and elite makeup kit');
+            disclaimers.push('You will receive the FREE Back-to-School Kit and elite makeup kit');
             notes.push('Back-to-School Kit (totebag + notebook)', 'elite makeup kit');
           }
         }
@@ -583,7 +583,7 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
           } else if (noShipping === 'REQUIRED') {
             promoWarnings.push('You entered the <strong>SCHOOLKIT</strong> promo code, but we do not ship to your country. You will not receive any physical materials, including the UPGRADED Back-to-School Kit.');
           } else {
-            disclaimers.push('You will recieve the UPGRADED Back-to-School Kit. This kit includes a QC tote bag, notebook, and leather portfolio.');
+            disclaimers.push('You will receive the UPGRADED Back-to-School Kit. This kit includes a QC tote bag, notebook, and leather portfolio.');
             notes.push('Back-to-School Kit (totebag + notebook)', 'leather portfolio');
           }
           if (!courses.some(c => isEventSpecialtyCourse(c))) {
@@ -601,7 +601,7 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
           } else if (noShipping === 'REQUIRED') {
             promoWarnings.push('You entered the <strong>SCHOOLKIT</strong> promo code, but we do not ship to your country. You will not receive any physical materials, including the Back-to-School Kit and the Deluxe Design Kit.');
           } else {
-            disclaimers.push('You will recieve The Back-to-School Kit and the Deluxe Design Kit.');
+            disclaimers.push('You will receive The Back-to-School Kit and the Deluxe Design Kit.');
             notes.push('Back-to-School Kit (totebag, notebook)', 'Deluxe Design Kit');
           }
           if (courseCount === 1) {
@@ -625,7 +625,7 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
           } else if (noShipping === 'REQUIRED') {
             promoWarnings.push('You entered the <strong>BCK2S</strong> promo code, but we do not ship to your country. You will not receive any physical materials, including the Grab-and-Go Kit and Smokey Eye Brush Set.');
           } else {
-            disclaimers.push('You will recieve the FREE Grab-and-Go Kit and the Smokey Eye Brush Set');
+            disclaimers.push('You will receive the FREE Grab-and-Go Kit and the Smokey Eye Brush Set');
             notes.push('Grab-and-Go Kit (totebag, notebook, pencil)', 'smokey eye brush set (4 pack of ANISA brushes)');
           }
         }
@@ -639,7 +639,7 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
           } else if (noShipping === 'REQUIRED') {
             promoWarnings.push('You entered the <strong>BCK2S</strong> promo code, but we do not ship to your country. You will not receive any physical materials, including the Grab-and-Go Kit.');
           } else {
-            disclaimers.push('You will recieve the Grab-and-Go Kit. This kit includes a QC tote bag, notebook, and pencil.');
+            disclaimers.push('You will receive the Grab-and-Go Kit. This kit includes a QC tote bag, notebook, and pencil.');
             notes.push('Grab-and-Go Kit (totebag, notebook, pencil)');
           }
           if (!courses.some(c => isEventSpecialtyCourse(c))) {
@@ -657,7 +657,7 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
           } else if (noShipping === 'REQUIRED') {
             promoWarnings.push('You entered the <strong>BCK2S</strong> promo code, but we do not ship to your country. You will not receive any physical materials, including the Grab-and-Go Kit.');
           } else {
-            disclaimers.push('You will recieve the Grab-and-Go Kit. This kit includes a QC tote bag, notebook, and pencil.');
+            disclaimers.push('You will receive the Grab-and-Go Kit. This kit includes a QC tote bag, notebook, and pencil.');
             notes.push('Grab-and-Go Kit (totebag, notebook, pencil)');
           }
           if (courseCount === 1) {
