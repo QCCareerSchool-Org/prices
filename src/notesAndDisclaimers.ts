@@ -551,9 +551,15 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
     }
   }
 
-  if (options?.school === 'QC Pet Studies' || options?.school === 'QC Wellness Studies') {
+  if (options?.school === 'QC Pet Studies') {
     if (noShipping === 'FORBIDDEN' || noShipping === 'ALLOWED') {
-      notes.push('back-to-school kit');
+      notes.push('eco-friendly planner');
+    }
+  }
+
+  if (options?.school === 'QC Wellness Studies') {
+    if (noShipping === 'FORBIDDEN' || noShipping === 'ALLOWED') {
+      notes.push('grab-and-go kit');
     }
   }
 
