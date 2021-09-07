@@ -669,6 +669,62 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
     }
   }
 
+  // GLOBALBTY promo
+  if (applies(promoCodeSpecs.find(v => v.code === 'GLOBALBTY'))) {
+    if (courses.length === 0) {
+      promoWarnings.push('You have selected the <strong>GLOBALBTY</strong> promo code but have not selected your courses.');
+    } else if (!courses.includes('MZ')) {
+      promoWarnings.push('You have selected the <strong>GLOBALBTY</strong> promo code but have not selected the <strong>Master Makeup Artistry</strong> course.');
+    } else if (!courses.includes('GB')) {
+      promoWarnings.push('You have selected the <strong>GLOBALBTY</strong> promo code but have not selected the FREE <strong>Global Beauty</strong> course.');
+    }
+  }
+
+  // GREENGIFT promo (Event)
+  if (applies(promoCodeSpecs.find(v => v.code === 'GREENGIFT')) && options?.school === 'QC Event School') {
+    const courseCount = courses.length;
+    if (courseCount === 0) {
+      promoWarnings.push('You have selected the <strong>GREENGIFT</strong> promo code but have not selected your courses.');
+    } else if (!courses.some(c => isEventFoundationCourse(c))) {
+      promoWarnings.push('You have selected the <strong>GREENGIFT</strong> promo code but have not selected a <strong>foundation course</strong>.');
+    } else {
+      if (noShipping === 'APPLIED') {
+        promoWarnings.push('You entered the <strong>GREENGIFT</strong> promo code, but have chosen to not have any materials shipped. You will not receive any physical materials, including the Eco-Friendly Planner &amp; Pen.');
+      } else if (noShipping === 'REQUIRED') {
+        promoWarnings.push('You entered the <strong>GREENGIFT</strong> promo code, but we do not ship to your country. You will not receive any physical materials, including the Eco-Friendly Planner &amp; Pen.');
+      } else {
+        disclaimers.push('You will receive the Eco-Friendly Planner &amp; Pen.');
+        notes.push('eco-friendly planner & pen');
+      }
+      if (courses.length < 2) {
+        promoWarnings.push('You have selected the <strong>GREENGIFT</strong> promo code but have not selected your FREE second course.');
+      }
+      // if (!courses.some(c => isEventSpecialtyCourse(c))) {
+      //   promoWarnings.push('You have selected the <strong>GREENGIFT</strong> promo code but have not selected your FREE <strong>specialty course</strong>.');
+      // }
+    }
+  }
+
+  // GREENGIFT promo (Design)
+  if (applies(promoCodeSpecs.find(v => v.code === 'GREENGIFT')) && options?.school === 'QC Design School') {
+    const courseCount = courses.length;
+    if (courseCount === 0) {
+      promoWarnings.push('You have selected the <strong>GREENGIFT</strong> promo code but have not selected your courses.');
+    } else {
+      if (noShipping === 'APPLIED') {
+        promoWarnings.push('You entered the <strong>GREENGIFT</strong> promo code, but have chosen to not have any materials shipped. You will not receive any physical materials, including the Eco-Friendly Planner &amp; Pen.');
+      } else if (noShipping === 'REQUIRED') {
+        promoWarnings.push('You entered the <strong>GREENGIFT</strong> promo code, but we do not ship to your country. You will not receive any physical materials, including the Eco-Friendly Planner &amp; Pen.');
+      } else {
+        disclaimers.push('You will receive the Eco-Friendly Planner &amp; Pen.');
+        notes.push('eco-friendly planner & pen');
+      }
+      if (courseCount === 1) {
+        promoWarnings.push('You have selected the <strong>GREENGIFT</strong> promo code but have not selected your FREE second course.');
+      }
+    }
+  }
+
   // if (courses.includes('DG') && audCountry(countryCode)) {
   //   disclaimers.push('The WAHL clippers and attachment combs will not be provided with your course. ' +
   //     'QC only supplies the North American version, which is not compatible with power outlets in your country. ' +
