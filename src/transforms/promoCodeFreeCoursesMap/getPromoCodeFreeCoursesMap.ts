@@ -38,6 +38,8 @@ export const getPromoCodeFreeCourseMap = (now: Date, options?: PriceQueryOptions
   const bck2sEventApplies = applies(promoCodeSpecs.find(v => v.code === 'BCK2S' && v.schools?.includes('QC Event School')));
   const schoolKitDesignApplies = applies(promoCodeSpecs.find(v => v.code === 'SCHOOLKIT' && v.schools?.includes('QC Event School')));
   const bck2sDesignApplies = applies(promoCodeSpecs.find(v => v.code === 'BCK2S' && v.schools?.includes('QC Event School')));
+  const globalbtyApplies = applies(promoCodeSpecs.find(v => v.code === 'GLOBALBTY'));
+  const greengiftApplies = applies(promoCodeSpecs.find(v => v.code === 'GREENGIFT'));
 
   let may21Applied = false;
   let spring21Applied = false;
@@ -61,6 +63,7 @@ export const getPromoCodeFreeCourseMap = (now: Date, options?: PriceQueryOptions
   let bck2sEventApplied = false;
   let schoolKitDesignApplied = false;
   let bck2sDesignApplied = false;
+  let greengiftApplied = false;
 
   return (courseResult: CourseResult, index: number, array: CourseResult[]): CourseResult => {
 
@@ -302,6 +305,27 @@ export const getPromoCodeFreeCourseMap = (now: Date, options?: PriceQueryOptions
     if (bck2sDesignApplies && !bck2sDesignApplied) {
       if (isDesignCourse(courseResult.code) && array.filter(c => isDesignCourse(c.code)).length >= 2) {
         bck2sDesignApplied = true;
+        return freeMap(courseResult);
+      }
+    }
+
+    if (globalbtyApplies) {
+      if (courseResult.code === 'GB' && array.some(c => c.code === 'MZ')) {
+        return freeMap(courseResult);
+      }
+    }
+
+    if (greengiftApplies && !greengiftApplied && options?.school === 'QC Event School') {
+      // if (isEventSpecialtyCourse(courseResult.code) && array.some(c => isEventFoundationCourse(c.code))) {
+      if (array.length >= 2 && array.some(c => isEventFoundationCourse(c.code))) {
+        greengiftApplied = true;
+        return freeMap(courseResult);
+      }
+    }
+
+    if (greengiftApplies && !greengiftApplied && options?.school === 'QC Design School') {
+      if (array.length >= 2) {
+        greengiftApplied = true;
         return freeMap(courseResult);
       }
     }
