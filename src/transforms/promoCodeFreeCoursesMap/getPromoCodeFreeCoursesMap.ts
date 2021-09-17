@@ -40,6 +40,8 @@ export const getPromoCodeFreeCourseMap = (now: Date, options?: PriceQueryOptions
   const bck2sDesignApplies = applies(promoCodeSpecs.find(v => v.code === 'BCK2S' && v.schools?.includes('QC Event School')));
   const globalbtyApplies = applies(promoCodeSpecs.find(v => v.code === 'GLOBALBTY'));
   const greengiftApplies = applies(promoCodeSpecs.find(v => v.code === 'GREENGIFT'));
+  const giftcodeEventApplies = applies(promoCodeSpecs.find(v => v.code === 'GIFTCODE' && v.schools?.includes('QC Event School')));
+  const giftcodeDesignApplies = applies(promoCodeSpecs.find(v => v.code === 'GIFTCODE' && v.schools?.includes('QC Design School')));
 
   let may21Applied = false;
   let spring21Applied = false;
@@ -64,6 +66,8 @@ export const getPromoCodeFreeCourseMap = (now: Date, options?: PriceQueryOptions
   let schoolKitDesignApplied = false;
   let bck2sDesignApplied = false;
   let greengiftApplied = false;
+  let giftcodeEventApplied = false;
+  let giftcodeDesignApplied = false;
 
   return (courseResult: CourseResult, index: number, array: CourseResult[]): CourseResult => {
 
@@ -326,6 +330,20 @@ export const getPromoCodeFreeCourseMap = (now: Date, options?: PriceQueryOptions
     if (greengiftApplies && !greengiftApplied && options?.school === 'QC Design School') {
       if (array.length >= 2) {
         greengiftApplied = true;
+        return freeMap(courseResult);
+      }
+    }
+
+    if (giftcodeEventApplies && !giftcodeEventApplied) {
+      if (array.length >= 2 && array.some(c => isEventFoundationCourse(c.code))) {
+        giftcodeEventApplied = true;
+        return freeMap(courseResult);
+      }
+    }
+
+    if (giftcodeDesignApplies && !giftcodeDesignApplied) {
+      if (array.length >= 2 && array.some(c => isDesignCourse(c.code))) {
+        giftcodeDesignApplied = true;
         return freeMap(courseResult);
       }
     }
