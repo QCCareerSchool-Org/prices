@@ -551,6 +551,48 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
     }
   }
 
+  // BACK2SCHOOL promo
+  if (applies(promoCodeSpecs.find(v => v.code === 'GIFTCODE'))) {
+    switch (options?.school) {
+      case 'QC Event School':
+        if (!courses.some(c => isEventFoundationCourse(c))) {
+          promoWarnings.push('You have entered the <strong>GIFTCODE</strong> promo code but have not selected a <strong>Foundation Course</strong>.');
+        } else {
+          if (!courses.some(c => isEventSpecialtyCourse(c))) {
+            promoWarnings.push('You have not yet selected a FREE second course.');
+          }
+          if (noShipping === 'APPLIED') {
+            promoWarnings.push('You entered the <strong>GIFTCODE</strong> promo code, but have chosen to not have any materials shipped. You will not receive any physical materials, including the QC tote bag and the eco-friendly planner.');
+          } else if (noShipping === 'REQUIRED') {
+            promoWarnings.push('You entered the <strong>GIFTCODE</strong> promo code, but we do not ship to your country. You will not receive any physical materials, including the QC tote bag and the eco-friendly planner.');
+          } else {
+            notes.push('tote bag');
+            notes.push('eco-friendly planner');
+            disclaimers.push('You will recieve the Eco-Friendly Planner & the QC totebag!');
+          }
+        }
+        break;
+      case 'QC Design School':
+        if (courses.length === 0) {
+          promoWarnings.push('You have entered the <strong>GIFTCODE</strong> promo code but have not selected any courses.');
+        } else {
+          if (courses.length < 2) {
+            promoWarnings.push('You have not yet selected a FREE second course.');
+          }
+          if (noShipping === 'APPLIED') {
+            promoWarnings.push('You entered the <strong>GIFTCODE</strong> promo code, but have chosen to not have any materials shipped. You will not receive any physical materials, including the Eco-Friendly Planner & the Deluxe Design Kit.');
+          } else if (noShipping === 'REQUIRED') {
+            promoWarnings.push('You entered the <strong>GIFTCODE</strong> promo code, but we do not ship to your country. You will not receive any physical materials, including the Eco-Friendly Planner & the Deluxe Design Kit.');
+          } else {
+            notes.push('eco-friendly planner');
+            notes.push('deluxe design kit');
+            disclaimers.push('You will receive the Eco-Friendly Planner & the Deluxe Design Kit.');
+          }
+        }
+        break;
+    }
+  }
+
   if (options?.school === 'QC Pet Studies') {
     if (noShipping === 'FORBIDDEN' || noShipping === 'ALLOWED') {
       notes.push('eco-friendly planner');
