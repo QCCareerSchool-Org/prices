@@ -41,7 +41,6 @@ export const promoCodeSpecs: PromoCodeSpec[] = [
   { code: 'FOUNDIT', student: 'DENIED', schools: [ 'QC Makeup Academy' ], start: new Date(Date.UTC(2021, 2, 29, 13)), end: new Date(Date.UTC(2021, 3, 6, 4)) },
   { code: 'SPRING21', student: 'DENIED', schools: [ 'QC Makeup Academy' ], start: new Date(Date.UTC(2021, 3, 6, 13)) },
   { code: 'HAPPYMAY', student: 'DENIED', schools: [ 'QC Makeup Academy' ], start: new Date(Date.UTC(2021, 4, 1, 12)), end: new Date(Date.UTC(2021, 4, 3, 13)) },
-  { code: 'SKINCARE60', student: 'DENIED', schools: [ 'QC Makeup Academy' ], start: new Date(Date.UTC(2021, 4, 3, 13)), end: new Date(Date.UTC(2021, 4, 17, 13)) },
   { code: 'NATHANSDAY', student: 'DENIED', schools: [ 'QC Makeup Academy' ], start: new Date(Date.UTC(2021, 3, 30, 13)), end: new Date(Date.UTC(2021, 4, 3, 13)) },
   { code: 'MOTHERSDAY', student: 'DENIED', schools: [ 'QC Makeup Academy' ], start: new Date(Date.UTC(2021, 4, 5, 4)), end: new Date(Date.UTC(2021, 5, 1, 13)) }, // May 5 at 00:00 to June 1 at 09:00
   { code: 'SPRING100', student: 'DENIED', schools: [ 'QC Design School' ], start: new Date(Date.UTC(2021, 5, 1, 13)), end: new Date(Date.UTC(2021, 5, 12, 4)) }, // June 1 at 09:00 to June 12 at 00:00
@@ -61,7 +60,6 @@ export const promoCodeSpecs: PromoCodeSpec[] = [
   { code: 'DIVEIN', student: 'DENIED', schools: [ 'QC Makeup Academy', 'QC Design School', 'QC Event School' ], start: new Date(2021, 5, 30, 10), end: new Date(2021, 5, 30, 23, 59, 59, 999) }, // June 30 at 10:00 to June 30 at 23:59:59.999
   { code: 'CANADA154', student: 'DENIED', schools: [ 'QC Makeup Academy', 'QC Design School', 'QC Event School' ], start: new Date(2021, 5, 28, 9, 30), end: new Date(2021, 6, 7, 9, 30) }, // June 28 at 09:30 to July 7 at 09:30
   { code: 'WEDDING21', student: 'ALLOWED', schools: [ 'QC Makeup Academy' ], start: new Date(2021, 6, 6, 10, 30), end: new Date(2021, 6, 17, 23, 59, 59, 999) }, // July 6 at 10:30 to July 17 at 23:59:59.999
-  { code: 'DELUXE', student: 'DENIED', schools: [ 'QC Design School' ], start: new Date(2021, 6, 6, 10, 30), end: new Date(2021, 6, 17, 23, 59, 59, 999) }, // July 6 at 10:30 to July 17 at 23:59:59.999
   { code: 'WEDDINGSZN', student: 'DENIED', schools: [ 'QC Event School' ], start: new Date(2021, 6, 6, 10, 30), end: new Date(2021, 6, 17, 23, 59, 59, 999) }, // July 6 at 10:30 to July 17 at 23:59:59.999
   { code: 'QCLASHES', student: 'ALLOWED', schools: [ 'QC Makeup Academy' ] },
   { code: 'DELUXE21', student: 'DENIED', schools: [ 'QC Design School' ], start: new Date(2021, 6, 17, 8), end: new Date(2021, 6, 20) }, // July 17 at 08:00 to July 20 at 00:00
@@ -70,7 +68,6 @@ export const promoCodeSpecs: PromoCodeSpec[] = [
   { code: 'JULY21', student: 'DENIED', schools: [ 'QC Design School' ], start: new Date(2021, 6, 19, 9, 30), end: new Date(2021, 6, 31) }, // July 19 at 09:30 to July 31 at 00:00
   { code: 'DESIGN21', student: 'DENIED', schools: [ 'QC Design School' ], start: new Date(2021, 7, 14), end: new Date(2021, 7, 17) }, // August 14 at 00:00 to August 17 at 00:00
   { code: 'VIP2021', student: 'DENIED', schools: [ 'QC Makeup Academy' ], start: new Date(2021, 7, 3), end: new Date(2021, 7, 14, 8) }, // August 3 at 00:00 to August 14 at 08:00
-  { code: 'TRIPLETHREAT', student: 'DENIED', schools: [ 'QC Event School' ], start: new Date(2021, 7, 3), end: new Date(2021, 7, 14, 8) }, // August 3 at 00:00 to August 14 at 08:00
   { code: 'DELUXE200', student: 'DENIED', schools: [ 'QC Design School' ], start: new Date(2021, 7, 3), end: new Date(2021, 7, 14, 8) }, // August 3 at 00:00 to August 14 at 08:00
   { code: 'ELITEVIP', student: 'DENIED', schools: [ 'QC Makeup Academy' ], start: new Date(2021, 7, 14), end: new Date(2021, 7, 17) }, // August 14 at 00:00 to August 17 at 00:00
   { code: 'BACK2SCHOOL', student: 'DENIED', schools: [ 'QC Makeup Academy', 'QC Event School', 'QC Design School' ], start: new Date(2021, 7, 16, 9, 30), end: new Date(2021, 7, 28, 8) }, // August 16 at 09:30 to August 28 at 08:00
@@ -80,6 +77,12 @@ export const promoCodeSpecs: PromoCodeSpec[] = [
   { code: 'GREENGIFT', student: 'DENIED', schools: [ 'QC Event School', 'QC Design School' ], start: new Date(2021, 8, 7, 9, 30), end: new Date(2021, 8, 18, 8) }, // September 7 at 09:30 to September 18 at 08:00
 
   { code: 'GIFTCODE', student: 'DENIED', schools: [ 'QC Event School', 'QC Design School' ], start: new Date(2021, 8, 17, 16), end: new Date(2021, 8, 20, 9, 30) }, // September 17 at 16:00 (supposed to be September 18 at 08:00) to September 20 at 09:30
+  { code: 'PROBRUSHES', student: 'DENIED', schools: [ 'QC Makeup Academy' ], start: new Date(2021, 8, 17, 16), end: new Date(2021, 8, 20, 9, 30) }, // September 17 at 16:00 (supposed to be September 18 at 08:00) to September 20 at 09:30
+
+  { code: 'SKINCARE60', student: 'DENIED', schools: [ 'QC Makeup Academy' ], start: new Date(2021, 8, 17, 17), end: new Date(2021, 9, 1, 8) }, // September 17 at 16:00 (supposed to be September 20 at 09:30 to Octobber 1 at 08:00
+  { code: 'TRIPLETHREAT', student: 'DENIED', schools: [ 'QC Event School' ], start: new Date(2021, 8, 17, 17), end: new Date(2021, 9, 1, 8) }, // September 17 at 16:00 (supposed to be September 20 at 09:30 to Octobber 1 at 08:00
+  { code: 'DELUXE', student: 'DENIED', schools: [ 'QC Design School' ], start: new Date(2021, 8, 17, 17), end: new Date(2021, 9, 1, 8) }, // September 17 at 16:00 (supposed to be September 20 at 09:30 to Octobber 1 at 08:00
+
   ...studentSupport50Specs,
 ];
 

@@ -551,7 +551,26 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
     }
   }
 
-  // BACK2SCHOOL promo
+  // PROBRUSHES promo
+  if (applies(promoCodeSpecs.find(v => v.code === 'PROBRUSHES'))) {
+    if (!courses.includes('MZ')) {
+      promoWarnings.push('You have selected the <strong>PROBRUSHES</strong> promo code but have not selected the <strong>Master Makeup Artistry</strong> course');
+    } else {
+      if (!courses.includes('GB')) {
+        promoWarnings.push('You have not selected the FREE <strong>Global Beauty Workshop</strong>.');
+      }
+      if (noShipping === 'APPLIED') {
+        promoWarnings.push('You entered the <strong>PROBRUSHES</strong> promo code, but have chosen to not have any materials shipped. You will not receive any physical materials, including the Smokey Eye Brush Set.');
+      } else if (noShipping === 'REQUIRED') {
+        promoWarnings.push('You entered the <strong>PROBRUSHES</strong> promo code, but we do not ship to your country. You will not receive any physical materials, including the Smokey Eye Brush Set.');
+      } else {
+        disclaimers.push('You will receive the the Smokey Eye Brush Set');
+        notes.push('smokey eye brush set (4 pack of ANISA brushes)');
+      }
+    }
+  }
+
+  // GIFTCODE promo
   if (applies(promoCodeSpecs.find(v => v.code === 'GIFTCODE'))) {
     switch (options?.school) {
       case 'QC Event School':
