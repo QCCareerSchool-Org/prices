@@ -429,8 +429,8 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
 
   // TRIPLETHREAT
   if (applies(promoCodeSpecs.find(v => v.code === 'TRIPLETHREAT'))) {
-    if (!courses.some(c => isEventFoundationCourse(c))) {
-      promoWarnings.push('You have entered the <strong>TRIPLETHREAT</strong> promo code but have not selected a <strong>Foundation</strong> course.');
+    if (!courses.includes('EP')) {
+      promoWarnings.push('You have entered the <strong>TRIPLETHREAT</strong> promo code but have not selected the <strong>Event &amp; Wedding Planning</strong> course.');
     } else {
       const specialtyCount = courses.filter(c => isEventSpecialtyCourse(c)).length;
       if (specialtyCount === 0) {

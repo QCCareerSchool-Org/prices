@@ -265,7 +265,7 @@ export const getPromoCodeFreeCourseMap = (now: Date, options?: PriceQueryOptions
     }
 
     if (tripleThreatApplies && tripleThreatAppliedCount < 2) {
-      if (isEventSpecialtyCourse(courseResult.code) && array.some(c => isEventFoundationCourse(c.code))) {
+      if (isEventSpecialtyCourse(courseResult.code) && array.some(c => c.code === 'EP')) {
         tripleThreatAppliedCount++;
         return freeMap(courseResult);
       }
