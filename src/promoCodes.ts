@@ -79,9 +79,9 @@ export const promoCodeSpecs: PromoCodeSpec[] = [
   { code: 'GIFTCODE', student: 'DENIED', schools: [ 'QC Event School', 'QC Design School' ], start: new Date(2021, 8, 17, 16), end: new Date(2021, 8, 20, 9, 30) }, // September 17 at 16:00 (supposed to be September 18 at 08:00) to September 20 at 09:30
   { code: 'PROBRUSHES', student: 'DENIED', schools: [ 'QC Makeup Academy' ], start: new Date(2021, 8, 17, 16), end: new Date(2021, 8, 20, 9, 30) }, // September 17 at 16:00 (supposed to be September 18 at 08:00) to September 20 at 09:30
 
-  { code: 'SKINCARE60', student: 'DENIED', schools: [ 'QC Makeup Academy' ], start: new Date(2021, 8, 17, 17), end: new Date(2021, 9, 1, 8) }, // September 17 at 16:00 (supposed to be September 20 at 09:30 to Octobber 1 at 08:00
-  { code: 'TRIPLETHREAT', student: 'DENIED', schools: [ 'QC Event School' ], start: new Date(2021, 8, 17, 17), end: new Date(2021, 9, 1, 8) }, // September 17 at 16:00 (supposed to be September 20 at 09:30 to Octobber 1 at 08:00
-  { code: 'DELUXE', student: 'DENIED', schools: [ 'QC Design School' ], start: new Date(2021, 8, 17, 17), end: new Date(2021, 9, 1, 8) }, // September 17 at 16:00 (supposed to be September 20 at 09:30 to Octobber 1 at 08:00
+  { code: 'SKINCARE60', student: 'DENIED', schools: [ 'QC Makeup Academy' ], start: new Date(2021, 8, 17, 17), end: new Date(2021, 9, 1, 10, 30) }, // September 17 at 16:00 (supposed to be September 20 at 09:30 to October 1 at 10:30
+  { code: 'TRIPLETHREAT', student: 'DENIED', schools: [ 'QC Event School' ], start: new Date(2021, 8, 17, 17), end: new Date(2021, 9, 1, 10, 30) }, // September 17 at 16:00 (supposed to be September 20 at 09:30 to October 1 at 10:30
+  { code: 'DELUXE', student: 'DENIED', schools: [ 'QC Design School' ], start: new Date(2021, 8, 17, 17), end: new Date(2021, 9, 1, 10, 30) }, // September 17 at 16:00 (supposed to be September 20 at 09:30 to October 1 at 10:30
 
   ...studentSupport50Specs,
 ];
