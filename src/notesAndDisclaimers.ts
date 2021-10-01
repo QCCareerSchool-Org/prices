@@ -612,15 +612,17 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
     }
   }
 
-  // if (options?.school === 'QC Pet Studies') {
-  //   if (noShipping === 'FORBIDDEN' || noShipping === 'ALLOWED') {
-  //     notes.push('eco-friendly planner');
-  //   }
-  // }
+  if (options?.school === 'QC Pet Studies') {
+    if (noShipping === 'FORBIDDEN' || noShipping === 'ALLOWED') {
+      disclaimers.push('You\'ll get the FREE Grab-and-Go Kit');
+      notes.push('grab-and-go kit');
+    }
+  }
 
   if (options?.school === 'QC Wellness Studies') {
     if (noShipping === 'FORBIDDEN' || noShipping === 'ALLOWED') {
-      notes.push('grab-and-go kit');
+      disclaimers.push('You\'ll get the FREE protfolio');
+      notes.push('portfolio');
     }
   }
 
@@ -789,6 +791,52 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
       if (courseCount === 1) {
         promoWarnings.push('You have selected the <strong>GREENGIFT</strong> promo code but have not selected your FREE second course.');
       }
+    }
+  }
+
+  if (applies(promoCodeSpecs.find(v => v.code === 'ELITEPRO'))) {
+    if (courses.length === 0) {
+      promoWarnings.push('You have selected the <strong>ELITEPRO</strong> promo code but have not selected your courses');
+    } else if (!courses.includes('MZ')) {
+      promoWarnings.push('You have selected the <strong>ELITEPRO</strong> promo code but have not selected the <strong>Master Makeup Artistry</strong> course');
+    } else {
+      if (!courses.includes('MW')) {
+        promoWarnings.push('You have selected the <strong>ELITEPRO</strong> promo code but have not selected the <strong>Pro Makeup Workshop</strong>');
+      }
+      disclaimers.push('You will receive The Elite Makeup Kit');
+      notes.push('elite makeup kit');
+    }
+  }
+
+  if (applies(promoCodeSpecs.find(v => v.code === 'SFX50'))) {
+    if (courses.length === 0) {
+      promoWarnings.push('You have selected the <strong>SFX50</strong> promo code but have not selected your courses');
+    } else if (!courses.includes('MZ')) {
+      promoWarnings.push('You have selected the <strong>SFX50</strong> promo code but have not selected the <strong>Master Makeup Artistry</strong> course');
+    } else if (!courses.includes('MW')) {
+      promoWarnings.push('You have selected the <strong>SFX50</strong> promo code but have not selected the <strong>Special FX Makeup</strong> course');
+    }
+  }
+
+  if (applies(promoCodeSpecs.find(v => v.code === 'SPECIALIST'))) {
+    if (courses.length === 0) {
+      promoWarnings.push('You have selected the <strong>SPECIALIST</strong> promo code but have not selected your courses');
+    } else if (!courses.includes('EP')) {
+      promoWarnings.push('You have selected the <strong>SPECIALIST</strong> promo code but have not selected the <strong>Event &amp; Wedding Planning</strong> course');
+    } else if (!courses.some(c => isEventSpecialtyCourse(c))) {
+      promoWarnings.push('You have selected the <strong>SPECIALIST</strong> promo code but have not selected a FREE specialty course');
+    }
+  }
+
+  if (applies(promoCodeSpecs.find(v => v.code === 'TREAT'))) {
+    if (courses.length === 0) {
+      promoWarnings.push('You have selected the <strong>TREAT</strong> promo code but have not selected your courses');
+    } else {
+      if (courses.length === 1) {
+        promoWarnings.push('You have selected the <strong>TREAT</strong> promo code but have not selected your FREE second course');
+      }
+      disclaimers.push('You will receive the NEW Laser Tape Measure.');
+      notes.push('laser tape measure');
     }
   }
 

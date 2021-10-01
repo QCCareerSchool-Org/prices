@@ -42,6 +42,9 @@ export const getPromoCodeFreeCourseMap = (now: Date, options?: PriceQueryOptions
   const greengiftApplies = applies(promoCodeSpecs.find(v => v.code === 'GREENGIFT'));
   const giftcodeEventApplies = applies(promoCodeSpecs.find(v => v.code === 'GIFTCODE' && v.schools?.includes('QC Event School')));
   const giftcodeDesignApplies = applies(promoCodeSpecs.find(v => v.code === 'GIFTCODE' && v.schools?.includes('QC Design School')));
+  const eliteproApplies = applies(promoCodeSpecs.find(v => v.code === 'ELITEPRO'));
+  const specialistApplies = applies(promoCodeSpecs.find(v => v.code === 'SPECIALIST'));
+  const treatApplies = applies(promoCodeSpecs.find(v => v.code === 'TREAT'));
 
   let may21Applied = false;
   let spring21Applied = false;
@@ -68,6 +71,8 @@ export const getPromoCodeFreeCourseMap = (now: Date, options?: PriceQueryOptions
   let greengiftApplied = false;
   let giftcodeEventApplied = false;
   let giftcodeDesignApplied = false;
+  let specialistApplied = false;
+  let treatApplied = false;
 
   return (courseResult: CourseResult, index: number, array: CourseResult[]): CourseResult => {
 
@@ -344,6 +349,26 @@ export const getPromoCodeFreeCourseMap = (now: Date, options?: PriceQueryOptions
     if (giftcodeDesignApplies && !giftcodeDesignApplied) {
       if (array.length >= 2 && array.some(c => isDesignCourse(c.code))) {
         giftcodeDesignApplied = true;
+        return freeMap(courseResult);
+      }
+    }
+
+    if (eliteproApplies) {
+      if (courseResult.code === 'MW' && array.some(c => c.code === 'MZ')) {
+        return freeMap(courseResult);
+      }
+    }
+
+    if (specialistApplies && !specialistApplied) {
+      if (isEventSpecialtyCourse(courseResult.code) && array.some(c => c.code === 'EP')) {
+        specialistApplied = true;
+        return freeMap(courseResult);
+      }
+    }
+
+    if (treatApplies && !treatApplied) {
+      if (array.length >= 2 && array.some(c => isDesignCourse(c.code))) {
+        treatApplied = true;
         return freeMap(courseResult);
       }
     }
