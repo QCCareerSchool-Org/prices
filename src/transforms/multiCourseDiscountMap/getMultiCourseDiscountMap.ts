@@ -16,6 +16,7 @@ export const getMultiCourseDiscountMap = (now: Date, options?: PriceQueryOptions
   const skincare60Applies = applies(promoCodeSpecs.find(v => v.code === 'SKINCARE60'));
   const nathansDayApplies = applies(promoCodeSpecs.find(v => v.code === 'NATHANSDAY'));
   const wedding21MakeupApplies = applies(promoCodeSpecs.find(v => v.code === 'WEDDING21' && v.schools?.includes('QC Makeup Academy')));
+  const sfx50Applies = applies(promoCodeSpecs.find(v => v.code === 'SFX50'));
 
   return (courseResult: CourseResult, index: number, array: CourseResult[]) => {
     // skip free courses
@@ -27,7 +28,8 @@ export const getMultiCourseDiscountMap = (now: Date, options?: PriceQueryOptions
       shouldGetMultiCourseDiscount(now, index, options) ||
       (nathansDayApplies && index > 0) ||
       (skincare60Applies && courseResult.code === 'SK' && array.find(c => c.code === 'MZ')) ||
-      (wedding21MakeupApplies && courseResult.code === 'HS' && array.find(c => c.code === 'MZ'))
+      (wedding21MakeupApplies && courseResult.code === 'HS' && array.find(c => c.code === 'MZ')) ||
+      (sfx50Applies && courseResult.code === 'SF' && array.find(c => c.code === 'MZ'))
     ) {
 
       // subtract all the discounts we have so far (use `shipping` instead of `shippingDiscount`) from the cost to determine the lowest possible price we might display (before payment-plan discounts)
