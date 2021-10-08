@@ -23,6 +23,7 @@ const origin = [
   'https://blissful-hopper-b5c7db.netlify.com',
   /www-qcwellnessstudies-com\.now\.sh$/iu,
   /\.qccareerschool\.now\.sh$/iu,
+  /-qccareerschool\.vercel\.app$/iu,
 ];
 
 const app = express();
