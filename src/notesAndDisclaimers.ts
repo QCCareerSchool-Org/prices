@@ -818,7 +818,7 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
       promoWarnings.push('You have selected the <strong>SFX50</strong> promo code but have not selected your courses');
     } else if (!courses.includes('MZ')) {
       promoWarnings.push('You have selected the <strong>SFX50</strong> promo code but have not selected the <strong>Master Makeup Artistry</strong> course');
-    } else if (!courses.includes('MW')) {
+    } else if (!courses.includes('SF')) {
       promoWarnings.push('You have selected the <strong>SFX50</strong> promo code but have not selected the <strong>Special FX Makeup</strong> course');
     }
   }
