@@ -803,8 +803,13 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
       if (!courses.includes('MW')) {
         promoWarnings.push('You have selected the <strong>ELITEPRO</strong> promo code but have not selected the <strong>Pro Makeup Workshop</strong>');
       }
-      disclaimers.push('You will receive The Elite Makeup Kit');
-      notes.push('elite makeup kit');
+      if (now < new Date(2021, 9, 16)) {
+        disclaimers.push('You will receive the Elite Makeup Kit + an EXTRA set of false lashes!');
+        notes.push('elite makeup kit', 'lashes');
+      } else {
+        disclaimers.push('You will receive The Elite Makeup Kit');
+        notes.push('elite makeup kit');
+      }
     }
   }
 
