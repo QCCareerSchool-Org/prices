@@ -49,7 +49,7 @@ export const promoCodeSpecs: PromoCodeSpec[] = [
   { code: 'WEEKEND', student: 'DENIED', schools: [ 'QC Makeup Academy' ], start: new Date(Date.UTC(2021, 4, 29, 12)), end: new Date(Date.UTC(2021, 5, 1, 13)) }, // May 28 at 08:00 to June 1 at 09:00
   { code: 'WEEKEND', student: 'DENIED', schools: [ 'QC Design School' ], start: new Date(Date.UTC(2021, 4, 29, 12)), end: new Date(Date.UTC(2021, 5, 1, 13)) }, // May 28 at 08:00 to June 1 at 09:00
   { code: 'JUNE21', student: 'DENIED', schools: [ 'QC Design School' ], start: new Date(Date.UTC(2021, 5, 1, 13)) }, // June 1 at 09:00
-  { code: 'WEDDING21', student: 'DENIED', schools: [ 'QC Event School' ], start: new Date(2021, 9, 12, 9, 30), end: new Date(2021, 9, 16) }, // October 12 at 09:30 to October 16 at 00:00
+  { code: 'WEDDING21', student: 'DENIED', schools: [ 'QC Event School' ], start: new Date(2021, 9, 25, 9, 30), end: new Date(2021, 9, 30) }, // October 25 at 09:30 to October 30 at 00:00
   { code: 'EXPERT', student: 'DENIED', schools: [ 'QC Event School' ] },
   { code: 'SUMMER21', student: 'DENIED', schools: [ 'QC Event School' ], start: new Date(2021, 6, 17, 8), end: new Date(2021, 6, 20) }, // July 17 at 08:00 to July 20 at 00:00
   { code: 'SUMMER21', student: 'DENIED', schools: [ 'QC Makeup Academy' ], start: new Date(2021, 5, 14, 9), end: new Date(2021, 5, 28, 9) }, // June 14 at 09:00 to June 28 at 09:00
@@ -59,8 +59,6 @@ export const promoCodeSpecs: PromoCodeSpec[] = [
   { code: 'FATHERSDAY', student: 'DENIED', schools: [ 'QC Makeup Academy', 'QC Event School', 'QC Design School' ], start: new Date(2021, 5, 18, 9, 30), end: new Date(2021, 5, 21, 0) }, // June 18 at 09:30 to June 21 at 00:00
   { code: 'DIVEIN', student: 'DENIED', schools: [ 'QC Makeup Academy', 'QC Design School', 'QC Event School' ], start: new Date(2021, 5, 30, 10), end: new Date(2021, 5, 30, 23, 59, 59, 999) }, // June 30 at 10:00 to June 30 at 23:59:59.999
   { code: 'CANADA154', student: 'DENIED', schools: [ 'QC Makeup Academy', 'QC Design School', 'QC Event School' ], start: new Date(2021, 5, 28, 9, 30), end: new Date(2021, 6, 7, 9, 30) }, // June 28 at 09:30 to July 7 at 09:30
-  { code: 'WEDDING21', student: 'ALLOWED', schools: [ 'QC Makeup Academy' ], start: new Date(2021, 6, 6, 10, 30), end: new Date(2021, 6, 17, 23, 59, 59, 999) }, // July 6 at 10:30 to July 17 at 23:59:59.999
-  { code: 'WEDDINGSZN', student: 'DENIED', schools: [ 'QC Event School' ], start: new Date(2021, 6, 6, 10, 30), end: new Date(2021, 6, 17, 23, 59, 59, 999) }, // July 6 at 10:30 to July 17 at 23:59:59.999
   { code: 'QCLASHES', student: 'ALLOWED', schools: [ 'QC Makeup Academy' ] },
   { code: 'DELUXE21', student: 'DENIED', schools: [ 'QC Design School' ], start: new Date(2021, 6, 17, 8), end: new Date(2021, 6, 20) }, // July 17 at 08:00 to July 20 at 00:00
   { code: 'GLOWUP', student: 'DENIED', schools: [ 'QC Makeup Academy' ], start: new Date(2021, 6, 19, 9, 30), end: new Date(2021, 6, 31) }, // July 19 at 09:30 to July 31 at 00:00
