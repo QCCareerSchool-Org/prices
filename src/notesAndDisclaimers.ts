@@ -803,7 +803,7 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
       if (!courses.includes('MW')) {
         promoWarnings.push('You have selected the <strong>ELITEPRO</strong> promo code but have not selected the <strong>Pro Makeup Workshop</strong>');
       }
-      if (now < new Date(2021, 9, 16)) {
+      if (now < new Date(2021, 9, 30)) {
         disclaimers.push('You will receive the Elite Makeup Kit + an EXTRA set of false lashes!');
         notes.push('elite makeup kit', 'lashes');
       } else {
@@ -840,8 +840,13 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
       if (courses.length === 1) {
         promoWarnings.push('You have selected the <strong>TREAT</strong> promo code but have not selected your FREE second course');
       }
-      disclaimers.push('You will receive the NEW Laser Tape Measure.');
-      notes.push('laser tape measure');
+      if (now < new Date(2021, 9, 30)) {
+        disclaimers.push('You will receive the Deluxe Design Kit.');
+        notes.push('deluxe design kit');
+      } else {
+        disclaimers.push('You will receive the NEW Laser Tape Measure.');
+        notes.push('laser tape measure');
+      }
     }
   }
 
