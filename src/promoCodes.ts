@@ -33,6 +33,12 @@ export const studentSupport50Specs: PromoCodeSpec[] = studentSupportNames.map<Pr
   schools: studentSupportSchools,
 } as const));
 
+export const studentSupport150Specs: PromoCodeSpec[] = studentSupportNames.map<PromoCodeSpec>(name => ({
+  code: name + '150',
+  student: 'ALLOWED',
+  schools: studentSupportSchools,
+} as const));
+
 export const promoCodeSpecs: PromoCodeSpec[] = [
   { code: 'SAVE50', student: 'DENIED', schools: [ 'QC Makeup Academy', 'QC Design School', 'QC Event School' ] },
   { code: 'ELITE', student: 'DENIED', schools: [ 'QC Makeup Academy' ] },
@@ -42,6 +48,7 @@ export const promoCodeSpecs: PromoCodeSpec[] = [
   { code: 'BOGO', student: 'DENIED', schools: [ 'QC Design School', 'QC Event School' ] },
   { code: 'LUMINOUS', student: 'DENIED', schools: [ 'QC Makeup Academy' ] },
   ...studentSupport50Specs,
+  ...studentSupport150Specs,
 ];
 
 /**
