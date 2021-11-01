@@ -1,3 +1,5 @@
+import Big from 'big.js';
+
 import { calculatePlans } from '../../calculatePlans';
 import { PromoCodeSpec, specApplies, studentSupport150Specs, studentSupport50Specs } from '../../promoCodes';
 import { CourseResult, MapFunction, PriceQueryOptions } from '../../types';
