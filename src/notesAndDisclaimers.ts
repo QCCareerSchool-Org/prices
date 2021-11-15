@@ -116,6 +116,52 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
     }
   }
 
+  // BLACK FRIDAY promo code
+  if (applies(promoCodeSpecs.find(v => v.code === 'BLACK FRIDAY'))) {
+    switch (options?.school) {
+      case 'QC Makeup Academy':
+        if (!courses.includes('MZ')) {
+          promoWarnings.push('You have entered the <strong>BLACK FRIDAY</strong> promo code, but you haven\'t selected the <strong>Master Makeup Artistry</strong> course');
+        } else {
+          if (courses.length === 1) {
+            promoWarnings.push('You have entered the <strong>BLACK FRIDAY</strong> promo code, but you haven\'t selected your free course');
+          }
+          disclaimers.push('You\'ll receive the Luminous Collection');
+          notes.push('luminous collection');
+        }
+        break;
+      case 'QC Design School':
+        if (!courses.includes('VD')) {
+          if (courses.length < 2) {
+            promoWarnings.push('You have entered the <strong>BLACK FRIDAY</strong> promo code, but you haven\'t selected your free courses');
+          } else {
+            promoWarnings.push('You have entered the <strong>BLACK FRIDAY</strong> promo code, but you haven\'t selected your free <strong>Virtual Design</strong> course');
+          }
+        } else {
+          if (courses.length < 3) {
+            promoWarnings.push('You have entered the <strong>BLACK FRIDAY</strong> promo code, but you haven\'t selected your second free course');
+          }
+        }
+        disclaimers.push('You\'ll receive the Deluxe Design Kit');
+        notes.push('deluxe design kit');
+        break;
+      case 'QC Event School':
+        if (!courses.includes('EP')) {
+          promoWarnings.push('You have entered the <strong>BLACK FRIDAY</strong> promo code, but you haven\'t selected the <strong>Event &amp; Wedding Planning</strong> course');
+        } else {
+          const specialtyCourseCount = courses.filter(c => isEventSpecialtyCourse(c)).length;
+          if (specialtyCourseCount === 0) {
+            promoWarnings.push('You have entered the <strong>BLACK FRIDAY</strong> promo code, but you haven\'t selected your free specialty courses');
+          } else if (specialtyCourseCount === 1) {
+            promoWarnings.push('You have entered the <strong>BLACK FRIDAY</strong> promo code, but you haven\'t selected your <strong>second</strong> free specialty course');
+          }
+          disclaimers.push('You\'ll receive the leather portfolio');
+          notes.push('leather portfolio');
+        }
+        break;
+    }
+  }
+
   if (courses.includes('EB')) {
     disclaimers.push('The Accelerate Your Business Workshop includes electronic course material only.');
   }
