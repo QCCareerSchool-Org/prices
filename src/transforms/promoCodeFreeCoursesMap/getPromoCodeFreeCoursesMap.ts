@@ -40,7 +40,7 @@ export const getPromoCodeFreeCourseMap = (now: Date, options?: PriceQueryOptions
     if (blackFridayApplies) {
       switch (options?.school) {
         case 'QC Makeup Academy':
-          if (blackFridayCount < 1 && array.length >= 2) {
+          if (blackFridayCount < 1 && courseResult.code !== 'MZ' && array.some(c => c.code === 'MZ')) {
             blackFridayCount++;
             return freeMap(courseResult);
           }
