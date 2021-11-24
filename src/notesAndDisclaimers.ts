@@ -162,6 +162,21 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
     }
   }
 
+  if (options?.school === 'QC Makeup Academy' && courses.length >= 1) {
+    disclaimers.push('You\'ll get the Effortless Eye Kit');
+    notes.push('Effortless Eye Kit');
+  }
+
+  if (options?.school === 'QC Event School' && courses.length >= 1) {
+    disclaimers.push('You\'ll get the free leather portfolio');
+    notes.push('portfolio');
+  }
+
+  if (options?.school === 'QC Design School' && courses.length >= 1) {
+    disclaimers.push('You\'ll get the free color fan deck');
+    notes.push('fan deck');
+  }
+
   if (courses.includes('EB')) {
     disclaimers.push('The Accelerate Your Business Workshop includes electronic course material only.');
   }
