@@ -104,6 +104,20 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
     } else if (courses.length < 2) {
       promoWarnings.push('You have entered the <strong>BOGO</strong> promo code, but you haven\'t selected a free second course.');
     }
+    switch (options?.school) {
+      case 'QC Design School':
+        if (courses.length > 0) {
+          disclaimers.push('You\'ll receive the Deluxe Design Kit');
+          notes.push('deluxe design kit');
+        }
+        break;
+      case 'QC Event School':
+        if (courses.length > 0) {
+          disclaimers.push('You\'ll receive The Little Book of Wedding Checklists ');
+          notes.push('The Little Book of Wedding Checklists');
+        }
+        break;
+    }
   }
 
   // LUMINOUS promo code
@@ -162,19 +176,62 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
     }
   }
 
-  if (options?.school === 'QC Makeup Academy' && options.discountAll && courses.length >= 1) {
-    disclaimers.push('You\'ll get the Effortless Eye Kit');
-    notes.push('Effortless Eye Kit');
+  // SKINCARE
+  if (applies(promoCodeSpecs.find(v => v.code === 'SKINCARE'))) {
+    if (!courses.includes('MZ')) {
+      promoWarnings.push('You have entered the <strong>SKINCARE</strong> promo code, but you haven\'t selected the <strong>Master Makeup Artistry</strong> course');
+    } else {
+      if (!courses.includes('SK')) {
+        promoWarnings.push('You have entered the <strong>SKINCARE</strong> promo code, but you haven\'t selected the <strong>Skincare</strong> course');
+      }
+      disclaimers.push('You\'ll receive the Luminous Collection');
+      notes.push('luminous collection');
+    }
   }
 
-  if (options?.school === 'QC Event School' && options.discountAll && courses.length >= 1) {
-    disclaimers.push('You\'ll get the free leather portfolio');
-    notes.push('portfolio');
+  if (options?.school === 'QC Wellness Studies' && courses.length >= 1) {
+    if (options.discountAll) {
+      // nothing
+    } else {
+      disclaimers.push('You\'ll get the leather portfolio');
+      notes.push('leather portfolio');
+    }
   }
 
-  if (options?.school === 'QC Design School' && options.discountAll && courses.length >= 1) {
-    disclaimers.push('You\'ll get the free color fan deck');
-    notes.push('fan deck');
+  if (options?.school === 'QC Pet Studies' && courses.length >= 1) {
+    if (options.discountAll) {
+      // nothing
+    } else {
+      disclaimers.push('You\'ll get the pack of 20 dog bows');
+      notes.push('dog bows');
+    }
+  }
+
+  if (options?.school === 'QC Makeup Academy' && courses.length >= 1) {
+    if (options.discountAll) {
+      disclaimers.push('You\'ll get the Effortless Eye Kit');
+      notes.push('Effortless Eye Kit');
+    } else {
+      // nothing
+    }
+  }
+
+  if (options?.school === 'QC Event School' && courses.length >= 1) {
+    if (options.discountAll) {
+      disclaimers.push('You\'ll get the free leather portfolio');
+      notes.push('portfolio');
+    } else {
+      // nothing
+    }
+  }
+
+  if (options?.school === 'QC Design School' && courses.length >= 1) {
+    if (options.discountAll) {
+      disclaimers.push('You\'ll get the free color fan deck');
+      notes.push('fan deck');
+    } else {
+      // nothing
+    }
   }
 
   if (courses.includes('EB')) {
