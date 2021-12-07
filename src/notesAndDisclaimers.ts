@@ -189,6 +189,19 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
     }
   }
 
+  // EVENTFREECOURSE promo code
+  if (applies(promoCodeSpecs.find(v => v.code === 'EVENTFREECOURSE'))) {
+    if (!courses.includes('EP')) {
+      promoWarnings.push('You have entered the <strong>EVENTFREECOURSE</strong> promo code, but you haven\'t selected the <strong>Event &amp; Wedding Planning</strong> course');
+    } else {
+      if (courses.length < 2) {
+        promoWarnings.push('You have entered the <strong>EVENTFREECOURSE</strong> promo code, but you haven\'t selected a free course');
+      }
+      disclaimers.push('You\'ll receive The Little Book of Wedding Checklists ');
+      notes.push('The Little Book of Wedding Checklists');
+    }
+  }
+
   if (options?.school === 'QC Wellness Studies' && courses.length >= 1) {
     if (options.discountAll) {
       // nothing
