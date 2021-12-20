@@ -222,8 +222,8 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
     if (options.discountAll) {
       // nothing
     } else {
-      disclaimers.push('You\'ll get the leather portfolio');
-      notes.push('leather portfolio');
+      // disclaimers.push('You\'ll get the leather portfolio');
+      // notes.push('leather portfolio');
     }
   }
 
@@ -231,8 +231,8 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
     if (options.discountAll) {
       // nothing
     } else {
-      disclaimers.push('You\'ll get the pack of 20 dog bows');
-      notes.push('dog bows');
+      // disclaimers.push('You\'ll get the pack of 20 dog bows');
+      // notes.push('dog bows');
     }
   }
 
