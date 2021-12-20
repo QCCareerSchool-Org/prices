@@ -107,8 +107,10 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
     switch (options?.school) {
       case 'QC Design School':
         if (courses.length > 0) {
-          disclaimers.push('You\'ll receive the Deluxe Design Kit');
-          notes.push('deluxe design kit');
+          disclaimers.push('You\'ll get <cite>The Interior Design Handbook</cite>');
+          notes.push('The Interior Design Handbook');
+          // disclaimers.push('You\'ll receive the Deluxe Design Kit');
+          // notes.push('deluxe design kit');
         }
         break;
       case 'QC Event School':
@@ -202,6 +204,20 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
     }
   }
 
+  // 2SPECIALTY promo code
+  if (applies(promoCodeSpecs.find(v => v.code === '2SPECIALTY'))) {
+    if (!courses.some(c => isEventFoundationCourse(c))) {
+      promoWarnings.push('You have entered the <strong>2SPECIALTY</strong> promo code, but you haven\'t selected a <strong>Foundation</strong> course');
+    } else {
+      const specialtyCount = courses.filter(c => isEventSpecialtyCourse(c)).length;
+      if (specialtyCount === 0) {
+        promoWarnings.push('You have entered the <strong>2SPECIALTY</strong> promo code, but you haven\'t selected any free <strong>Specialty</strong> courses');
+      } else if (specialtyCount === 1) {
+        promoWarnings.push('You have entered the <strong>2SPECIALTY</strong> promo code, but you haven\'t selected a second free <strong>Specialty</strong> course');
+      }
+    }
+  }
+
   if (options?.school === 'QC Wellness Studies' && courses.length >= 1) {
     if (options.discountAll) {
       // nothing
@@ -231,8 +247,8 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
 
   if (options?.school === 'QC Event School' && courses.length >= 1) {
     if (options.discountAll) {
-      disclaimers.push('You\'ll get the free leather portfolio');
-      notes.push('portfolio');
+      // disclaimers.push('You\'ll get the free leather portfolio');
+      // notes.push('portfolio');
     } else {
       // nothing
     }
@@ -240,8 +256,8 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
 
   if (options?.school === 'QC Design School' && courses.length >= 1) {
     if (options.discountAll) {
-      disclaimers.push('You\'ll get the free color fan deck');
-      notes.push('fan deck');
+      // disclaimers.push('You\'ll get the free color fan deck');
+      // notes.push('fan deck');
     } else {
       // nothing
     }
