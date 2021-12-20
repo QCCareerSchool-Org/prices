@@ -50,6 +50,7 @@ export const promoCodeSpecs: PromoCodeSpec[] = [
   { code: 'BLACK FRIDAY', student: 'DENIED', schools: [ 'QC Makeup Academy', 'QC Design School', 'QC Event School' ] },
   { code: 'SKINCARE', student: 'DENIED', schools: [ 'QC Makeup Academy' ] },
   { code: 'EVENTFREECOURSE', student: 'DENIED', schools: [ 'QC Event School' ] },
+  { code: '2SPECIALTY', student: 'DENIED', schools: [ 'QC Event School' ] },
   ...studentSupport50Specs,
   ...studentSupport150Specs,
 ];
