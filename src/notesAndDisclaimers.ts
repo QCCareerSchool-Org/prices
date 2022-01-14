@@ -104,22 +104,6 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
     } else if (courses.length < 2) {
       promoWarnings.push('You have entered the <strong>BOGO</strong> promo code, but you haven\'t selected a free second course.');
     }
-    switch (options?.school) {
-      case 'QC Design School':
-        if (courses.length > 0) {
-          disclaimers.push('You\'ll get <cite>The Interior Design Handbook</cite>');
-          notes.push('The Interior Design Handbook');
-          // disclaimers.push('You\'ll receive the Deluxe Design Kit');
-          // notes.push('deluxe design kit');
-        }
-        break;
-      case 'QC Event School':
-        if (courses.length > 0) {
-          disclaimers.push('You\'ll receive The Little Book of Wedding Checklists ');
-          notes.push('The Little Book of Wedding Checklists');
-        }
-        break;
-    }
   }
 
   // LUMINOUS promo code
