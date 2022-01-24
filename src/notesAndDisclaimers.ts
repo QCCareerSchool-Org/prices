@@ -225,7 +225,10 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
       disclaimers.push('You\'ll get the Effortless Eye Kit');
       notes.push('Effortless Eye Kit');
     } else {
-      // nothing
+      if (courses.includes('MZ')) {
+        disclaimers.push('You\'ll get the New Year Collection makeup kit');
+        notes.push('New Year Kit');
+      }
     }
   }
 
