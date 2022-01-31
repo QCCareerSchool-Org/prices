@@ -75,7 +75,10 @@ const newPrices = async (req: Request): Promise<PriceResult> => {
     try {
       query = await priceSchema.validate(req.query);
     } catch (err) {
-      throw new HttpStatus.BadRequest(err.message);
+      if (err instanceof yup.ValidationError) {
+        throw new HttpStatus.BadRequest(err.message);
+      }
+      throw new HttpStatus.BadRequest('unknown error');
     }
     return await prices(connection, query.courses, query.countryCode, query.provinceCode, query.options);
   } finally {
@@ -91,7 +94,10 @@ const oldPrices = async (req: Request): Promise<OldPriceResult> => {
     try {
       query = await oldPriceSchema.validate(req.query);
     } catch (err) {
-      throw new HttpStatus.BadRequest(err.message);
+      if (err instanceof yup.ValidationError) {
+        throw new HttpStatus.BadRequest(err.message);
+      }
+      throw new HttpStatus.BadRequest('unknown error');
     }
     return await oldGetPrices(connection, query.courses, query.countryCode, query.provinceCode, query.discountAll, query.options);
   } finally {
