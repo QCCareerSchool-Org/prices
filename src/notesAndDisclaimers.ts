@@ -1,5 +1,6 @@
 import { isDesignCourse, isEventFoundationCourse, isEventSpecialtyCourse, isMakeupAdvancedCourse, isMakeupFoundationCourse } from './courses';
 import { PromoCodeSpec, promoCodeSpecs, specApplies } from './promoCodes';
+import { courseSort } from './transforms/courseSort/courseSort';
 import { NoShipping, PriceQueryOptions } from './types';
 
 /**
@@ -256,6 +257,18 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
       // notes.push('fan deck');
     } else {
       // nothing
+    }
+  }
+
+  if (applies(promoCodeSpecs.find(v => v.code === 'DG150')) || applies(promoCodeSpecs.find(v => v.code === 'DG200')) || applies(promoCodeSpecs.find(v => v.code === 'DG300'))) {
+    if (!courses.includes('DG')) {
+      promoWarnings.push('You have entered the discount promo code for <strong>Dog Grooming</strong>, but you haven\'t selected the course');
+    }
+  }
+
+  if (applies(promoCodeSpecs.find(v => v.code === 'DT150')) || applies(promoCodeSpecs.find(v => v.code === 'DT200')) || applies(promoCodeSpecs.find(v => v.code === 'DT300'))) {
+    if (!courses.includes('DT')) {
+      promoWarnings.push('You have entered the discount promo code for <strong>Dog Training</strong>, but you haven\'t selected the course');
     }
   }
 
