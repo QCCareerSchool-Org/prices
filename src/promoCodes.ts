@@ -54,6 +54,15 @@ export const promoCodeSpecs: PromoCodeSpec[] = [
   { code: 'FREELUXURY', student: 'DENIED', schools: [ 'QC Event School' ] },
   ...studentSupport50Specs,
   ...studentSupport150Specs,
+  { code: 'DG150', student: 'DENIED', schools: [ 'QC Pet Studies' ] },
+  { code: 'DG200', student: 'DENIED', schools: [ 'QC Pet Studies' ] },
+  { code: 'DG300', student: 'DENIED', schools: [ 'QC Pet Studies' ] },
+  { code: 'DT150', student: 'DENIED', schools: [ 'QC Pet Studies' ] },
+  { code: 'DT200', student: 'DENIED', schools: [ 'QC Pet Studies' ] },
+  { code: 'DT300', student: 'DENIED', schools: [ 'QC Pet Studies' ] },
+  { code: '50OFF', student: 'DENIED', schools: [ 'QC Wellness Studies' ] },
+  { code: '100OFF', student: 'DENIED', schools: [ 'QC Wellness Studies' ] },
+  { code: '150OFF', student: 'DENIED', schools: [ 'QC Wellness Studies' ] },
 ];
 
 /**
