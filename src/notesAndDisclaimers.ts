@@ -53,8 +53,8 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
       if (!courses.includes('MZ')) {
         promoWarnings.push('You have entered the <strong>ELITE</strong> promo code but have not selected the <strong>Master Makeup Artistry</strong> course.');
       } else {
-        notes.push('elite makeup kit');
-        disclaimers.push('You will receive the <strong>elite makeup kit upgrade</strong> (includes a highlight palette, contour palette, eyebrow palette, 4-pack of false lashes, a makeup travel bag, and a stainless steel palette with spatula).');
+        notes.push('valentine makeup kit');
+        disclaimers.push('You will receive the <strong>Valentine Makeup Kit</strong>.');
       }
     }
   }
@@ -199,6 +199,15 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
       } else if (specialtyCount === 1) {
         promoWarnings.push('You have entered the <strong>2SPECIALTY</strong> promo code, but you haven\'t selected a second free <strong>Specialty</strong> course');
       }
+    }
+  }
+
+  // FREELUXURY promo code
+  if (applies(promoCodeSpecs.find(v => v.code === 'FREELUXURY'))) {
+    if (!courses.some(c => isEventFoundationCourse(c))) {
+      promoWarnings.push('You have entered the <strong>FREELUXURY</strong> promo code, but you haven\'t selected a <strong>Foundation</strong> course');
+    } else if (!courses.includes('LW')) {
+      promoWarnings.push('You have entered the <strong>FREELUXURY</strong> promo code, but you haven\'t selected the free <strong>Luxury Wedding Planning</strong> course');
     }
   }
 
