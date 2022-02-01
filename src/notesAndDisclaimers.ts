@@ -262,13 +262,13 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
 
   if (applies(promoCodeSpecs.find(v => v.code === 'DG150')) || applies(promoCodeSpecs.find(v => v.code === 'DG200')) || applies(promoCodeSpecs.find(v => v.code === 'DG300'))) {
     if (!courses.includes('DG')) {
-      promoWarnings.push('You have entered the discount promo code for <strong>Dog Grooming</strong>, but you haven\'t selected the course');
+      promoWarnings.push('You have entered a discount promo code for <strong>Dog Grooming</strong>, but you haven\'t selected the course');
     }
   }
 
   if (applies(promoCodeSpecs.find(v => v.code === 'DT150')) || applies(promoCodeSpecs.find(v => v.code === 'DT200')) || applies(promoCodeSpecs.find(v => v.code === 'DT300'))) {
     if (!courses.includes('DT')) {
-      promoWarnings.push('You have entered the discount promo code for <strong>Dog Training</strong>, but you haven\'t selected the course');
+      promoWarnings.push('You have entered a discount promo code for <strong>Dog Training</strong>, but you haven\'t selected the course');
     }
   }
 
