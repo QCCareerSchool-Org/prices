@@ -1,6 +1,6 @@
 {
   "name": "prices",
-  "version": "3.10.6",
+  "version": "3.10.7",
   "description": "",
   "scripts": {
     "test": "jest",
