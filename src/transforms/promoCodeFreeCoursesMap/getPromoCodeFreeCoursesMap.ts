@@ -111,7 +111,7 @@ export const getPromoCodeFreeCourseMap = (now: Date, options?: PriceQueryOptions
     }
 
     if (masterClassApplies && !masterClassApplied) {
-      if (isDesignCourse(courseResult.code) && array.some(c => c.code === 'I2')) {
+      if (isDesignCourse(courseResult.code) && courseResult.code !== 'I2' && array.some(c => c.code === 'I2')) {
         masterClassApplied = true;
         return freeMap(courseResult);
       }
