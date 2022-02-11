@@ -7,8 +7,6 @@ import { CourseResult, MapFunction, PriceQueryOptions } from '../../types';
 export const getPromoCodeDiscountsMap = (now: Date, currencyCode: string, options?: PriceQueryOptions): MapFunction<CourseResult, CourseResult> => {
   const applies = (spec?: PromoCodeSpec): boolean => typeof spec !== 'undefined' && specApplies(spec, now, options?.discountAll, options?.promoCode, options?.school);
 
-  console.log(options);
-
   const studentSupport50Applies = studentSupport50Specs.some(applies);
   const studentSupport150Applies = studentSupport150Specs.some(applies);
 
