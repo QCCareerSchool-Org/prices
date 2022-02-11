@@ -1,4 +1,4 @@
-import { isEventFoundationCourse, isEventSpecialtyCourse } from '../../courses';
+import { isDesignCourse, isEventFoundationCourse, isEventSpecialtyCourse } from '../../courses';
 import { freeMap } from '../../lib/freeMap';
 import { PromoCodeSpec, promoCodeSpecs, specApplies } from '../../promoCodes';
 import { CourseResult, MapFunction, PriceQueryOptions } from '../../types';
@@ -14,12 +14,14 @@ export const getPromoCodeFreeCourseMap = (now: Date, options?: PriceQueryOptions
   const eventFreeCourseApplies = applies(promoCodeSpecs.find(v => v.code === 'EVENTFREECOURSE'));
   const twoFreeSpecialtyApplies = applies(promoCodeSpecs.find(v => v.code === '2SPECIALTY'));
   const freeLuxuryApplies = applies(promoCodeSpecs.find(v => v.code === 'FREELUXURY'));
+  const masterClassApplies = applies(promoCodeSpecs.find(v => v.code === 'MASTERCLASS'));
 
   let expertApplied = false;
   let bogoApplied = false;
   let blackFridayCount = 0;
   let eventFreeCourseApplied = false;
   let twoFreeSpecialtyCount = 0;
+  let masterClassApplied = false;
 
   return (courseResult: CourseResult, index: number, array: CourseResult[]): CourseResult => {
 
@@ -104,6 +106,13 @@ export const getPromoCodeFreeCourseMap = (now: Date, options?: PriceQueryOptions
 
     if (freeLuxuryApplies) {
       if (courseResult.code === 'LW' && array.some(c => isEventFoundationCourse(c.code))) {
+        return freeMap(courseResult);
+      }
+    }
+
+    if (masterClassApplies && !masterClassApplied) {
+      if (isDesignCourse(courseResult.code) && array.some(c => c.code === 'I2')) {
+        masterClassApplied = true;
         return freeMap(courseResult);
       }
     }
