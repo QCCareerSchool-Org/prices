@@ -272,6 +272,12 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
     }
   }
 
+  if (applies(promoCodeSpecs.find(v => v.code === 'MASTERCLASS'))) {
+    if (!courses.includes('I2')) {
+      promoWarnings.push('You have entered the <strong>MASTERCLASS</strong> promo code, but you haven\'t selected the <strong>Interior Decorating</strong> course');
+    }
+  }
+
   if (courses.includes('EB')) {
     disclaimers.push('The Accelerate Your Business Workshop includes electronic course material only.');
   }

@@ -23,6 +23,7 @@ import { priceRowToCourseResultMap } from './transforms/priceRowToCourseResultMa
 import { primaryMap } from './transforms/primaryMap/primaryMap';
 import { getPromoCodeDiscountsMap } from './transforms/promoCodeDiscountsMap/getPromoCodeDiscountsMap';
 import { getPromoCodeFreeCourseMap } from './transforms/promoCodeFreeCoursesMap/getPromoCodeFreeCoursesMap';
+import { getPromoCodeSort } from './transforms/promoCodeSort/getPromoCodeSort';
 import { getShippingMap } from './transforms/shippingMap/getShippingMap';
 import { getStudentDiscountMap } from './transforms/studentDiscountMap/getStudentDiscountMap';
 import { CourseResult, NoShipping, PriceQueryOptions, PriceResult } from './types';
@@ -77,6 +78,7 @@ export async function prices(
     .sort((a, b) => a.cost - b.cost) // sort by cost in ascending order (cheapest first)
     .map(freeCourseMap) // determine which courses shoul be free by default
     .sort((a, b) => (a.free === b.free ? a.cost - b.cost : a.free ? 1 : -1)) // sort by free in ascending order (free last), then cost in ascending order (cheapest first)
+    .sort(getPromoCodeSort(now, options))
     .map(getPromoCodeFreeCourseMap(now, options)) // determine which courses should be free based on promo codes
     .sort((a, b) => (a.free === b.free ? b.cost - a.cost : a.free ? 1 : -1)) // sort by free in ascending order (free last), then cost in descending order (cheapest last)
     .map(primaryMap) // mark first course primary and adjust other courses' installments to match the primary course
