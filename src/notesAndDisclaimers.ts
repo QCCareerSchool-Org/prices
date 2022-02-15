@@ -278,6 +278,28 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
     }
   }
 
+  if (applies(promoCodeSpecs.find(v => v.code === 'LUXURYWEDDING'))) {
+    if (!courses.includes('EP')) {
+      promoWarnings.push('You have entered the <strong>LUXURYWEDDING</strong> promo code, but you haven\'t selected the <strong>Event & Wedding Planning</strong> course');
+    } else {
+      if (!courses.includes('LW')) {
+        promoWarnings.push('You have entered the <strong>LUXURYWEDDING</strong> promo code, but you haven\'t selected your free <strong>Luxury Wedding & Event Planning</strong> course');
+      }
+      if (!courses.includes('DW')) {
+        promoWarnings.push('You have entered the <strong>LUXURYWEDDING</strong> promo code, but you haven\'t selected your free <strong>Desination Wedding Planning</strong> course');
+      }
+    }
+  }
+
+  if (applies(promoCodeSpecs.find(v => v.code === 'KIT200OFF'))) {
+    if (!courses.includes('MZ')) {
+      promoWarnings.push('You have entered the <strong>KIT200OFF</strong> promo code, but you haven\'t selected the <strong>Master Makeup Artistry</strong> course');
+    } else {
+      disclaimers.push('You\'ll receive the Luminous Collection');
+      notes.push('luminous collection');
+    }
+  }
+
   if (courses.includes('EB')) {
     disclaimers.push('The Accelerate Your Business Workshop includes electronic course material only.');
   }
