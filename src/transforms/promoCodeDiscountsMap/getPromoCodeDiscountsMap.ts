@@ -44,7 +44,7 @@ export const getPromoCodeDiscountsMap = (now: Date, currencyCode: string, option
     if (kit200OffApplies && isMakeupFoundationCourse(courseResult.code)) {
       // subtract all the discounts we have so far (use `shipping` instead of `shippingDiscount`) from the cost to determine the lowest possible price we might display (before payment-plan discounts)
       const minimumPrice = parseFloat(Big(courseResult.cost).minus(courseResult.shipping).minus(courseResult.multiCourseDiscount).minus(courseResult.promoDiscount).toFixed(2));
-      const extraDiscount = Math.min(minimumPrice, 200);
+      const extraDiscount = Math.min(minimumPrice, currencyCode === 'GBP' ? 100 : 200);
       // for all promo discounts, add to the existing promo discount value rather than overwriting it
       const promoDiscount = parseFloat(Big(courseResult.promoDiscount).plus(extraDiscount).toFixed(2));
       const discountedCost = parseFloat(Big(courseResult.cost).minus(courseResult.shippingDiscount).minus(courseResult.multiCourseDiscount).minus(promoDiscount).toFixed(2));
