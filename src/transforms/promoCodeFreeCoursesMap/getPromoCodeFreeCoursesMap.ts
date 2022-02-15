@@ -15,6 +15,7 @@ export const getPromoCodeFreeCourseMap = (now: Date, options?: PriceQueryOptions
   const twoFreeSpecialtyApplies = applies(promoCodeSpecs.find(v => v.code === '2SPECIALTY'));
   const freeLuxuryApplies = applies(promoCodeSpecs.find(v => v.code === 'FREELUXURY'));
   const masterClassApplies = applies(promoCodeSpecs.find(v => v.code === 'MASTERCLASS'));
+  const luxuryDestinationApplies = applies(promoCodeSpecs.find(v => v.code === 'LUXURYDESTINATION'));
 
   let expertApplied = false;
   let bogoApplied = false;
@@ -113,6 +114,12 @@ export const getPromoCodeFreeCourseMap = (now: Date, options?: PriceQueryOptions
     if (masterClassApplies && !masterClassApplied) {
       if (isDesignCourse(courseResult.code) && courseResult.code !== 'I2' && array.some(c => c.code === 'I2')) {
         masterClassApplied = true;
+        return freeMap(courseResult);
+      }
+    }
+
+    if (luxuryDestinationApplies) {
+      if ((courseResult.code === 'LW' || courseResult.code === 'DW') && array.some(c => c.code === 'EP')) {
         return freeMap(courseResult);
       }
     }
