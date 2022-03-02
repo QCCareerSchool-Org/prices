@@ -212,6 +212,19 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
     }
   }
 
+  // FREEADVANCED promo code
+  if (applies(promoCodeSpecs.find(v => v.code === 'FREEADVANCED'))) {
+    if (!courses.includes('MZ')) {
+      promoWarnings.push('You have entered the <strong>FREEADVANCED</strong> promo code but have not selected a <strong>Master Makeup Artistry</strong>.');
+    } else {
+      if (!courses.some(c => isMakeupAdvancedCourse(c))) {
+        promoWarnings.push('You have entered the <strong>FREEADVANCED</strong> promo code but have not selected your free <strong>Advanced Course</strong>.');
+      }
+      disclaimers.push('You\'ll get the Luminous Collection for free');
+      notes.push('Luminous Collection');
+    }
+  }
+
   if (options?.school === 'QC Wellness Studies' && courses.length >= 1) {
     if (options.discountAll) {
       // nothing
