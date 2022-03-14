@@ -28,7 +28,7 @@
     "typescript": "^4.2.4"
   },
   "dependencies": {
-    "@qccareerschool/helper-functions": "^1.5.1",
+    "@qccareerschool/helper-functions": "^1.5.2",
     "@qccareerschool/http-status": "^2.1.0",
     "@qccareerschool/winston-nodemailer": "^4.0.1",
     "@types/big.js": "^6.0.0",
