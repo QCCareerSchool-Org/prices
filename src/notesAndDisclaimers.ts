@@ -225,6 +225,19 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
     }
   }
 
+  // LUMINOUSPRO promo code
+  if (applies(promoCodeSpecs.find(v => v.code === 'LUMINOUSPRO'))) {
+    if (!courses.includes('MZ')) {
+      promoWarnings.push('You have entered the <strong>LUMINOUSPRO</strong> promo code, but you haven\'t selected the <strong>Master Makeup Artistry</strong> course.');
+    } else {
+      if (!courses.includes('MW')) {
+        promoWarnings.push('You have entered the <strong>LUMINOUSPRO</strong> promo code, but you haven\'t selected your free <strong>Pro Makeup Workshop</strong>.');
+      }
+      disclaimers.push('You\'ll receive the Luminous Collection');
+      notes.push('luminous collection');
+    }
+  }
+
   if (options?.school === 'QC Wellness Studies' && courses.length >= 1) {
     if (options.discountAll) {
       // nothing
