@@ -12,6 +12,7 @@ export const getPromoCodeFreeCourseMap = (now: Date, options?: PriceQueryOptions
   const blackFridayApplies = applies(promoCodeSpecs.find(v => v.code === 'BLACK FRIDAY'));
   const skincareApplies = applies(promoCodeSpecs.find(v => v.code === 'SKINCARE'));
   const eventFreeCourseApplies = applies(promoCodeSpecs.find(v => v.code === 'EVENTFREECOURSE'));
+  const freeSpecialtyApplies = applies(promoCodeSpecs.find(v => v.code === 'SPECIALTY'));
   const twoFreeSpecialtyApplies = applies(promoCodeSpecs.find(v => v.code === '2SPECIALTY'));
   const freeLuxuryApplies = applies(promoCodeSpecs.find(v => v.code === 'FREELUXURY'));
   const masterClassApplies = applies(promoCodeSpecs.find(v => v.code === 'MASTERCLASS'));
@@ -23,6 +24,7 @@ export const getPromoCodeFreeCourseMap = (now: Date, options?: PriceQueryOptions
   let bogoApplied = false;
   let blackFridayCount = 0;
   let eventFreeCourseApplied = false;
+  let freeSpecialtyApplied = false;
   let twoFreeSpecialtyCount = 0;
   let masterClassApplied = false;
   let freeAdvancedApplied = false;
@@ -95,8 +97,15 @@ export const getPromoCodeFreeCourseMap = (now: Date, options?: PriceQueryOptions
     }
 
     if (eventFreeCourseApplies && !eventFreeCourseApplied) {
-      if (courseResult.code !== 'EP' && array.some(c => c.code === 'EP')) {
+      if (array.length >= 2 && index < array.length - 1 && array.some(c => isEventFoundationCourse(c.code))) {
         eventFreeCourseApplied = true;
+        return freeMap(courseResult);
+      }
+    }
+
+    if (freeSpecialtyApplies && !freeSpecialtyApplied) {
+      if (array.some(c => isEventFoundationCourse(c.code) && isEventSpecialtyCourse(courseResult.code))) {
+        freeSpecialtyApplied = true;
         return freeMap(courseResult);
       }
     }
