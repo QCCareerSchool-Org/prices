@@ -23,7 +23,7 @@ export type PromoCodeSpec = {
   end?: Date;
 };
 
-const studentSupportNames = [ 'NATHAN', 'AMANDA', 'ANDREW', 'ANNIE', 'EMILY', 'HEATHER', 'TAYLOR', 'KAYLA', 'PAMELA', 'SASHA', 'SHANNON', 'NATHANIEL' ];
+const studentSupportNames = [ 'NATHAN', 'EMILY', 'HEATHER', 'TAYLOR', 'KAYLA', 'PAMELA', 'SASHA', 'SHANNON', 'SONA' ];
 
 const studentSupportSchools: School[] = [ 'QC Makeup Academy', 'QC Design School', 'QC Event School' ];
 
