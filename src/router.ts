@@ -41,11 +41,11 @@ const priceSchema = yup.object<PriceQuery>({
   }),
 }).required();
 
-const oldPriceSchema = yup.object<OldPriceQuery>({
+const oldPriceSchema = yup.object<OldPriceQuery>({ // the old way of calling this endpoint
   courses: yup.array(yup.string().required()).default([]),
   countryCode: yup.string().length(2).required(),
   provinceCode: yup.string().max(3).nullable(true).default(null).required(),
-  discountAll: yup.number(), // the old way of calling this endpoint
+  discountAll: yup.number(),
   options: yup.object({
     discountAll: yup.boolean(),
     discount: yup.number().min(0),
