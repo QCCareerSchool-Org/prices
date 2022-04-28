@@ -336,32 +336,12 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
     }
   }
 
-  if (courses.includes('EB')) {
-    disclaimers.push('The Accelerate Your Business Workshop includes electronic course material only.');
-  }
-
-  if (courses.includes('FC')) {
-    disclaimers.push('The Professional Caregiving Course includes electronic course material only.');
-  }
-
   if (courses.includes('FL')) {
     disclaimers.push('The Festivals &amp; Live Events Course requires corporate event training.');
   }
 
   if (courses.includes('PE')) {
     disclaimers.push('The Promotional Event Planning Course requires corporate event training.');
-  }
-
-  if (courses.includes('PW')) {
-    disclaimers.push('The Portfolio Development Workshop includes electronic course material only.');
-  }
-
-  if (courses.includes('MW')) {
-    disclaimers.push('The Pro Makeup Workshop includes electronic course material only.');
-  }
-
-  if (courses.includes('PF')) {
-    disclaimers.push('The Fashion Styling Course includes electronic course material only.');
   }
 
   return [ notes, disclaimers, promoWarnings ];
