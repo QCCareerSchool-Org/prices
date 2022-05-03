@@ -39,7 +39,6 @@ export async function prices(
   const priceRows = await Promise.all(
     courses
       .map(c => c.toUpperCase()) // convert all course codes to upper case for easier comparison later
-      .filter(c => countryCode !== 'CA' || provinceCode !== 'ON' || (c !== 'DG' && c !== 'FA')) // don't allow people from Ontario to enroll in DG or FA
       .filter((item, pos, self) => self.indexOf(item) === pos) // strip out any duplicate courses
       .map(async course => lookupPrice(connection, course, countryCode, provinceCode)), // convert to priceRow promises
   );
