@@ -54,8 +54,8 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
       if (!courses.includes('MZ')) {
         promoWarnings.push('You have entered the <strong>ELITE</strong> promo code but have not selected the <strong>Master Makeup Artistry</strong> course.');
       } else {
-        notes.push('valentine makeup kit');
-        disclaimers.push('You will receive the <strong>Valentine Makeup Kit</strong>.');
+        notes.push('luminous kit');
+        disclaimers.push('You will receive the <strong>Luminous Kit</strong>.');
       }
     }
   }
@@ -280,8 +280,8 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
 
   if (options?.school === 'QC Event School' && courses.length >= 1) {
     if (options.discountAll) {
-      disclaimers.push('You\'ll get the free leather portfolio');
-      notes.push('portfolio');
+      // disclaimers.push('You\'ll get the free leather portfolio');
+      // notes.push('portfolio');
     } else {
       // nothing
     }
@@ -289,8 +289,8 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
 
   if (options?.school === 'QC Design School' && courses.length >= 1) {
     if (options.discountAll) {
-      disclaimers.push('You\'ll get the free color fan deck');
-      notes.push('fan deck');
+      // disclaimers.push('You\'ll get the free color fan deck');
+      // notes.push('fan deck');
     } else {
       // nothing
     }
