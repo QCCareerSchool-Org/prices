@@ -64,12 +64,6 @@ export const oldGetPrices = async (
   for (let i = 0; i < courses.length; i++) {
     courses[i] = courses[i].toUpperCase();
   }
-  logger(courses);
-
-  // don't allow people from Ontario to enroll in DG or FA
-  if (countryCode === 'CA' && provinceCode === 'ON') {
-    courses = courses.filter(value => value !== 'DG' && value !== 'FA');
-  }
 
   let validDiscount = false;
 
