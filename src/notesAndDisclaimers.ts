@@ -199,19 +199,21 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
     }
   }
 
-  // 2SPECIALTY promo code
-  if (applies(promoCodeSpecs.find(v => v.code === '2SPECIALTY'))) {
-    if (!courses.some(c => isEventFoundationCourse(c))) {
-      promoWarnings.push('You have entered the <strong>2SPECIALTY</strong> promo code, but you haven\'t selected a <strong>Foundation</strong> course');
-    } else {
-      const specialtyCount = courses.filter(c => isEventSpecialtyCourse(c)).length;
-      if (specialtyCount === 0) {
-        promoWarnings.push('You have entered the <strong>2SPECIALTY</strong> promo code, but you haven\'t selected any free <strong>Specialty</strong> courses');
-      } else if (specialtyCount === 1) {
-        promoWarnings.push('You have entered the <strong>2SPECIALTY</strong> promo code, but you haven\'t selected a second free <strong>Specialty</strong> course');
+  // 2SPECIALTY and MCSPECIALTY promo codes
+  [ '2SPECIALTY', 'MCSPECIALTY' ].forEach(code => {
+    if (applies(promoCodeSpecs.find(v => v.code === code))) {
+      if (!courses.some(c => isEventFoundationCourse(c))) {
+        promoWarnings.push(`You have entered the <strong>${code}</strong> promo code, but you haven't selected a <strong>Foundation</strong> course`);
+      } else {
+        const specialtyCount = courses.filter(c => isEventSpecialtyCourse(c)).length;
+        if (specialtyCount === 0) {
+          promoWarnings.push(`You have entered the <strong>${code}</strong> promo code, but you haven't selected any free <strong>Specialty</strong> courses`);
+        } else if (specialtyCount === 1) {
+          promoWarnings.push(`You have entered the <strong>${code}</strong> promo code, but you haven't selected a second free <strong>Specialty</strong> course`);
+        }
       }
     }
-  }
+  });
 
   // FREELUXURY promo code
   if (applies(promoCodeSpecs.find(v => v.code === 'FREELUXURY'))) {
