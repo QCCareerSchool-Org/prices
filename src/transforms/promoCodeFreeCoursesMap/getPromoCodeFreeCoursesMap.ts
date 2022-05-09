@@ -45,9 +45,16 @@ export const getPromoCodeFreeCourseMap = (now: Date, options?: PriceQueryOptions
     }
 
     if (bogoApplies && !bogoApplied) {
-      if (array.length >= 2) {
-        bogoApplied = true;
-        return freeMap(courseResult);
+      if (options?.school === 'QC Makeup Academy') {
+        if (array.length >= 2 && index < array.length - 1 && ![ 'AB', 'SF', 'HS' ].includes(courseResult.code)) {
+          bogoApplied = true;
+          return freeMap(courseResult);
+        }
+      } else {
+        if (array.length >= 2) {
+          bogoApplied = true;
+          return freeMap(courseResult);
+        }
       }
     }
 
