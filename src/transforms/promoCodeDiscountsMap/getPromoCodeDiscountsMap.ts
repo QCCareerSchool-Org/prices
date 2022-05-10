@@ -4,14 +4,13 @@ import { calculatePlans } from '../../calculatePlans';
 import { isMakeupFoundationCourse } from '../../courses';
 import { PromoCodeSpec, promoCodeSpecs, specApplies, studentSupport150Specs, studentSupport50Specs } from '../../promoCodes';
 import { CourseResult, MapFunction, PriceQueryOptions } from '../../types';
-import { courseSort } from '../courseSort/courseSort';
 
 export const getPromoCodeDiscountsMap = (now: Date, currencyCode: string, options?: PriceQueryOptions): MapFunction<CourseResult, CourseResult> => {
   const applies = (spec?: PromoCodeSpec): boolean => typeof spec !== 'undefined' && specApplies(spec, now, options?.discountAll, options?.promoCode, options?.school);
 
   const studentSupport50Applies = studentSupport50Specs.some(applies);
   const studentSupport150Applies = studentSupport150Specs.some(applies);
-  const masterclassApplies = applies(promoCodeSpecs.find(v => v.code === 'MASTERCLASS'));
+  const masterclassApplies = applies(promoCodeSpecs.find(v => v.code === 'MASTERCLASS')) || applies(promoCodeSpecs.find(v => v.code === 'SSMASTERCLASS'));
   const kit200OffApplies = applies(promoCodeSpecs.find(v => v.code === 'KIT200OFF'));
 
   const dgDiscount = applies(promoCodeSpecs.find(v => v.code === 'DG150'))
