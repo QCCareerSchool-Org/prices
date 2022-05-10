@@ -200,7 +200,7 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
   }
 
   // 2SPECIALTY and MCSPECIALTY promo codes
-  [ '2SPECIALTY', 'MCSPECIALTY' ].forEach(code => {
+  [ '2SPECIALTY', 'MCSPECIALTY', 'SSMCSPECIALTY' ].forEach(code => {
     if (applies(promoCodeSpecs.find(v => v.code === code))) {
       if (!courses.some(c => isEventFoundationCourse(c))) {
         promoWarnings.push(`You have entered the <strong>${code}</strong> promo code, but you haven't selected a <strong>Foundation</strong> course`);
@@ -310,11 +310,13 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
     }
   }
 
-  if (applies(promoCodeSpecs.find(v => v.code === 'MASTERCLASS'))) {
-    if (!courses.includes('I2')) {
-      promoWarnings.push('You have entered the <strong>MASTERCLASS</strong> promo code, but you haven\'t selected the <strong>Interior Decorating</strong> course');
+  [ 'MASTERCLASS', 'SSMASTERCLASS' ].forEach(code => {
+    if (applies(promoCodeSpecs.find(v => v.code === code))) {
+      if (!courses.includes('I2')) {
+        promoWarnings.push(`You have entered the <strong>${code}</strong> promo code, but you haven't selected the <strong>Interior Decorating</strong> course`);
+      }
     }
-  }
+  });
 
   if (applies(promoCodeSpecs.find(v => v.code === 'LUXURYWEDDING'))) {
     if (!courses.includes('EP')) {

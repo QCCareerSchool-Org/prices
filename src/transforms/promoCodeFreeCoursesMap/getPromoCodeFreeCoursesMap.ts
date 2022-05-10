@@ -13,9 +13,9 @@ export const getPromoCodeFreeCourseMap = (now: Date, options?: PriceQueryOptions
   const skincareApplies = applies(promoCodeSpecs.find(v => v.code === 'SKINCARE'));
   const eventFreeCourseApplies = applies(promoCodeSpecs.find(v => v.code === 'EVENTFREECOURSE'));
   const freeSpecialtyApplies = applies(promoCodeSpecs.find(v => v.code === 'SPECIALTY'));
-  const twoFreeSpecialtyApplies = applies(promoCodeSpecs.find(v => v.code === '2SPECIALTY')) || applies(promoCodeSpecs.find(v => v.code === 'MCSPECIALTY'));
+  const twoFreeSpecialtyApplies = [ '2SPECIALTY', 'MCSPECIALTY', 'SSMCSPECIALTY' ].some(code => applies(promoCodeSpecs.find(v => v.code === code)));
   const freeLuxuryApplies = applies(promoCodeSpecs.find(v => v.code === 'FREELUXURY'));
-  const masterClassApplies = applies(promoCodeSpecs.find(v => v.code === 'MASTERCLASS'));
+  const masterClassApplies = applies(promoCodeSpecs.find(v => v.code === 'MASTERCLASS')) || applies(promoCodeSpecs.find(v => v.code === 'SSMASTERCLASS'));
   const luxuryDestinationApplies = applies(promoCodeSpecs.find(v => v.code === 'LUXURYDESTINATION'));
   const freeAdvancedApplies = applies(promoCodeSpecs.find(v => v.code === 'FREEADVANCED'));
   const proLuminousApplies = applies(promoCodeSpecs.find(v => v.code === 'PROLUMINOUS'));
