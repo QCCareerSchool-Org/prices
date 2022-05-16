@@ -25,7 +25,7 @@ export type PromoCodeSpec = {
 
 const studentSupportNames = [ 'NATHAN', 'EMILY', 'HEATHER', 'TAYLOR', 'KAYLA', 'PAMELA', 'SASHA', 'SHANNON', 'SONA' ];
 
-const studentSupportSchools: School[] = [ 'QC Makeup Academy', 'QC Design School', 'QC Event School' ];
+const studentSupportSchools: School[] = [ 'QC Makeup Academy', 'QC Design School', 'QC Event School', 'QC Pet Studies', 'QC Wellness Studies' ];
 
 export const studentSupport50Specs: PromoCodeSpec[] = studentSupportNames.map<PromoCodeSpec>(name => ({
   code: name + '50',
