@@ -58,6 +58,7 @@ export const promoCodeSpecs: PromoCodeSpec[] = [
   { code: 'FREELUXURY', student: 'DENIED', schools: [ 'QC Event School' ] },
   { code: 'MASTERCLASS', student: 'DENIED', schools: [ 'QC Design School' ] },
   { code: 'SSMASTERCLASS', student: 'DENIED', schools: [ 'QC Design School' ] },
+  { code: 'MASTERCLASS150', student: 'DENIED', schools: [ 'QC Design School' ] },
   { code: 'LUXURYDESTINATION', student: 'DENIED', schools: [ 'QC Event School' ] },
   { code: 'KIT200OFF', student: 'DENIED', schools: [ 'QC Makeup Academy' ] },
   { code: 'FREEADVANCED', student: 'DENIED', schools: [ 'QC Makeup Academy' ] },
