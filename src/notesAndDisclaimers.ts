@@ -348,5 +348,17 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
     disclaimers.push('The Promotional Event Planning Course requires corporate event training.');
   }
 
+  if (now.getTime() < Date.UTC(2022, 10, 1, 4)) {
+    if (options?.discountAll && courses.length >= 1) {
+      if (options.school === 'QC Makeup Academy') {
+        disclaimers.push('You\'ll get the Smokey Eye Brush Set');
+        notes.push('smokey-eye brush set');
+      } else if (options.school === 'QC Design School' || options.school === 'QC Event School') {
+        disclaimers.push('You\'ll get free portfolio');
+        notes.push('portfolio');
+      }
+    }
+  }
+
   return [ notes, disclaimers, promoWarnings ];
 };
