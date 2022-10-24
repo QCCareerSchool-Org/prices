@@ -354,7 +354,7 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
         disclaimers.push('You\'ll get the Smokey Eye Brush Set');
         notes.push('smokey-eye brush set');
       } else if (options.school === 'QC Design School' || options.school === 'QC Event School') {
-        disclaimers.push('You\'ll get free portfolio');
+        disclaimers.push('You\'ll get the free portfolio');
         notes.push('portfolio');
       }
     }
