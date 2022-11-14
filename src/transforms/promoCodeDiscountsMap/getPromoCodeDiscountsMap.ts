@@ -46,7 +46,9 @@ export const getPromoCodeDiscountsMap = (now: Date, currencyCode: string, option
                 ? 300 // £300 for UK
                 : applies(promoCodeSpecs.find(v => v.code === 'DESIGN100OFF'))
                   ? currencyCode === 'GBP' ? 75 : 100
-                  : 0;
+                  : applies(promoCodeSpecs.find(v => v.code === 'BOGO100'))
+                    ? 100
+                    : 0;
 
   let masterclassApplied = false;
   let masterclass150Applied = false;

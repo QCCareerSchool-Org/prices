@@ -21,6 +21,7 @@ export const getPromoCodeFreeCourseMap = (now: Date, options?: PriceQueryOptions
   const freeAdvancedApplies = applies(promoCodeSpecs.find(v => v.code === 'FREEADVANCED'));
   const proLuminousApplies = applies(promoCodeSpecs.find(v => v.code === 'PROLUMINOUS'));
   const freeGlobalApplies = applies(promoCodeSpecs.find(v => v.code === 'FREEGLOBAL'));
+  const bogo100Applies = applies(promoCodeSpecs.find(v => v.code === 'BOGO100'));
 
   let expertApplied = false;
   let bogoApplied = false;
@@ -31,6 +32,7 @@ export const getPromoCodeFreeCourseMap = (now: Date, options?: PriceQueryOptions
   let masterClassApplied = false;
   let masterClass150Applied = false;
   let freeAdvancedApplied = false;
+  const bogo100Applied = false;
 
   return (courseResult: CourseResult, index: number, array: CourseResult[]): CourseResult => {
 
@@ -168,6 +170,13 @@ export const getPromoCodeFreeCourseMap = (now: Date, options?: PriceQueryOptions
 
     if (freeGlobalApplies) {
       if (courseResult.code === 'GB' && array.some(c => c.code === 'MZ')) {
+        return freeMap(courseResult);
+      }
+    }
+
+    if (bogo100Applies && !bogo100Applied) {
+      if (array.length >= 2) {
+        bogoApplied = true;
         return freeMap(courseResult);
       }
     }
