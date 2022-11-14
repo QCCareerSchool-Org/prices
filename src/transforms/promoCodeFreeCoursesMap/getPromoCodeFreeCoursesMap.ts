@@ -32,7 +32,7 @@ export const getPromoCodeFreeCourseMap = (now: Date, options?: PriceQueryOptions
   let masterClassApplied = false;
   let masterClass150Applied = false;
   let freeAdvancedApplied = false;
-  const bogo100Applied = false;
+  let bogo100Applied = false;
 
   return (courseResult: CourseResult, index: number, array: CourseResult[]): CourseResult => {
 
@@ -176,7 +176,7 @@ export const getPromoCodeFreeCourseMap = (now: Date, options?: PriceQueryOptions
 
     if (bogo100Applies && !bogo100Applied) {
       if (array.length >= 2) {
-        bogoApplied = true;
+        bogo100Applied = true;
         return freeMap(courseResult);
       }
     }
