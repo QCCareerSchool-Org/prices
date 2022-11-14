@@ -79,6 +79,7 @@ export const promoCodeSpecs: PromoCodeSpec[] = [
   { code: 'PET200OFF', student: 'DENIED', schools: [ 'QC Pet Studies' ] },
   { code: 'PET300OFF', student: 'DENIED', schools: [ 'QC Pet Studies' ] },
   { code: 'DESIGN100OFF', student: 'DENIED', schools: [ 'QC Design School' ] },
+  { code: 'BOGO100', student: 'DENIED', schools: [ 'QC Design School' ] },
 ];
 
 /**
