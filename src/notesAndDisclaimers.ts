@@ -360,5 +360,15 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
     }
   }
 
+  if (now.getTime() < Date.UTC(2022, 10, 21, 14, 30) && now.getTime() < Date.UTC(2022, 10, 26, 5)) {
+    if (options?.discountAll) {
+      if (options.school === 'QC Makeup Academy') {
+        notes.push('Black Friday collection');
+      } else if (options.school === 'QC Design School' || options.school === 'QC Event School') {
+        notes.push('leather portfolio');
+      }
+    }
+  }
+
   return [ notes, disclaimers, promoWarnings ];
 };
