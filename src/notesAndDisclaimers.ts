@@ -360,12 +360,11 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
     }
   }
 
-  if (now.getTime() < Date.UTC(2022, 10, 21, 14, 30) && now.getTime() < Date.UTC(2022, 10, 26, 5)) {
+  if (now.getTime() >= Date.UTC(2022, 11, 9, 17) && now.getTime() < Date.UTC(2022, 11, 15, 5)) { // 2022-12-09 at 12:00 (17:00 UTC) to 2022-12-15 at 00:00 (05:00 UTC)
     if (options?.discountAll) {
       if (options.school === 'QC Makeup Academy') {
-        notes.push('Black Friday collection');
-      } else if (options.school === 'QC Design School' || options.school === 'QC Event School') {
-        notes.push('leather portfolio');
+        disclaimers.push('You\'ll get the Bottomless Makeup Bag');
+        notes.push('Bottomless makeup bag');
       }
     }
   }
