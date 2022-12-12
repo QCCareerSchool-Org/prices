@@ -20,6 +20,7 @@ export const getPromoCodeFreeCourseMap = (now: Date, options?: PriceQueryOptions
   const luxuryDestinationApplies = applies(promoCodeSpecs.find(v => v.code === 'LUXURYDESTINATION'));
   const freeAdvancedApplies = applies(promoCodeSpecs.find(v => v.code === 'FREEADVANCED'));
   const proLuminousApplies = applies(promoCodeSpecs.find(v => v.code === 'PROLUMINOUS'));
+  const skincareLuminousApplies = applies(promoCodeSpecs.find(v => v.code === 'SKINCARELUMINOUS'));
   const freeGlobalApplies = applies(promoCodeSpecs.find(v => v.code === 'FREEGLOBAL'));
   const bogo100Applies = applies(promoCodeSpecs.find(v => v.code === 'BOGO100'));
 
@@ -164,6 +165,12 @@ export const getPromoCodeFreeCourseMap = (now: Date, options?: PriceQueryOptions
 
     if (proLuminousApplies) {
       if (courseResult.code === 'MW' && array.some(c => c.code === 'MZ')) {
+        return freeMap(courseResult);
+      }
+    }
+
+    if (skincareLuminousApplies) {
+      if (courseResult.code === 'SK' && array.some(c => c.code === 'MZ')) {
         return freeMap(courseResult);
       }
     }
