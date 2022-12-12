@@ -200,7 +200,7 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
   }
 
   // 2SPECIALTY and MCSPECIALTY promo codes
-  [ '2SPECIALTY', 'MCSPECIALTY', 'SSMCSPECIALTY' ].forEach(code => {
+  [ '2SPECIALTY', 'MCSPECIALTY', 'SSMCSPECIALTY', '2SPECIALTY100' ].forEach(code => {
     if (applies(promoCodeSpecs.find(v => v.code === code))) {
       if (!courses.some(c => isEventFoundationCourse(c))) {
         promoWarnings.push(`You have entered the <strong>${code}</strong> promo code, but you haven't selected a <strong>Foundation</strong> course`);
