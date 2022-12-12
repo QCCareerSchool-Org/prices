@@ -250,6 +250,19 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
     }
   }
 
+  // SKINCARELUMINOUS promo code
+  if (applies(promoCodeSpecs.find(v => v.code === 'SKINCARELUMINOU'))) {
+    if (!courses.includes('MZ')) {
+      promoWarnings.push('You have entered the <strong>SKINCARELUMINOU</strong> promo code, but you haven\'t selected the <strong>Master Makeup Artistry</strong> course.');
+    } else {
+      if (!courses.includes('MW')) {
+        promoWarnings.push('You have entered the <strong>SKINCARELUMINOU</strong> promo code, but you haven\'t selected your free <strong>Skincare Consultant</strong> course.');
+      }
+      disclaimers.push('You\'ll receive the Luminous Collection');
+      notes.push('luminous collection');
+    }
+  }
+
   if (options?.school === 'QC Wellness Studies' && courses.length >= 1) {
     if (options.discountAll) {
       // nothing
