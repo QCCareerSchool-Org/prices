@@ -251,12 +251,25 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
   }
 
   // SKINCARELUMINOUS promo code
-  if (applies(promoCodeSpecs.find(v => v.code === 'SKINCARELUMINOU'))) {
+  if (applies(promoCodeSpecs.find(v => v.code === 'SKINCARELUMINOUS'))) {
     if (!courses.includes('MZ')) {
-      promoWarnings.push('You have entered the <strong>SKINCARELUMINOU</strong> promo code, but you haven\'t selected the <strong>Master Makeup Artistry</strong> course.');
+      promoWarnings.push('You have entered the <strong>SKINCARELUMINOUS</strong> promo code, but you haven\'t selected the <strong>Master Makeup Artistry</strong> course.');
     } else {
-      if (!courses.includes('MW')) {
-        promoWarnings.push('You have entered the <strong>SKINCARELUMINOU</strong> promo code, but you haven\'t selected your free <strong>Skincare Consultant</strong> course.');
+      if (!courses.includes('SK')) {
+        promoWarnings.push('You have entered the <strong>SKINCARELUMINOUS</strong> promo code, but you haven\'t selected your free <strong>Skincare Consultant</strong> course.');
+      }
+      disclaimers.push('You\'ll receive the Luminous Collection');
+      notes.push('luminous collection');
+    }
+  }
+
+  // GLOBALLUMINOUS promo code
+  if (applies(promoCodeSpecs.find(v => v.code === 'GLOBALLUMINOUS'))) {
+    if (!courses.includes('MZ')) {
+      promoWarnings.push('You have entered the <strong>GLOBALLUMINOUS</strong> promo code, but you haven\'t selected the <strong>Master Makeup Artistry</strong> course.');
+    } else {
+      if (!courses.includes('GB')) {
+        promoWarnings.push('You have entered the <strong>GLOBALLUMINOUS</strong> promo code, but you haven\'t selected your free <strong>Global Beauty Workshop</strong>.');
       }
       disclaimers.push('You\'ll receive the Luminous Collection');
       notes.push('luminous collection');
