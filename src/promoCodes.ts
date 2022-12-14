@@ -49,6 +49,7 @@ export const promoCodeSpecs: PromoCodeSpec[] = [
   { code: 'LUMINOUS', student: 'DENIED', schools: [ 'QC Makeup Academy' ] },
   { code: 'PROLUMINOUS', student: 'DENIED', schools: [ 'QC Makeup Academy' ] },
   { code: 'SKINCARELUMINOUS', student: 'DENIED', schools: [ 'QC Makeup Academy' ] },
+  { code: 'GLOBALLUMINOUS', student: 'DENIED', schools: [ 'QC Makeup Academy' ] },
   { code: 'BLACK FRIDAY', student: 'DENIED', schools: [ 'QC Makeup Academy', 'QC Design School', 'QC Event School' ] },
   { code: 'SKINCARE', student: 'DENIED', schools: [ 'QC Makeup Academy' ] },
   { code: 'EVENTFREECOURSE', student: 'DENIED', schools: [ 'QC Event School' ] },
