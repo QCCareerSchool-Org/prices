@@ -84,7 +84,7 @@ export const promoCodeSpecs: PromoCodeSpec[] = [
   { code: 'DESIGN100OFF', student: 'DENIED', schools: [ 'QC Design School' ] },
   { code: 'EVENT100OFF', student: 'DENIED', schools: [ 'QC Event School' ] },
   { code: 'BOGO100', student: 'DENIED', schools: [ 'QC Design School' ] },
-  { code: 'BOGO200', student: 'ONLY', schools: [ 'QC Design School' ] },
+  { code: 'BOGO200', student: 'ALLOWED', schools: [ 'QC Design School' ] },
 ];
 
 /**
