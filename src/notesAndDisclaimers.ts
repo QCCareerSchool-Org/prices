@@ -369,6 +369,10 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
     }
   }
 
+  if (applies(promoCodeSpecs.find(v => v.code === 'WOOFGANG'))) {
+    disclaimers.push('This promotion is only available to Woof Gang Bakery employees.');
+  }
+
   if (courses.includes('FL')) {
     disclaimers.push('The Festivals &amp; Live Events Course requires corporate event training.');
   }
