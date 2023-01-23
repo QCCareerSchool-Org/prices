@@ -370,7 +370,7 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
   }
 
   if (applies(promoCodeSpecs.find(v => v.code === 'WOOFGANG'))) {
-    disclaimers.push('This promotion is only available to Woof Gang Bakery employees.');
+    disclaimers.push('This promotion is only available to Woof Gang Bakery employees, managers and store owners.');
   }
 
   if (courses.includes('FL')) {
