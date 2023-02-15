@@ -1,7 +1,7 @@
 import Big from 'big.js';
 
 import { calculatePlans } from '../../calculatePlans';
-import { isMakeupFoundationCourse } from '../../courses';
+import { isEventFoundationCourse, isMakeupFoundationCourse } from '../../courses';
 import { PromoCodeSpec, promoCodeSpecs, specApplies, studentSupport150Specs, studentSupport50Specs } from '../../promoCodes';
 import { CourseResult, MapFunction, PriceQueryOptions } from '../../types';
 
@@ -13,6 +13,7 @@ export const getPromoCodeDiscountsMap = (now: Date, currencyCode: string, option
   const masterclassApplies = applies(promoCodeSpecs.find(v => v.code === 'MASTERCLASS')) || applies(promoCodeSpecs.find(v => v.code === 'SSMASTERCLASS'));
   const masterclass150Applies = applies(promoCodeSpecs.find(v => v.code === 'MASTERCLASS150'));
   const kit200OffApplies = applies(promoCodeSpecs.find(v => v.code === 'KIT200OFF'));
+  const foundation200OApplies = applies(promoCodeSpecs.find(v => v.code === 'FOUNDATION200'));
 
   const dgDiscount = applies(promoCodeSpecs.find(v => v.code === 'DG150'))
     ? 150
@@ -58,8 +59,26 @@ export const getPromoCodeDiscountsMap = (now: Date, currencyCode: string, option
 
   let masterclassApplied = false;
   let masterclass150Applied = false;
+  let foundation200OApplied = false;
 
   return (courseResult: CourseResult, index: number, array: CourseResult[]): CourseResult => {
+    if (foundation200OApplies && isEventFoundationCourse(courseResult.code) && !foundation200OApplied) {
+      foundation200OApplied = true;
+      // subtract all the discounts we have so far (use `shipping` instead of `shippingDiscount`) from the cost to determine the lowest possible price we might display (before payment-plan discounts)
+      const minimumPrice = parseFloat(Big(courseResult.cost).minus(courseResult.shipping).minus(courseResult.multiCourseDiscount).minus(courseResult.promoDiscount).toFixed(2));
+      const extraDiscount = Math.min(minimumPrice, 200);
+      // for all promo discounts, add to the existing promo discount value rather than overwriting it
+      const promoDiscount = parseFloat(Big(courseResult.promoDiscount).plus(extraDiscount).toFixed(2));
+      const discountedCost = parseFloat(Big(courseResult.cost).minus(courseResult.shippingDiscount).minus(courseResult.multiCourseDiscount).minus(promoDiscount).toFixed(2));
+      const [ full, part ] = calculatePlans(courseResult.plans, discountedCost);
+      return {
+        ...courseResult,
+        promoDiscount,
+        discountedCost,
+        plans: { full, part },
+      };
+    }
+
     if (kit200OffApplies && isMakeupFoundationCourse(courseResult.code)) {
       // subtract all the discounts we have so far (use `shipping` instead of `shippingDiscount`) from the cost to determine the lowest possible price we might display (before payment-plan discounts)
       const minimumPrice = parseFloat(Big(courseResult.cost).minus(courseResult.shipping).minus(courseResult.multiCourseDiscount).minus(courseResult.promoDiscount).toFixed(2));
