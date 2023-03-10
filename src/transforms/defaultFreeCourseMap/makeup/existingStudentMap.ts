@@ -2,12 +2,12 @@ import { freeMap } from '../../../lib/freeMap';
 import { CourseResult, MapFunction } from '../../../types';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const getDefaultFreeEventExistingStudentMap = (now: Date): MapFunction<CourseResult, CourseResult> => {
+export const getDefaultFreeMakeupExistingStudentMap = (now: Date): MapFunction<CourseResult, CourseResult> => {
   return (courseResult: CourseResult, index: number, array: CourseResult[]): CourseResult => {
 
     if (now.getTime() < Date.UTC(2023, 2, 18, 4)) { // 2023-03-18T00:00 (04:00 UTC)
-      // free VE with any course
-      if (courseResult.code === 'VE' && array.length > 1) {
+      // free VM with any course
+      if (courseResult.code === 'VM' && array.length > 1) {
         return freeMap(courseResult);
       }
     }
