@@ -54,29 +54,59 @@ describe('getDefaultFreeEventExistingStudentMap', () => {
   describe('the returned function', () => {
     let freeCoursesMap: MapFunction<CourseResult, CourseResult>;
 
-    beforeEach(() => {
-      const now = faker.date.recent();
-      freeCoursesMap = getDefaultFreeEventExistingStudentMap(now);
+    describe('before March 18', () => {
+      beforeEach(() => {
+        const now = new Date('March 10, 2023');
+        freeCoursesMap = getDefaultFreeEventExistingStudentMap(now);
+      });
+
+      it('should set VE to free', () => {
+        const courseResults: CourseResult[] = [
+          { ...fakeCourseResult, code: 'DW' },
+          { ...fakeCourseResult, code: 'MZ' },
+          { ...fakeCourseResult, code: 'EP' },
+          { ...fakeCourseResult, code: 'LW' },
+          { ...fakeCourseResult, code: 'VE' },
+          { ...fakeCourseResult, code: 'CE' },
+        ];
+        const expected: CourseResult[] = [
+          { ...fakeCourseResult, code: 'DW' },
+          { ...fakeCourseResult, code: 'MZ' },
+          { ...fakeCourseResult, code: 'EP' },
+          { ...fakeCourseResult, code: 'LW' },
+          { ...fakeCourseResult, code: 'VE', free: true, multiCourseDiscountRate: 0, multiCourseDiscount: fakeCourseResult.cost, promoDiscount: 0, shippingDiscount: 0, discountedCost: 0, shipping: 0, plans: { ...fakeCourseResult.plans, full: { discount: 0, deposit: 0, installmentSize: 0, installments: 0, remainder: 0, total: 0, originalDeposit: 0, originalInstallments: 0 }, part: { discount: 0, deposit: 0, installmentSize: 0, installments: 0, remainder: 0, total: 0, originalDeposit: 0, originalInstallments: 0 } } },
+          { ...fakeCourseResult, code: 'CE' },
+        ];
+        expect(courseResults.map(freeCoursesMap)).toEqual(expected);
+      });
     });
 
-    it('should not set any courses to free', () => {
-      const courseResults: CourseResult[] = [
-        { ...fakeCourseResult, code: 'DW' },
-        { ...fakeCourseResult, code: 'MZ' },
-        { ...fakeCourseResult, code: 'EP' },
-        { ...fakeCourseResult, code: 'LW' },
-        { ...fakeCourseResult, code: 'VE' },
-        { ...fakeCourseResult, code: 'CE' },
-      ];
-      const expected: CourseResult[] = [
-        { ...fakeCourseResult, code: 'DW' },
-        { ...fakeCourseResult, code: 'MZ' },
-        { ...fakeCourseResult, code: 'EP' },
-        { ...fakeCourseResult, code: 'LW' },
-        { ...fakeCourseResult, code: 'VE' },
-        { ...fakeCourseResult, code: 'CE' },
-      ];
-      expect(courseResults.map(freeCoursesMap)).toEqual(expected);
+    describe('on or after March 18', () => {
+
+      beforeEach(() => {
+        const now = new Date('March 18, 2023');
+        freeCoursesMap = getDefaultFreeEventExistingStudentMap(now);
+      });
+
+      it('should not set any courses to free', () => {
+        const courseResults: CourseResult[] = [
+          { ...fakeCourseResult, code: 'DW' },
+          { ...fakeCourseResult, code: 'MZ' },
+          { ...fakeCourseResult, code: 'EP' },
+          { ...fakeCourseResult, code: 'LW' },
+          { ...fakeCourseResult, code: 'VE' },
+          { ...fakeCourseResult, code: 'CE' },
+        ];
+        const expected: CourseResult[] = [
+          { ...fakeCourseResult, code: 'DW' },
+          { ...fakeCourseResult, code: 'MZ' },
+          { ...fakeCourseResult, code: 'EP' },
+          { ...fakeCourseResult, code: 'LW' },
+          { ...fakeCourseResult, code: 'VE' },
+          { ...fakeCourseResult, code: 'CE' },
+        ];
+        expect(courseResults.map(freeCoursesMap)).toEqual(expected);
+      });
     });
   });
 });

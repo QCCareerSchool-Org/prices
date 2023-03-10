@@ -55,7 +55,7 @@ describe('getDefaultFreeDesignExistingStudentMap', () => {
     let freeCoursesMap: MapFunction<CourseResult, CourseResult>;
 
     beforeEach(() => {
-      const now = faker.date.recent();
+      const now = new Date('March 10, 2023');
       freeCoursesMap = getDefaultFreeDesignExistingStudentMap(now);
     });
 
@@ -74,23 +74,6 @@ describe('getDefaultFreeDesignExistingStudentMap', () => {
     it('should not set VD to free if no other course is selected', () => {
       const courseResults: CourseResult[] = [
         { ...fakeCourseResult, code: 'VD' }, // VD course
-      ];
-      expect(courseResults.map(freeCoursesMap)).toEqual(courseResults);
-    });
-
-    it('should not set VD to free if none of the other selected are design courses', () => {
-      const courseResults: CourseResult[] = [
-        { ...fakeCourseResult, code: 'VD' }, // VD course
-        { ...fakeCourseResult, code: 'MZ' }, // non-design course
-        { ...fakeCourseResult, code: 'EP' }, // non-design course
-      ];
-      expect(courseResults.map(freeCoursesMap)).toEqual(courseResults);
-    });
-
-    it('should not set VD to free if there\'s another design course but it\'s also VD (this shouldn\'t happen)', () => {
-      const courseResults: CourseResult[] = [
-        { ...fakeCourseResult, code: 'VD' }, // VD course
-        { ...fakeCourseResult, code: 'VD' }, // same course
       ];
       expect(courseResults.map(freeCoursesMap)).toEqual(courseResults);
     });

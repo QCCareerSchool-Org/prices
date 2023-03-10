@@ -14,6 +14,8 @@ import { getDefaultFreeDesignExistingStudentMap } from './transforms/defaultFree
 import { getDefaultFreeDesignNewStudentMap } from './transforms/defaultFreeCourseMap/design/newStudentMap';
 import { getDefaultFreeEventExistingStudentMap } from './transforms/defaultFreeCourseMap/event/existingStudentMap';
 import { getDefaultFreeEventNewStudentMap } from './transforms/defaultFreeCourseMap/event/newStudentMap';
+import { getDefaultFreeMakeupExistingStudentMap } from './transforms/defaultFreeCourseMap/makeup/existingStudentMap';
+import { getDefaultFreeMakeupNewStudentMap } from './transforms/defaultFreeCourseMap/makeup/newStudentMap';
 import { getDefaultFreePetExistingStudentMap } from './transforms/defaultFreeCourseMap/pet/existingStudentMap';
 import { getDefaultFreePetNewStudentMap } from './transforms/defaultFreeCourseMap/pet/newStudentMap';
 import { getExtraDiscountMap } from './transforms/extraDiscountMap/getExtraDiscountMap';
@@ -70,7 +72,9 @@ export async function prices(
       ? options?.discountAll === true ? getDefaultFreeEventExistingStudentMap(now) : getDefaultFreeEventNewStudentMap(now)
       : options?.school === 'QC Pet Studies'
         ? options?.discountAll === true ? getDefaultFreePetExistingStudentMap(now) : getDefaultFreePetNewStudentMap(now)
-        : (c: CourseResult) => c; // identity function (do nothing)
+        : options?.school === 'QC Makeup Academy'
+          ? options?.discountAll === true ? getDefaultFreeMakeupExistingStudentMap(now) : getDefaultFreeMakeupNewStudentMap(now)
+          : (c: CourseResult) => c; // identity function (do nothing)
 
   const courseResults = priceRows
     .map(priceRowToCourseResultMap) // convert to a course result
