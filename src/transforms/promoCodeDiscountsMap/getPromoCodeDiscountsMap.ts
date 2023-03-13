@@ -21,9 +21,11 @@ export const getPromoCodeDiscountsMap = (now: Date, currencyCode: string, option
       ? 200
       : applies(promoCodeSpecs.find(v => v.code === 'DG300'))
         ? 300
-        : applies(promoCodeSpecs.find(v => v.code === 'WOOFGANG'))
-          ? 500
-          : 0;
+        : applies(promoCodeSpecs.find(v => v.code === 'DG500'))
+          ? currencyCode === 'GBP' ? 415 : 500
+          : applies(promoCodeSpecs.find(v => v.code === 'WOOFGANG'))
+            ? 500
+            : 0;
 
   const dtDiscount = applies(promoCodeSpecs.find(v => v.code === 'DT150'))
     ? 150
@@ -31,7 +33,9 @@ export const getPromoCodeDiscountsMap = (now: Date, currencyCode: string, option
       ? 200
       : applies(promoCodeSpecs.find(v => v.code === 'DT300'))
         ? 300
-        : 0;
+        : applies(promoCodeSpecs.find(v => v.code === 'DT500'))
+          ? currencyCode === 'GBP' ? 415 : 500
+          : 0;
 
   let remainingExtraDiscount = applies(promoCodeSpecs.find(v => v.code === '50OFF'))
     ? 50
