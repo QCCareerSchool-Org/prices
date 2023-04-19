@@ -27,9 +27,6 @@ const priceSchema = yup.object<PriceQuery>({
       default: yup.number().required(),
     }).default(undefined),
     discountSignature: yup.string(),
-    MMFreeMW: yup.boolean(),
-    deluxeKit: yup.boolean(),
-    portfolio: yup.boolean(),
     depositOverrides: yup.lazy(obj => yup.object(
       objectMap(obj, () => yup.number()),
     )),

@@ -11,13 +11,9 @@ export interface PriceQueryOptions {
   discountAll?: boolean;
   discount?: { [d in CurrencyCode]?: number; } & { default: number };
   discountSignature?: string;
-  MMFreeMW?: boolean;
-  deluxeKit?: boolean;
-  portfolio?: boolean;
   depositOverrides?: { [code: string]: number };
   installmentsOverride?: number;
   studentDiscount?: boolean;
-  blackFriday2020?: boolean;
   school?: School;
   promoCode?: string;
   dateOverride?: Date;
