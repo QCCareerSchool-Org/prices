@@ -25,25 +25,6 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
     notes.push('additional discount');
   }
 
-  // deluxeKit option
-  if (options?.deluxeKit === true && (noShipping === 'ALLOWED' || noShipping === 'FORBIDDEN')) {
-    if (courses.includes('MZ')) {
-      notes.push('deluxe/elite/better kit');
-    }
-  }
-
-  // MMFreeMW option
-  if (options?.MMFreeMW === true) {
-    if (courses.includes('MM') || courses.includes('MZ')) {
-      notes.push('free MW course');
-    }
-  }
-
-  // portfolio option
-  if (options?.portfolio === true) {
-    notes.push('portfolio');
-  }
-
   // ELITE promo code
   if (applies(promoCodeSpecs.find(p => p.code === 'ELITE'))) {
     if (noShipping === 'APPLIED') {
@@ -53,9 +34,6 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
     } else if (noShipping === 'ALLOWED' || noShipping === 'FORBIDDEN') {
       if (!courses.includes('MZ')) {
         promoWarnings.push('You have entered the <strong>ELITE</strong> promo code but have not selected the <strong>Master Makeup Artistry</strong> course.');
-      } else {
-        notes.push('luminous kit');
-        disclaimers.push('You will receive the <strong>Luminous Kit</strong>.');
       }
     }
   }
@@ -107,62 +85,6 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
     }
   }
 
-  // LUMINOUS promo code
-  if (applies(promoCodeSpecs.find(v => v.code === 'LUMINOUS'))) {
-    if (!courses.includes('MZ')) {
-      promoWarnings.push('You have entered the <strong>LUMINOUS</strong> promo code, but you haven\'t selected the <strong>Master Makeup Artistry</strong> course.');
-    } else {
-      disclaimers.push('You\'ll receive the Luminous Collection');
-      notes.push('luminous collection');
-    }
-  }
-
-  // BLACK FRIDAY promo code
-  if (applies(promoCodeSpecs.find(v => v.code === 'BLACK FRIDAY'))) {
-    switch (options?.school) {
-      case 'QC Makeup Academy':
-        if (!courses.includes('MZ')) {
-          promoWarnings.push('You have entered the <strong>BLACK FRIDAY</strong> promo code, but you haven\'t selected the <strong>Master Makeup Artistry</strong> course');
-        } else {
-          if (courses.length === 1) {
-            promoWarnings.push('You have entered the <strong>BLACK FRIDAY</strong> promo code, but you haven\'t selected your free course');
-          }
-          disclaimers.push('You\'ll receive the Luminous Collection');
-          notes.push('luminous collection');
-        }
-        break;
-      case 'QC Design School':
-        if (!courses.includes('VD')) {
-          if (courses.length < 2) {
-            promoWarnings.push('You have entered the <strong>BLACK FRIDAY</strong> promo code, but you haven\'t selected your free courses');
-          } else {
-            promoWarnings.push('You have entered the <strong>BLACK FRIDAY</strong> promo code, but you haven\'t selected your free <strong>Virtual Design</strong> course');
-          }
-        } else {
-          if (courses.length < 3) {
-            promoWarnings.push('You have entered the <strong>BLACK FRIDAY</strong> promo code, but you haven\'t selected your second free course');
-          }
-        }
-        disclaimers.push('You\'ll receive the Deluxe Design Kit');
-        notes.push('deluxe design kit');
-        break;
-      case 'QC Event School':
-        if (!courses.includes('EP')) {
-          promoWarnings.push('You have entered the <strong>BLACK FRIDAY</strong> promo code, but you haven\'t selected the <strong>Event &amp; Wedding Planning</strong> course');
-        } else {
-          const specialtyCourseCount = courses.filter(c => isEventSpecialtyCourse(c)).length;
-          if (specialtyCourseCount === 0) {
-            promoWarnings.push('You have entered the <strong>BLACK FRIDAY</strong> promo code, but you haven\'t selected your free specialty courses');
-          } else if (specialtyCourseCount === 1) {
-            promoWarnings.push('You have entered the <strong>BLACK FRIDAY</strong> promo code, but you haven\'t selected your <strong>second</strong> free specialty course');
-          }
-          disclaimers.push('You\'ll receive the leather portfolio');
-          notes.push('leather portfolio');
-        }
-        break;
-    }
-  }
-
   // SKINCARE
   if (applies(promoCodeSpecs.find(v => v.code === 'SKINCARE'))) {
     if (!courses.includes('MZ')) {
@@ -171,8 +93,6 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
       if (!courses.includes('SK')) {
         promoWarnings.push('You have entered the <strong>SKINCARE</strong> promo code, but you haven\'t selected the <strong>Skincare</strong> course');
       }
-      disclaimers.push('You\'ll receive the Luminous Collection');
-      notes.push('luminous collection');
     }
   }
 
@@ -224,19 +144,6 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
     }
   }
 
-  // FREEADVANCED promo code
-  if (applies(promoCodeSpecs.find(v => v.code === 'FREEADVANCED'))) {
-    if (!courses.includes('MZ')) {
-      promoWarnings.push('You have entered the <strong>FREEADVANCED</strong> promo code but have not selected a <strong>Master Makeup Artistry</strong>.');
-    } else {
-      if (!courses.some(c => isMakeupAdvancedCourse(c))) {
-        promoWarnings.push('You have entered the <strong>FREEADVANCED</strong> promo code but have not selected your free <strong>Advanced Course</strong>.');
-      }
-      disclaimers.push('You\'ll get the Luminous Collection for free');
-      notes.push('Luminous Collection');
-    }
-  }
-
   // PROLUMINOUS promo code
   if (applies(promoCodeSpecs.find(v => v.code === 'PROLUMINOUS'))) {
     if (!courses.includes('MZ')) {
@@ -245,34 +152,6 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
       if (!courses.includes('MW')) {
         promoWarnings.push('You have entered the <strong>PROLUMINOUS</strong> promo code, but you haven\'t selected your free <strong>Pro Makeup Workshop</strong>.');
       }
-      disclaimers.push('You\'ll receive the Luminous Collection');
-      notes.push('luminous collection');
-    }
-  }
-
-  // SKINCARELUMINOUS promo code
-  if (applies(promoCodeSpecs.find(v => v.code === 'SKINCARELUMINOUS'))) {
-    if (!courses.includes('MZ')) {
-      promoWarnings.push('You have entered the <strong>SKINCARELUMINOUS</strong> promo code, but you haven\'t selected the <strong>Master Makeup Artistry</strong> course.');
-    } else {
-      if (!courses.includes('SK')) {
-        promoWarnings.push('You have entered the <strong>SKINCARELUMINOUS</strong> promo code, but you haven\'t selected your free <strong>Skincare Consultant</strong> course.');
-      }
-      disclaimers.push('You\'ll receive the Luminous Collection');
-      notes.push('luminous collection');
-    }
-  }
-
-  // GLOBALLUMINOUS promo code
-  if (applies(promoCodeSpecs.find(v => v.code === 'GLOBALLUMINOUS'))) {
-    if (!courses.includes('MZ')) {
-      promoWarnings.push('You have entered the <strong>GLOBALLUMINOUS</strong> promo code, but you haven\'t selected the <strong>Master Makeup Artistry</strong> course.');
-    } else {
-      if (!courses.includes('GB')) {
-        promoWarnings.push('You have entered the <strong>GLOBALLUMINOUS</strong> promo code, but you haven\'t selected your free <strong>Global Beauty Workshop</strong>.');
-      }
-      disclaimers.push('You\'ll receive the Luminous Collection');
-      notes.push('luminous collection');
     }
   }
 
@@ -363,9 +242,6 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
   if (applies(promoCodeSpecs.find(v => v.code === 'KIT200OFF'))) {
     if (!courses.includes('MZ')) {
       promoWarnings.push('You have entered the <strong>KIT200OFF</strong> promo code, but you haven\'t selected the <strong>Master Makeup Artistry</strong> course');
-    } else {
-      disclaimers.push('You\'ll receive the Luminous Collection');
-      notes.push('luminous collection');
     }
   }
 
@@ -379,27 +255,6 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
 
   if (courses.includes('PE')) {
     disclaimers.push('The Promotional Event Planning Course requires corporate event training.');
-  }
-
-  if (now.getTime() < Date.UTC(2022, 10, 1, 4)) {
-    if (options?.discountAll && courses.length >= 1) {
-      if (options.school === 'QC Makeup Academy') {
-        disclaimers.push('You\'ll get the Smokey Eye Brush Set');
-        notes.push('smokey-eye brush set');
-      } else if (options.school === 'QC Design School' || options.school === 'QC Event School') {
-        disclaimers.push('You\'ll get the free portfolio');
-        notes.push('portfolio');
-      }
-    }
-  }
-
-  if (now.getTime() >= Date.UTC(2022, 11, 9, 17) && now.getTime() < Date.UTC(2022, 11, 15, 5)) { // 2022-12-09 at 12:00 (17:00 UTC) to 2022-12-15 at 00:00 (05:00 UTC)
-    if (options?.discountAll) {
-      if (options.school === 'QC Makeup Academy') {
-        disclaimers.push('You\'ll get the Bottomless Makeup Bag');
-        notes.push('Bottomless makeup bag');
-      }
-    }
   }
 
   return [ notes, disclaimers, promoWarnings ];

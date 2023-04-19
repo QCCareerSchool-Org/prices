@@ -9,7 +9,6 @@ export const getPromoCodeFreeCourseMap = (now: Date, options?: PriceQueryOptions
   const freeProApplies = applies(promoCodeSpecs.find(v => v.code === 'FREEPRO'));
   const expertApplies = applies(promoCodeSpecs.find(v => v.code === 'EXPERT'));
   const bogoApplies = applies(promoCodeSpecs.find(v => v.code === 'BOGO'));
-  const blackFridayApplies = applies(promoCodeSpecs.find(v => v.code === 'BLACK FRIDAY'));
   const skincareApplies = applies(promoCodeSpecs.find(v => v.code === 'SKINCARE'));
   const eventFreeCourseApplies = applies(promoCodeSpecs.find(v => v.code === 'EVENTFREECOURSE'));
   const freeSpecialtyApplies = applies(promoCodeSpecs.find(v => v.code === 'SPECIALTY'));
@@ -18,23 +17,18 @@ export const getPromoCodeFreeCourseMap = (now: Date, options?: PriceQueryOptions
   const masterClassApplies = applies(promoCodeSpecs.find(v => v.code === 'MASTERCLASS')) || applies(promoCodeSpecs.find(v => v.code === 'SSMASTERCLASS'));
   const masterClass150Applies = applies(promoCodeSpecs.find(v => v.code === 'MASTERCLASS150'));
   const luxuryDestinationApplies = applies(promoCodeSpecs.find(v => v.code === 'LUXURYDESTINATION'));
-  const freeAdvancedApplies = applies(promoCodeSpecs.find(v => v.code === 'FREEADVANCED'));
   const proLuminousApplies = applies(promoCodeSpecs.find(v => v.code === 'PROLUMINOUS'));
-  const skincareLuminousApplies = applies(promoCodeSpecs.find(v => v.code === 'SKINCARELUMINOUS'));
-  const globalLuminousApplies = applies(promoCodeSpecs.find(v => v.code === 'GLOBALLUMINOUS'));
   const freeGlobalApplies = applies(promoCodeSpecs.find(v => v.code === 'FREEGLOBAL'));
   const bogo100Applies = applies(promoCodeSpecs.find(v => v.code === 'BOGO100'));
   const bogo200Applies = applies(promoCodeSpecs.find(v => v.code === 'BOGO200'));
 
   let expertApplied = false;
   let bogoApplied = false;
-  let blackFridayCount = 0;
   let eventFreeCourseApplied = false;
   let freeSpecialtyApplied = false;
   let twoFreeSpecialtyCount = 0;
   let masterClassApplied = false;
   let masterClass150Applied = false;
-  let freeAdvancedApplied = false;
   let bogo100Applied = false;
   let bogo200Applied = false;
 
@@ -64,45 +58,6 @@ export const getPromoCodeFreeCourseMap = (now: Date, options?: PriceQueryOptions
           bogoApplied = true;
           return freeMap(courseResult);
         }
-      }
-    }
-
-    if (blackFridayApplies) {
-      switch (options?.school) {
-        case 'QC Makeup Academy':
-          if (blackFridayCount < 1 && courseResult.code !== 'MZ' && array.some(c => c.code === 'MZ')) {
-            blackFridayCount++;
-            return freeMap(courseResult);
-          }
-          break;
-        case 'QC Design School':
-          if (array.some(c => c.code === 'VD')) { // VD is one of the selections
-            if (array.length >= 2) {
-              if (courseResult.code === 'VD') {
-                return freeMap(courseResult);
-              }
-            }
-            if (array.length >= 3) {
-              if (blackFridayCount < 1) {
-                blackFridayCount++;
-                return freeMap(courseResult);
-              }
-            }
-          } else { // VD is not one of the selections
-            if (array.length >= 2) {
-              if (blackFridayCount < 1) {
-                blackFridayCount++;
-                return freeMap(courseResult);
-              }
-            }
-          }
-          break;
-        case 'QC Event School':
-          if (blackFridayCount < 2 && isEventSpecialtyCourse(courseResult.code) && array.some(c => c.code === 'EP')) {
-            blackFridayCount++;
-            return freeMap(courseResult);
-          }
-          break;
       }
     }
 
@@ -159,26 +114,13 @@ export const getPromoCodeFreeCourseMap = (now: Date, options?: PriceQueryOptions
       }
     }
 
-    if (freeAdvancedApplies && !freeAdvancedApplied) {
-      if (isMakeupAdvancedCourse(courseResult.code) && array.some(c => c.code === 'MZ')) {
-        freeAdvancedApplied = true;
-        return freeMap(courseResult);
-      }
-    }
-
     if (proLuminousApplies) {
       if (courseResult.code === 'MW' && array.some(c => c.code === 'MZ')) {
         return freeMap(courseResult);
       }
     }
 
-    if (skincareLuminousApplies) {
-      if (courseResult.code === 'SK' && array.some(c => c.code === 'MZ')) {
-        return freeMap(courseResult);
-      }
-    }
-
-    if (freeGlobalApplies || globalLuminousApplies) {
+    if (freeGlobalApplies) {
       if (courseResult.code === 'GB' && array.some(c => c.code === 'MZ')) {
         return freeMap(courseResult);
       }
