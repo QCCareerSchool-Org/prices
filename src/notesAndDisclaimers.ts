@@ -1,6 +1,5 @@
-import { isDesignCourse, isEventFoundationCourse, isEventSpecialtyCourse, isMakeupAdvancedCourse, isMakeupFoundationCourse } from './courses';
+import { isEventFoundationCourse, isEventSpecialtyCourse } from './courses';
 import { PromoCodeSpec, promoCodeSpecs, specApplies } from './promoCodes';
-import { courseSort } from './transforms/courseSort/courseSort';
 import { NoShipping, PriceQueryOptions } from './types';
 
 /**
