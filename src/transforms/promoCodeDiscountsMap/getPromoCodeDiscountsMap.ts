@@ -58,13 +58,15 @@ export const getPromoCodeDiscountsMap = (now: Date, currencyCode: string, option
                     ? 400 // £400 for UK
                     : applies(promoCodeSpecs.find(v => v.code === 'DESIGN100OFF')) || applies(promoCodeSpecs.find(v => v.code === 'EVENT100OFF'))
                       ? currencyCode === 'GBP' ? 75 : 100
-                      : applies(promoCodeSpecs.find(v => v.code === 'BOGO200'))
+                      : applies(promoCodeSpecs.find(v => v.code === 'DESIGN200OFF'))
                         ? currencyCode === 'GBP' ? 150 : 200
-                        : applies(promoCodeSpecs.find(v => v.code === 'BOGO100'))
-                          ? 100
-                          : applies(promoCodeSpecs.find(v => v.code === '2SPECIALTY100'))
-                            ? currencyCode === 'GBP' ? 75 : 100
-                            : 0;
+                        : applies(promoCodeSpecs.find(v => v.code === 'BOGO200'))
+                          ? currencyCode === 'GBP' ? 150 : 200
+                          : applies(promoCodeSpecs.find(v => v.code === 'BOGO100'))
+                            ? 100
+                            : applies(promoCodeSpecs.find(v => v.code === '2SPECIALTY100'))
+                              ? currencyCode === 'GBP' ? 75 : 100
+                              : 0;
 
   let masterclassApplied = false;
   let masterclass150Applied = false;

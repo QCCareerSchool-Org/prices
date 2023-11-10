@@ -261,6 +261,11 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
     disclaimers.push('This promotion is only available to Woof Gang Bakery employees, managers and store owners.');
   }
 
+  if (applies(promoCodeSpecs.find(v => v.code === 'PORTFOLIO'))) {
+    disclaimers.push('You\'ll get the free leather portfolio');
+    notes.push('portfolio');
+  }
+
   if (courses.includes('FL')) {
     disclaimers.push('The Festivals &amp; Live Events Course requires corporate event training.');
   }
