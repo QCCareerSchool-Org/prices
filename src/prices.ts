@@ -19,13 +19,13 @@ import { getDefaultFreeMakeupNewStudentMap } from './transforms/defaultFreeCours
 import { getDefaultFreePetExistingStudentMap } from './transforms/defaultFreeCourseMap/pet/existingStudentMap';
 import { getDefaultFreePetNewStudentMap } from './transforms/defaultFreeCourseMap/pet/newStudentMap';
 import { getExtraDiscountMap } from './transforms/extraDiscountMap/getExtraDiscountMap';
+import { getSort } from './transforms/getSort/getSort';
 import { getMultiCourseDiscountMap } from './transforms/multiCourseDiscountMap/getMultiCourseDiscountMap';
 import { getOverridesMap } from './transforms/overridesMap/getOverridesMap';
 import { priceRowToCourseResultMap } from './transforms/priceRowToCourseResultMap/priceRowToCourseResultMap';
 import { primaryMap } from './transforms/primaryMap/primaryMap';
 import { getPromoCodeDiscountsMap } from './transforms/promoCodeDiscountsMap/getPromoCodeDiscountsMap';
 import { getPromoCodeFreeCourseMap } from './transforms/promoCodeFreeCoursesMap/getPromoCodeFreeCoursesMap';
-import { getPromoCodeSort } from './transforms/promoCodeSort/getPromoCodeSort';
 import { getShippingMap } from './transforms/shippingMap/getShippingMap';
 import { getStudentDiscountMap } from './transforms/studentDiscountMap/getStudentDiscountMap';
 import { CourseResult, NoShipping, PriceQueryOptions, PriceResult } from './types';
@@ -76,54 +76,21 @@ export async function prices(
           ? options?.discountAll === true ? getDefaultFreeMakeupExistingStudentMap(now) : getDefaultFreeMakeupNewStudentMap(now)
           : (c: CourseResult) => c; // identity function (do nothing)
 
-  // const courseResults = priceRows
-  //   .map(priceRowToCourseResultMap) // convert to a course result
-  //   .sort((a, b) => a.cost - b.cost) // sort by cost in ascending order (cheapest first)
-  //   .map(freeCourseMap) // determine which courses shoul be free by default
-  //   .sort((a, b) => (a.free === b.free ? a.cost - b.cost : a.free ? 1 : -1)) // sort by free in ascending order (free last), then cost in ascending order (cheapest first)
-  //   .sort(getPromoCodeSort(now, options))
-  //   .map(getPromoCodeFreeCourseMap(now, options)) // determine which courses should be free based on promo codes
-  //   .sort((a, b) => (a.free === b.free ? b.cost - a.cost : a.free ? 1 : -1)) // sort by free in ascending order (free last), then cost in descending order (cheapest last)
-  //   .map(primaryMap) // mark first course primary and adjust other courses' installments to match the primary course
-  //   .map(getShippingMap(noShipping)) // apply shipping discounts
-  //   .map(getMultiCourseDiscountMap(now, options)) // apply multi-course discounts
-  //   .map(getStudentDiscountMap(currencyCode, options)) // apply student promotional discounts
-  //   .map(getExtraDiscountMap(currencyCode, options)) // apply extra promotional discounts
-  //   .map(getPromoCodeDiscountsMap(now, currencyCode, options)) // apply promotional discounts based on promo codes
-  //   .map(getOverridesMap(courses, options?.depositOverrides, options?.installmentsOverride)) // update the courseResults based on the sales agent's overrides
-  //   .sort(courseSort); // sort by primary, free, cost, discounted cost
-
-  const rand = Math.random().toString(32);
-  const c1 = priceRows.map(priceRowToCourseResultMap); // convert to a course result
-  console.log(rand, c1);
-  const c2 = c1.sort((a, b) => a.cost - b.cost); // sort by cost in ascending order (cheapest first)
-  console.log(rand, c2);
-  const c3 = c2.map(freeCourseMap); // determine which courses shoul be free by default
-  console.log(rand, c3);
-  const c4 = c3.sort((a, b) => (a.free === b.free ? a.cost - b.cost : a.free ? 1 : -1)); // sort by free in ascending order (free last), then cost in ascending order (cheapest first)
-  console.log(rand, c4);
-  const c5 = c4.sort(getPromoCodeSort(now, options));
-  console.log(rand, c5);
-  const c6 = c5.map(getPromoCodeFreeCourseMap(now, options)); // determine which courses should be free based on promo codes
-  console.log(rand, c6);
-  const c7 = c6.sort((a, b) => (a.free === b.free ? b.cost - a.cost : a.free ? 1 : -1)); // sort by free in ascending order (free last), then cost in descending order (cheapest last)
-  console.log(rand, c7);
-  const c8 = c7.map(primaryMap); // mark first course primary and adjust other courses' installments to match the primary course
-  console.log(rand, c8);
-  const c9 = c8.map(getShippingMap(noShipping)); // apply shipping discounts
-  console.log(rand, c9);
-  const c10 = c9.map(getMultiCourseDiscountMap(now, options)); // apply multi-course discounts
-  console.log(rand, c10);
-  const c11 = c10.map(getStudentDiscountMap(currencyCode, options)); // apply student promotional discounts
-  console.log(rand, c11);
-  const c12 = c11.map(getExtraDiscountMap(currencyCode, options)); // apply extra promotional discounts
-  console.log(rand, c12);
-  const c13 = c12.map(getPromoCodeDiscountsMap(now, currencyCode, options)); // apply promotional discounts based on promo codes
-  console.log(rand, c13);
-  const c14 = c13.map(getOverridesMap(courses, options?.depositOverrides, options?.installmentsOverride)); // update the courseResults based on the sales agent's overrides
-  console.log(rand, c14);
-  const courseResults = c14.sort(courseSort); // sort by primary, free, cost, discounted cost
-  console.log(rand, courseResults);
+  const courseResults = priceRows
+    .map(priceRowToCourseResultMap) // convert to a course result
+    .sort((a, b) => a.cost - b.cost) // sort by cost in ascending order (cheapest first)
+    .map(freeCourseMap) // determine which courses shoul be free by default
+    .sort(getSort(now, options)) // GENERALLY, sort by free in ascending order (free last), then cost in ascending order (cheapest first)
+    .map(getPromoCodeFreeCourseMap(now, options)) // determine which courses should be free based on promo codes
+    .sort((a, b) => (a.free === b.free ? b.cost - a.cost : a.free ? 1 : -1)) // sort by free in ascending order (free last), then cost in descending order (cheapest last)
+    .map(primaryMap) // mark first course primary and adjust other courses' installments to match the primary course
+    .map(getShippingMap(noShipping)) // apply shipping discounts
+    .map(getMultiCourseDiscountMap(now, options)) // apply multi-course discounts
+    .map(getStudentDiscountMap(currencyCode, options)) // apply student promotional discounts
+    .map(getExtraDiscountMap(currencyCode, options)) // apply extra promotional discounts
+    .map(getPromoCodeDiscountsMap(now, currencyCode, options)) // apply promotional discounts based on promo codes
+    .map(getOverridesMap(courses, options?.depositOverrides, options?.installmentsOverride)) // update the courseResults based on the sales agent's overrides
+    .sort(courseSort); // sort by primary, free, cost, discounted cost
 
   const [ notes, disclaimers, promoWarnings ] = notesAndDisclaimers(now, courses, countryCode, noShipping, options);
 
