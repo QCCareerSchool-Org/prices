@@ -26,5 +26,5 @@ export const getPromoCodeSort = (now: Date, options?: PriceQueryOptions): SortFu
     };
   }
 
-  return () => 0; // identity function
+  return (a, b) => (a.free === b.free ? a.cost - b.cost : a.free ? 1 : -1);
 };
