@@ -41,7 +41,7 @@ export const studentSupport150Specs: PromoCodeSpec[] = studentSupportNames.map<P
 
 export const promoCodeSpecs: PromoCodeSpec[] = [
   { code: 'SAVE50', student: 'DENIED', schools: [ 'QC Makeup Academy', 'QC Design School', 'QC Event School' ] },
-  { code: 'SAVE60', student: 'ALLOWED', schools: [ 'QC Makeup Academy', 'QC Design School', 'QC Event School' ] },
+  { code: 'SAVE60', student: 'ALLOWED' },
   { code: 'ELITE', student: 'DENIED', schools: [ 'QC Makeup Academy' ] },
   { code: 'FREEPRO', student: 'DENIED', schools: [ 'QC Makeup Academy' ] },
   { code: 'EXPERT', student: 'DENIED', schools: [ 'QC Event School' ] },
