@@ -17,6 +17,7 @@ export const getMultiCourseDiscountMap = (now: Date, options?: PriceQueryOptions
   const nathansDayApplies = applies(promoCodeSpecs.find(v => v.code === 'NATHANSDAY'));
   const wedding21MakeupApplies = applies(promoCodeSpecs.find(v => v.code === 'WEDDING21' && v.schools?.includes('QC Makeup Academy')));
   const sfx50Applies = applies(promoCodeSpecs.find(v => v.code === 'SFX50'));
+  const save60Applies = applies(promoCodeSpecs.find(v => v.code === 'SAVE60'));
 
   return (courseResult: CourseResult, index: number, array: CourseResult[]) => {
     // skip free courses
@@ -36,12 +37,14 @@ export const getMultiCourseDiscountMap = (now: Date, options?: PriceQueryOptions
       const minimumPrice = parseFloat(Big(courseResult.cost).minus(courseResult.shipping).minus(courseResult.multiCourseDiscount).minus(courseResult.promoDiscount).toFixed(2));
 
       // the amount we'd like to give
-      const desiredMultiCourseDiscount = skincare60Applies && courseResult.code === 'SK' && array.find(c => c.code === 'MZ')
+      const desiredMultiCourseDiscount = (skincare60Applies && courseResult.code === 'SK' && array.find(c => c.code === 'MZ')) || save60Applies
         ? parseFloat(Big(courseResult.cost).times(0.6).toFixed(2))
         : parseFloat(Big(courseResult.cost).times(courseResult.multiCourseDiscountRate).toFixed(2));
 
       // the true amount we'll give
       const multiCourseDiscount = Math.min(minimumPrice, desiredMultiCourseDiscount);
+
+      const multiCourseDiscountRate = parseFloat(Big(multiCourseDiscount).div(courseResult.cost).toFixed(2));
 
       const discountedCost = parseFloat(Big(courseResult.cost).minus(courseResult.shippingDiscount).minus(multiCourseDiscount).minus(courseResult.promoDiscount).toFixed(2));
 
@@ -49,6 +52,7 @@ export const getMultiCourseDiscountMap = (now: Date, options?: PriceQueryOptions
 
       return {
         ...courseResult,
+        multiCourseDiscountRate,
         multiCourseDiscount,
         discountedCost,
         discountMessage: multiCourseDiscount === desiredMultiCourseDiscount ? null : `${Math.round(multiCourseDiscount / courseResult.cost * 100)}% Discount`, // override the discount message if we gave a different discount
