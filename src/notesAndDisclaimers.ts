@@ -187,7 +187,7 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
 
   if (options?.school === 'QC Makeup Academy' && courses.length >= 1) {
     if (options.discountAll) {
-      if (now >= new Date('2023-11-16T09:30') && now < new Date('2023-12-01T00:00')) {
+      if (now >= new Date('2023-12-26T09:30') && now < new Date('2024-01-06T00:00')) {
         disclaimers.push('You\'ll get the free bonus brush set');
         notes.push('brush set');
       }
@@ -198,7 +198,7 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
 
   if (options?.school === 'QC Event School' && courses.length >= 1) {
     if (options.discountAll) {
-      if (now >= new Date('2023-11-16T09:30') && now < new Date('2023-12-01T00:00')) {
+      if (now >= new Date('2023-12-26T09:30') && now < new Date('2024-01-06T00:00')) {
         disclaimers.push('You\'ll get the free leather portfolio');
         notes.push('portfolio');
       }
@@ -209,7 +209,7 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
 
   if (options?.school === 'QC Design School' && courses.length >= 1) {
     if (options.discountAll) {
-      if (now >= new Date('2023-11-16T09:30') && now < new Date('2023-12-01T00:00')) {
+      if (now >= new Date('2023-12-26T09:30') && now < new Date('2024-01-06T00:00')) {
         disclaimers.push('You\'ll get the free color fan deck');
         notes.push('color fan deck');
       }
