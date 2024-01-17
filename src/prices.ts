@@ -22,7 +22,7 @@ import { getExtraDiscountMap } from './transforms/extraDiscountMap/getExtraDisco
 import { getSort } from './transforms/getSort/getSort';
 import { getMultiCourseDiscountMap } from './transforms/multiCourseDiscountMap/getMultiCourseDiscountMap';
 import { getOverridesMap } from './transforms/overridesMap/getOverridesMap';
-import { priceRowToCourseResultMap } from './transforms/priceRowToCourseResultMap/priceRowToCourseResultMap';
+import { getPriceRowToCourseResultMap } from './transforms/priceRowToCourseResultMap/getPriceRowToCourseResultMap';
 import { primaryMap } from './transforms/primaryMap/primaryMap';
 import { getPromoCodeDiscountsMap } from './transforms/promoCodeDiscountsMap/getPromoCodeDiscountsMap';
 import { getPromoCodeFreeCourseMap } from './transforms/promoCodeFreeCoursesMap/getPromoCodeFreeCoursesMap';
@@ -77,7 +77,7 @@ export async function prices(
           : (c: CourseResult) => c; // identity function (do nothing)
 
   const courseResults = priceRows
-    .map(priceRowToCourseResultMap) // convert to a course result
+    .map(getPriceRowToCourseResultMap(options?.discountAll)) // convert to a course result
     .sort((a, b) => a.cost - b.cost) // sort by cost in ascending order (cheapest first)
     .map(freeCourseMap) // determine which courses shoul be free by default
     .sort(getSort(now, options)) // GENERALLY, sort by free in ascending order (free last), then cost in ascending order (cheapest first)
