@@ -11,7 +11,7 @@ export const clamp = (value: number, min: number, max: number): number => Math.m
  * @param p the PriceRow
  * @return a CourseResult
  */
-export const priceRowToCourseResultMap = (p: PriceRow): CourseResult => {
+export const getPriceRowToCourseResultMap = (student?: boolean) => (p: PriceRow): CourseResult => {
   const cost = parseFloat(Math.max(0, p.cost).toFixed(2)); // the cost can't be negative
 
   const shipping = clamp(parseFloat(p.shipping.toFixed(2)), 0, cost); // potential shipping savings can't be negative and can't be greater than cost
@@ -30,7 +30,7 @@ export const priceRowToCourseResultMap = (p: PriceRow): CourseResult => {
 
   const partDeposit = clamp(parseFloat(p.deposit.toFixed(2)), 0, partTotal); // the deposit can't be greater than the cost and can't be negative
 
-  const partInstallments = Math.round(Math.max(1, p.installments)); // the number of installments must be at least 1 and must be a whole number
+  const partInstallments = Math.round(Math.max(1, student ? p.installments / 2 : p.installments)); // the number of installments must be at least 1 and must be a whole number
 
   const partInstallmentSize = parseFloat(Big(cost).minus(partDeposit).div(partInstallments).round(2, 0).toFixed(2)); // always round down so that the actual price will never be more than the quoted price
 
