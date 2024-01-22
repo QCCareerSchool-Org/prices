@@ -28,6 +28,7 @@ import { getPromoCodeDiscountsMap } from './transforms/promoCodeDiscountsMap/get
 import { getPromoCodeFreeCourseMap } from './transforms/promoCodeFreeCoursesMap/getPromoCodeFreeCoursesMap';
 import { getShippingMap } from './transforms/shippingMap/getShippingMap';
 import { getStudentDiscountMap } from './transforms/studentDiscountMap/getStudentDiscountMap';
+import { getToolsDiscountMap } from './transforms/toolsDiscountMap/getToolsDiscountMap';
 import { CourseResult, NoShipping, PriceQueryOptions, PriceResult } from './types';
 
 export async function prices(
@@ -89,6 +90,7 @@ export async function prices(
     .map(getStudentDiscountMap(currencyCode, options)) // apply student promotional discounts
     .map(getExtraDiscountMap(currencyCode, options)) // apply extra promotional discounts
     .map(getPromoCodeDiscountsMap(now, currencyCode, options)) // apply promotional discounts based on promo codes
+    .map(getToolsDiscountMap(now, currencyCode, options)) // apply discounts for skipping tools
     .map(getOverridesMap(courses, options?.depositOverrides, options?.installmentsOverride)) // update the courseResults based on the sales agent's overrides
     .sort(courseSort); // sort by primary, free, cost, discounted cost
 
