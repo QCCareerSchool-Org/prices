@@ -167,6 +167,30 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
     }
   }
 
+  // PORTFOLIO50 promo code
+  if (applies(promoCodeSpecs.find(v => v.code === 'PORTFOLIO50'))) {
+    if (courses.length > 0) {
+      disclaimers.push('You\'ll get the free leather portfolio');
+      notes.push('portfolio');
+    }
+  }
+
+  // FANDECK promo code
+  if (applies(promoCodeSpecs.find(v => v.code === 'FANDECK50'))) {
+    if (courses.length > 0) {
+      disclaimers.push('You\'ll get the free color fan deck');
+      notes.push('color fan deck');
+    }
+  }
+
+  // BRUSHSET50 promo code
+  if (applies(promoCodeSpecs.find(v => v.code === 'BRUSHSET50'))) {
+    if (courses.length > 0) {
+      disclaimers.push('You\'ll get the free bonus brush set');
+      notes.push('brush set');
+    }
+  }
+
   if (options?.school === 'QC Wellness Studies' && courses.length >= 1) {
     if (options.discountAll) {
       // nothing

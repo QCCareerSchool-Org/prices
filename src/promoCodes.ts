@@ -82,6 +82,7 @@ export const promoCodeSpecs: PromoCodeSpec[] = [
   { code: 'PET200OFF', student: 'DENIED', schools: [ 'QC Pet Studies' ] },
   { code: 'PET300OFF', student: 'DENIED', schools: [ 'QC Pet Studies' ] },
   { code: 'PET400OFF', student: 'DENIED', schools: [ 'QC Pet Studies' ] },
+  { code: 'PET500OFF', student: 'DENIED', schools: [ 'QC Pet Studies' ] },
   { code: 'DESIGN100OFF', student: 'DENIED', schools: [ 'QC Design School' ] },
   { code: 'DESIGN200OFF', student: 'DENIED', schools: [ 'QC Design School' ] },
   { code: 'EVENT100OFF', student: 'DENIED', schools: [ 'QC Event School' ] },
@@ -92,6 +93,9 @@ export const promoCodeSpecs: PromoCodeSpec[] = [
   { code: 'FREEVIRTUAL', student: 'ALLOWED', schools: [ 'QC Design School', 'QC Event School' ] },
   { code: '10PERCENT', student: 'ALLOWED', schools: [ 'QC Makeup Academy', 'QC Design School', 'QC Event School', 'QC Pet Studies', 'QC Wellness Studies', 'Winghill Writing School' ] },
   { code: 'PORTFOLIO', student: 'ALLOWED' },
+  { code: 'PORTFOLIO50', student: 'ALLOWED', schools: [ 'QC Design School', 'QC Event School' ] },
+  { code: 'FANDECK50', student: 'ALLOWED', schools: [ 'QC Design School' ] },
+  { code: 'BRUSHSET50', student: 'ALLOWED', schools: [ 'QC Makeup Academy' ] },
 ];
 
 /**

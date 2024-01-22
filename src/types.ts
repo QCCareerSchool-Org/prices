@@ -14,6 +14,7 @@ export interface PriceQueryOptions {
   depositOverrides?: { [code: string]: number };
   installmentsOverride?: number;
   studentDiscount?: boolean;
+  withoutTools?: boolean;
   school?: School;
   promoCode?: string;
   dateOverride?: Date;
