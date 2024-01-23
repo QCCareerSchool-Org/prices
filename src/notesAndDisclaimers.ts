@@ -298,5 +298,9 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
     disclaimers.push('The Promotional Event Planning Course requires corporate event training.');
   }
 
+  if (options?.withoutTools) {
+    notes.push('No tools');
+  }
+
   return [ notes, disclaimers, promoWarnings ];
 };
