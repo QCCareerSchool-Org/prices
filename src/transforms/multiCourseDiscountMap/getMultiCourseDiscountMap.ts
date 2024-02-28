@@ -18,6 +18,7 @@ export const getMultiCourseDiscountMap = (now: Date, options?: PriceQueryOptions
   const wedding21MakeupApplies = applies(promoCodeSpecs.find(v => v.code === 'WEDDING21' && v.schools?.includes('QC Makeup Academy')));
   const sfx50Applies = applies(promoCodeSpecs.find(v => v.code === 'SFX50'));
   const save60Applies = applies(promoCodeSpecs.find(v => v.code === 'SAVE60'));
+  const liveEvent60Applies = applies(promoCodeSpecs.find(v => v.code === 'LIVEEVENT60'));
 
   return (courseResult: CourseResult, index: number, array: CourseResult[]) => {
     // skip free courses
@@ -28,6 +29,7 @@ export const getMultiCourseDiscountMap = (now: Date, options?: PriceQueryOptions
     if (
       shouldGetMultiCourseDiscount(now, index, options) ||
       (nathansDayApplies && index > 0) ||
+      (liveEvent60Applies && index > 0) ||
       (skincare60Applies && courseResult.code === 'SK' && array.find(c => c.code === 'MZ')) ||
       (wedding21MakeupApplies && courseResult.code === 'HS' && array.find(c => c.code === 'MZ')) ||
       (sfx50Applies && courseResult.code === 'SF' && array.find(c => c.code === 'MZ'))
@@ -37,7 +39,7 @@ export const getMultiCourseDiscountMap = (now: Date, options?: PriceQueryOptions
       const minimumPrice = parseFloat(Big(courseResult.cost).minus(courseResult.shipping).minus(courseResult.multiCourseDiscount).minus(courseResult.promoDiscount).toFixed(2));
 
       // the amount we'd like to give
-      const desiredMultiCourseDiscount = (skincare60Applies && courseResult.code === 'SK' && array.find(c => c.code === 'MZ')) || save60Applies
+      const desiredMultiCourseDiscount = (skincare60Applies && courseResult.code === 'SK' && array.find(c => c.code === 'MZ')) || save60Applies || liveEvent60Applies
         ? parseFloat(Big(courseResult.cost).times(0.6).toFixed(2))
         : parseFloat(Big(courseResult.cost).times(courseResult.multiCourseDiscountRate).toFixed(2));
 
