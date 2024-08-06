@@ -22,6 +22,7 @@ export const getPromoCodeFreeCourseMap = (now: Date, options?: PriceQueryOptions
   const bogo100Applies = applies(promoCodeSpecs.find(v => v.code === 'BOGO100'));
   const bogo200Applies = applies(promoCodeSpecs.find(v => v.code === 'BOGO200'));
   const freeVirtualApplies = applies(promoCodeSpecs.find(v => v.code === 'FREEVIRTUAL'));
+  const freeColorApplies = applies(promoCodeSpecs.find(v => v.code === 'FREECOLOR'));
 
   let expertApplied = false;
   let bogoApplied = false;
@@ -146,6 +147,13 @@ export const getPromoCodeFreeCourseMap = (now: Date, options?: PriceQueryOptions
     if (freeVirtualApplies) {
       if (!freeVirtualApplied && (courseResult.code === 'VD' || courseResult.code === 'VE') && array.filter(c => c.code !== 'VD' && c.code !== 'VE').length >= 1) {
         freeVirtualApplied = true;
+        return freeMap(courseResult);
+      }
+    }
+
+    // make CC free as long as some other course of equal or greater value is also selected
+    if (freeColorApplies) {
+      if (courseResult.code === 'CC' && array.some(c => c.code !== 'CC' && c.cost >= courseResult.cost)) {
         return freeMap(courseResult);
       }
     }
