@@ -70,7 +70,7 @@ export const getPromoCodeDiscountsMap = (now: Date, currencyCode: string, option
                             : applies(promoCodeSpecs.find(v => v.code === 'BOGO100'))
                               ? 100
                               : applies(promoCodeSpecs.find(v => v.code === '2SPECIALTY100'))
-                                ? currencyCode === 'GBP' ? 75 : 100
+                                ? 100
                                 : misc50Applies
                                   ? 50
                                   : 0;
