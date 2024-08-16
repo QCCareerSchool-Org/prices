@@ -18,6 +18,7 @@ export const getPromoCodeDiscountsMap = (now: Date, currencyCode: string, option
   const misc50Applies = applies(promoCodeSpecs.find(v => v.code === 'PORTFOLIO50')) || applies(promoCodeSpecs.find(v => v.code === 'FANDECK50')) || applies(promoCodeSpecs.find(v => v.code === 'BRUSHSET50'));
   const fc25Applies = applies(promoCodeSpecs.find(v => v.code === 'FC25PERCENT'));
   const master300Applies = applies(promoCodeSpecs.find(v => v.code === 'MASTER300'));
+  const skincare300Applies = applies(promoCodeSpecs.find(v => v.code === 'SKINCARE300'));
 
   const dgDiscount = applies(promoCodeSpecs.find(v => v.code === 'DG150'))
     ? 150
@@ -25,11 +26,13 @@ export const getPromoCodeDiscountsMap = (now: Date, currencyCode: string, option
       ? 200
       : applies(promoCodeSpecs.find(v => v.code === 'DG300'))
         ? 300
-        : applies(promoCodeSpecs.find(v => v.code === 'DG500'))
-          ? currencyCode === 'GBP' ? 415 : 500
-          : applies(promoCodeSpecs.find(v => v.code === 'WOOFGANG'))
-            ? 500
-            : 0;
+        : applies(promoCodeSpecs.find(v => v.code === 'DG400'))
+          ? 400
+          : applies(promoCodeSpecs.find(v => v.code === 'DG500'))
+            ? currencyCode === 'GBP' ? 415 : 500
+            : applies(promoCodeSpecs.find(v => v.code === 'WOOFGANG'))
+              ? 500
+              : 0;
 
   const dtDiscount = applies(promoCodeSpecs.find(v => v.code === 'DT150'))
     ? 150
@@ -73,7 +76,9 @@ export const getPromoCodeDiscountsMap = (now: Date, currencyCode: string, option
                                 ? 100
                                 : misc50Applies
                                   ? 50
-                                  : 0;
+                                  : skincare300Applies
+                                    ? 300
+                                    : 0;
 
   let masterclassApplied = false;
   let masterclass150Applied = false;
