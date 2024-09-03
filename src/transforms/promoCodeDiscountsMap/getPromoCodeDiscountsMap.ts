@@ -78,9 +78,7 @@ export const getPromoCodeDiscountsMap = (now: Date, currencyCode: string, option
                                   ? 100
                                   : misc50Applies
                                     ? 50
-                                    : skincare300Applies
-                                      ? 300
-                                      : 0;
+                                    : 0;
 
   let masterclassApplied = false;
   let masterclass150Applied = false;
@@ -252,7 +250,7 @@ export const getPromoCodeDiscountsMap = (now: Date, currencyCode: string, option
       };
     }
 
-    if (master300Applies && courseResult.code === 'MZ') {
+    if ((skincare300Applies || master300Applies) && courseResult.code === 'MZ') {
       const discount = 300;
       // subtract all the discounts we have so far (use `shipping` instead of `shippingDiscount`) from the cost to determine the lowest possible price we might display (before payment-plan discounts)
       const minimumPrice = parseFloat(Big(courseResult.cost).minus(courseResult.shipping).minus(courseResult.multiCourseDiscount).minus(courseResult.promoDiscount).toFixed(2));
