@@ -147,7 +147,7 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
   if (applies(promoCodeSpecs.find(v => v.code === 'PROLUMINOUS'))) {
     if (!courses.includes('MZ')) {
       promoWarnings.push('You have entered the <strong>PROLUMINOUS</strong> promo code, but you haven\'t selected the <strong>Master Makeup Artistry</strong> course.');
-      disclaimers.push('You\'ll get the DELUXE Makeup Collection');
+      disclaimers.push('You\'ll get the Luminous Makeup Collection');
     } else {
       if (!courses.includes('MW')) {
         promoWarnings.push('You have entered the <strong>PROLUMINOUS</strong> promo code, but you haven\'t selected your free <strong>Pro Makeup Workshop</strong>.');
@@ -160,7 +160,7 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
     if (!courses.includes('MZ')) {
       promoWarnings.push('You have entered the <strong>FREEGLOBAL</strong> promo code, but you haven\'t selected the <strong>Master Makeup Artistry</strong> course.');
     } else {
-      disclaimers.push('You\'ll get the DELUXE Makeup Collection');
+      disclaimers.push('You\'ll get the Luminous Makeup Collection');
       if (!courses.includes('GB')) {
         promoWarnings.push('You have entered the <strong>FREEGLOBAL</strong> promo code, but you haven\'t selected your free <strong>Global Beauty Workshop</strong>.');
       }
@@ -300,6 +300,12 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
 
   if (options?.withoutTools) {
     notes.push('No tools');
+  }
+
+  if (applies(promoCodeSpecs.find(v => v.code === 'HALLOWEENSFX'))) {
+    disclaimers.push('You\'ll get the Luminous Makeup Collection');
+    disclaimers.push('You\'ll get the special FX makeup kit.');
+    notes.push('SFX kit');
   }
 
   return [ notes, disclaimers, promoWarnings ];
