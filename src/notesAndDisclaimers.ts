@@ -308,5 +308,10 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
     notes.push('SFX kit');
   }
 
+  if (applies(promoCodeSpecs.find(v => v.code === 'BOGOCATALYST'))) {
+    disclaimers.push('You\'ll get the Career Catalyst Toolkit');
+    notes.push('Career Catalyst Toolkit');
+  }
+
   return [ notes, disclaimers, promoWarnings ];
 };
