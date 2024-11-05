@@ -168,7 +168,7 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
   }
 
   // PORTFOLIO50 promo code
-  if (applies(promoCodeSpecs.find(v => v.code === 'PORTFOLIO50'))) {
+  if (applies(promoCodeSpecs.find(v => v.code === 'PORTFOLIO50')) || applies(promoCodeSpecs.find(v => v.code === 'PORTFOLIO'))) {
     if (courses.length > 0) {
       disclaimers.push('You\'ll get the free leather portfolio');
       notes.push('portfolio');
@@ -285,11 +285,6 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
     disclaimers.push('This promotion is only available to Woof Gang Bakery employees, managers and store owners.');
   }
 
-  if (applies(promoCodeSpecs.find(v => v.code === 'PORTFOLIO'))) {
-    disclaimers.push('You\'ll get the free leather portfolio');
-    notes.push('portfolio');
-  }
-
   if (courses.includes('FL')) {
     disclaimers.push('The Festivals &amp; Live Events Course requires corporate event training.');
   }
@@ -311,6 +306,11 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
   if (applies(promoCodeSpecs.find(v => v.code === 'BOGOCATALYST'))) {
     disclaimers.push('You\'ll get the Career Catalyst Toolkit');
     notes.push('Career Catalyst Toolkit');
+  }
+
+  if (applies(promoCodeSpecs.find(v => v.code === 'COLORWHEEL'))) {
+    disclaimers.push('You\'ll get a free color wheel');
+    notes.push('color wheel');
   }
 
   return [ notes, disclaimers, promoWarnings ];
