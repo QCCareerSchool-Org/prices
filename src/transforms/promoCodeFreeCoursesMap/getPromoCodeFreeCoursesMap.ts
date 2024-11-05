@@ -1,4 +1,4 @@
-import { isDesignCourse, isEventFoundationCourse, isEventSpecialtyCourse, isMakeupAdvancedCourse } from '../../courses';
+import { isDesignCourse, isEventFoundationCourse, isEventSpecialtyCourse } from '../../courses';
 import { freeMap } from '../../lib/freeMap';
 import { PromoCodeSpec, promoCodeSpecs, specApplies } from '../../promoCodes';
 import { CourseResult, MapFunction, PriceQueryOptions } from '../../types';
@@ -8,7 +8,7 @@ export const getPromoCodeFreeCourseMap = (now: Date, options?: PriceQueryOptions
 
   const freeProApplies = applies(promoCodeSpecs.find(v => v.code === 'FREEPRO'));
   const expertApplies = applies(promoCodeSpecs.find(v => v.code === 'EXPERT'));
-  const bogoApplies = applies(promoCodeSpecs.find(v => v.code === 'BOGO'));
+  const bogoApplies = applies(promoCodeSpecs.find(v => v.code === 'BOGO')) || applies(promoCodeSpecs.find(v => v.code === 'BOGOCATALYST'));
   const skincareApplies = applies(promoCodeSpecs.find(v => v.code === 'SKINCARE')) || applies(promoCodeSpecs.find(v => v.code === 'SKINCARE300'));
   const eventFreeCourseApplies = applies(promoCodeSpecs.find(v => v.code === 'EVENTFREECOURSE'));
   const freeSpecialtyApplies = applies(promoCodeSpecs.find(v => v.code === 'SPECIALTY')) || applies(promoCodeSpecs.find(v => v.code === 'SPECIALTY100'));
