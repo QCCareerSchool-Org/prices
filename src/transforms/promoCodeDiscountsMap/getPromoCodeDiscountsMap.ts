@@ -78,7 +78,9 @@ export const getPromoCodeDiscountsMap = (now: Date, currencyCode: string, option
                                   ? 100
                                   : misc50Applies
                                     ? 50
-                                    : 0;
+                                    : applies(promoCodeSpecs.find(v => v.code === 'DAYCARE300'))
+                                      ? 300
+                                      : 0;
 
   let masterclassApplied = false;
   let masterclass150Applied = false;
