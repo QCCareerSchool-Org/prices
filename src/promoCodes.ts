@@ -108,6 +108,7 @@ export const promoCodeSpecs: PromoCodeSpec[] = [
   { code: 'HALLOWEENSFX', student: 'DENIED', schools: [ 'QC Makeup Academy' ] },
   { code: 'BOGOMZ', student: 'DENIED', schools: [ 'QC Makeup Academy' ] },
   { code: 'COLORWHEEL', student: 'ALLOWED', schools: [ 'QC Design School' ] },
+  { code: 'DAYCARE300', student: 'DENIED', schools: [ 'QC Pet Studies' ] },
 ];
 
 /**
