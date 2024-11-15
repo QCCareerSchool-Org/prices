@@ -304,7 +304,7 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
   }
 
   if (applies(promoCodeSpecs.find(v => v.code === 'BOGOCATALYST')) || applies(promoCodeSpecs.find(v => v.code === 'BOGOCATALYST100'))) {
-    disclaimers.push('You\'ll get the Career Catalyst Toolkit');
+    // disclaimers.push('You\'ll get the Career Catalyst Toolkit');
     notes.push('Career Catalyst Toolkit');
   }
 
