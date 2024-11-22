@@ -65,7 +65,7 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
   }
 
   // QCLASHES promo code
-  if (applies(promoCodeSpecs.find(v => v.code === 'QCLASHES'))) {
+  if (applies(promoCodeSpecs.find(v => v.code === 'QCLASHES')) || applies(promoCodeSpecs.find(v => v.code === 'QCLASHES60'))) {
     if (courses.some(c => [ 'MZ', 'SK', 'AB', 'SF', 'HS', 'GB' ].includes(c))) {
       disclaimers.push('You\'ll receive bonus lashes in your makeup kit');
       notes.push('bonus lashes');
@@ -168,7 +168,7 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
   }
 
   // PORTFOLIO50 promo code
-  if (applies(promoCodeSpecs.find(v => v.code === 'PORTFOLIO50')) || applies(promoCodeSpecs.find(v => v.code === 'PORTFOLIO'))) {
+  if (applies(promoCodeSpecs.find(v => v.code === 'PORTFOLIO')) || applies(promoCodeSpecs.find(v => v.code === 'PORTFOLIO50')) || applies(promoCodeSpecs.find(v => v.code === 'PORTFOLIO60'))) {
     if (courses.length > 0) {
       disclaimers.push('You\'ll get the free leather portfolio');
       notes.push('portfolio');
@@ -308,7 +308,7 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
     notes.push('Career Catalyst Toolkit');
   }
 
-  if (applies(promoCodeSpecs.find(v => v.code === 'COLORWHEEL'))) {
+  if (applies(promoCodeSpecs.find(v => v.code === 'COLORWHEEL')) || applies(promoCodeSpecs.find(v => v.code === 'COLORWHEEL60'))) {
     disclaimers.push('You\'ll get a free color wheel');
     notes.push('color wheel');
   }

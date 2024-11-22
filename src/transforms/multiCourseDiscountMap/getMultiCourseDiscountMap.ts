@@ -17,7 +17,7 @@ export const getMultiCourseDiscountMap = (now: Date, options?: PriceQueryOptions
   const nathansDayApplies = applies(promoCodeSpecs.find(v => v.code === 'NATHANSDAY'));
   const wedding21MakeupApplies = applies(promoCodeSpecs.find(v => v.code === 'WEDDING21' && v.schools?.includes('QC Makeup Academy')));
   const sfx50Applies = applies(promoCodeSpecs.find(v => v.code === 'SFX50'));
-  const save60Applies = applies(promoCodeSpecs.find(v => v.code === 'SAVE60'));
+  const save60Applies = [ 'SAVE60', 'PORTFOLIO60', 'QCLASHES60', 'COLORWHEEL60' ].some(promoCode => applies(promoCodeSpecs.find(v => v.code === promoCode)));
   const liveEvent60Applies = applies(promoCodeSpecs.find(v => v.code === 'LIVEEVENT60'));
 
   return (courseResult: CourseResult, index: number, array: CourseResult[]) => {
