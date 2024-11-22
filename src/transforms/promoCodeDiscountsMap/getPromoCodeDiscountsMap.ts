@@ -80,7 +80,9 @@ export const getPromoCodeDiscountsMap = (now: Date, currencyCode: string, option
                                     ? 50
                                     : applies(promoCodeSpecs.find(v => v.code === 'DAYCARE300'))
                                       ? 300
-                                      : 0;
+                                      : applies(promoCodeSpecs.find(v => v.code === 'BOGOMZ300'))
+                                        ? 300
+                                        : 0;
 
   let masterclassApplied = false;
   let masterclass150Applied = false;

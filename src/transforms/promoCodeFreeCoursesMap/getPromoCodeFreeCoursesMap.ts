@@ -24,7 +24,7 @@ export const getPromoCodeFreeCourseMap = (now: Date, options?: PriceQueryOptions
   const freeVirtualApplies = applies(promoCodeSpecs.find(v => v.code === 'FREEVIRTUAL'));
   const freeColorApplies = applies(promoCodeSpecs.find(v => v.code === 'FREECOLOR'));
   const halloweenSFXApplies = applies(promoCodeSpecs.find(v => v.code === 'HALLOWEENSFX'));
-  const bogoMZApplies = applies(promoCodeSpecs.find(v => v.code === 'BOGOMZ'));
+  const bogoMZApplies = applies(promoCodeSpecs.find(v => v.code === 'BOGOMZ')) || applies(promoCodeSpecs.find(v => v.code === 'BOGOMZ300'));
   const daycare300Applies = applies(promoCodeSpecs.find(v => v.code === 'DAYCARE300'));
 
   let expertApplied = false;
