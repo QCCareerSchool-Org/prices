@@ -85,11 +85,30 @@ export const getPromoCodeDiscountsMap = (now: Date, currencyCode: string, option
                                         ? 300
                                         : 0;
 
+  const groupDiscountApplies = applies(promoCodeSpecs.find(v => v.code === 'QCGROUP'));
+
   let masterclassApplied = false;
   let masterclass150Applied = false;
   let foundation200OApplied = false;
 
   return (courseResult: CourseResult, index: number, array: CourseResult[]): CourseResult => {
+    // take 25% off the discounted (before payment-plan discounts) price
+    if (groupDiscountApplies && courseResult.primary) {
+      const minimumPrice = parseFloat(Big(courseResult.cost).minus(courseResult.shipping).minus(courseResult.multiCourseDiscount).minus(courseResult.promoDiscount).toFixed(2));
+      let discountedCost = parseFloat(Big(courseResult.cost).minus(courseResult.shippingDiscount).minus(courseResult.multiCourseDiscount).minus(courseResult.promoDiscount).toFixed(2));
+      const extraDiscount = Math.min(Math.round(discountedCost * 0.25 * 100) / 100, minimumPrice);
+      // for all promo discounts, add to the existing promo discount value rather than overwriting it
+      const promoDiscount = parseFloat(Big(courseResult.promoDiscount).plus(extraDiscount).toFixed(2));
+      discountedCost = parseFloat(Big(courseResult.cost).minus(courseResult.shippingDiscount).minus(courseResult.multiCourseDiscount).minus(promoDiscount).toFixed(2));
+      const [ full, part ] = calculatePlans(courseResult.plans, discountedCost);
+      return {
+        ...courseResult,
+        promoDiscount,
+        discountedCost,
+        plans: { full, part },
+      };
+    }
+
     // take 10% off the discounted (before payment-plan discounts) price
     if (tenPercentApplies) {
       const minimumPrice = parseFloat(Big(courseResult.cost).minus(courseResult.shipping).minus(courseResult.multiCourseDiscount).minus(courseResult.promoDiscount).toFixed(2));
