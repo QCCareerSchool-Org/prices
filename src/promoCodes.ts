@@ -66,6 +66,7 @@ export const promoCodeSpecs: PromoCodeSpec[] = [
   { code: 'BOGOMZ', student: 'DENIED', schools: [ 'QC Makeup Academy' ] },
   { code: 'BOGOMZ300', student: 'DENIED', schools: [ 'QC Makeup Academy' ] },
   { code: 'FREESTYLE', student: 'DENIED', schools: [ 'QC Makeup Academy' ] },
+  { code: 'STYLING60', student: 'ALLOWED', schools: [ 'QC Makeup Academy' ] },
 
   { code: 'EXPERT', student: 'DENIED', schools: [ 'QC Event School' ] },
   { code: 'BOGO2ANY', student: 'DENIED', schools: [ 'QC Design School', 'QC Event School' ] },
@@ -99,6 +100,8 @@ export const promoCodeSpecs: PromoCodeSpec[] = [
   { code: 'COLORWHEEL', student: 'ALLOWED', schools: [ 'QC Design School' ] },
   { code: 'COLORWHEEL60', student: 'ALLOWED', schools: [ 'QC Design School' ] },
   { code: 'LIVEEVENT60', student: 'ALLOWED', schools: [ 'QC Event School' ], start: new Date(Date.UTC(2024, 2, 6, 22)), end: new Date(Date.UTC(2024, 2, 13, 22)) },
+  { code: 'ORGANIZING60', student: 'ALLOWED', schools: [ 'QC Design School' ] },
+  { code: 'CORPORATE60', student: 'ALLOWED', schools: [ 'QC Event School' ] },
 
   { code: 'WOOFGANG', student: 'DENIED', schools: [ 'QC Pet Studies' ] },
   { code: 'DG150', student: 'DENIED', schools: [ 'QC Pet Studies' ] },
@@ -117,6 +120,7 @@ export const promoCodeSpecs: PromoCodeSpec[] = [
   { code: 'PET400OFF', student: 'DENIED', schools: [ 'QC Pet Studies' ] },
   { code: 'PET500OFF', student: 'DENIED', schools: [ 'QC Pet Studies' ] },
   { code: 'DAYCARE300', student: 'DENIED', schools: [ 'QC Pet Studies' ] },
+  { code: 'DAYCARE60', student: 'ALLOWED', schools: [ 'QC Pet Studies' ] },
 
   { code: 'BOGO', student: 'DENIED', schools: [ 'QC Design School', 'QC Event School', 'QC Pet Studies' ] },
   { code: '100OFF', student: 'DENIED', schools: [ 'QC Design School', 'QC Wellness Studies', 'QC Pet Studies' ] },
