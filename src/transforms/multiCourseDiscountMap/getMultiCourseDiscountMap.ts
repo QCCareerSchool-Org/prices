@@ -18,6 +18,10 @@ export const getMultiCourseDiscountMap = (now: Date, options?: PriceQueryOptions
   const wedding21MakeupApplies = applies(promoCodeSpecs.find(v => v.code === 'WEDDING21' && v.schools?.includes('QC Makeup Academy')));
   const sfx50Applies = applies(promoCodeSpecs.find(v => v.code === 'SFX50'));
   const save60Applies = [ 'SAVE60', 'PORTFOLIO60', 'QCLASHES60', 'COLORWHEEL60' ].some(promoCode => applies(promoCodeSpecs.find(v => v.code === promoCode)));
+  const organizing60Applies = applies(promoCodeSpecs.find(v => v.code === 'ORGANIZING60'));
+  const styling60Applies = applies(promoCodeSpecs.find(v => v.code === 'STYLING60'));
+  const corporate60Applies = applies(promoCodeSpecs.find(v => v.code === 'CORPORATE60'));
+  const daycare60Applies = applies(promoCodeSpecs.find(v => v.code === 'DAYCARE60'));
   const liveEvent60Applies = applies(promoCodeSpecs.find(v => v.code === 'LIVEEVENT60'));
 
   return (courseResult: CourseResult, index: number, array: CourseResult[]) => {
@@ -39,7 +43,14 @@ export const getMultiCourseDiscountMap = (now: Date, options?: PriceQueryOptions
       const minimumPrice = parseFloat(Big(courseResult.cost).minus(courseResult.shipping).minus(courseResult.multiCourseDiscount).minus(courseResult.promoDiscount).toFixed(2));
 
       // the amount we'd like to give
-      const desiredMultiCourseDiscount = (skincare60Applies && courseResult.code === 'SK' && array.find(c => c.code === 'MZ')) || save60Applies || liveEvent60Applies
+      const desiredMultiCourseDiscount = (
+        skincare60Applies && courseResult.code === 'SK' && array.find(c => c.code === 'MZ')) ||
+        save60Applies ||
+        liveEvent60Applies ||
+        (organizing60Applies && courseResult.code === 'PO') ||
+        (corporate60Applies && courseResult.code === 'CP') ||
+        (styling60Applies && courseResult.code === 'PF') ||
+        (daycare60Applies && courseResult.code === 'DD')
         ? parseFloat(Big(courseResult.cost).times(0.6).toFixed(2))
         : parseFloat(Big(courseResult.cost).times(courseResult.multiCourseDiscountRate).toFixed(2));
 
