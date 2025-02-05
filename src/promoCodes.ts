@@ -65,9 +65,9 @@ export const promoCodeSpecs: PromoCodeSpec[] = [
   { code: 'HALLOWEENSFX', student: 'DENIED', schools: [ 'QC Makeup Academy' ] },
   { code: 'BOGOMZ', student: 'DENIED', schools: [ 'QC Makeup Academy' ] },
   { code: 'BOGOMZ300', student: 'DENIED', schools: [ 'QC Makeup Academy' ] },
+  { code: 'FREESTYLE', student: 'DENIED', schools: [ 'QC Makeup Academy' ] },
 
   { code: 'EXPERT', student: 'DENIED', schools: [ 'QC Event School' ] },
-  { code: 'BOGO', student: 'DENIED', schools: [ 'QC Design School', 'QC Event School' ] },
   { code: 'BOGO2ANY', student: 'DENIED', schools: [ 'QC Design School', 'QC Event School' ] },
   { code: 'BOGOCATALYST', student: 'DENIED', schools: [ 'QC Design School' ] },
   { code: 'BOGOCATALYST100', student: 'DENIED', schools: [ 'QC Design School' ] },
@@ -118,6 +118,7 @@ export const promoCodeSpecs: PromoCodeSpec[] = [
   { code: 'PET500OFF', student: 'DENIED', schools: [ 'QC Pet Studies' ] },
   { code: 'DAYCARE300', student: 'DENIED', schools: [ 'QC Pet Studies' ] },
 
+  { code: 'BOGO', student: 'DENIED', schools: [ 'QC Design School', 'QC Event School', 'QC Pet Studies' ] },
   { code: '100OFF', student: 'DENIED', schools: [ 'QC Design School', 'QC Wellness Studies', 'QC Pet Studies' ] },
   { code: '200OFF', student: 'DENIED', schools: [ 'QC Pet Studies', 'QC Wellness Studies' ] },
   { code: '150OFF', student: 'DENIED', schools: [ 'QC Wellness Studies' ] },
