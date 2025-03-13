@@ -127,6 +127,7 @@ export const promoCodeSpecs: PromoCodeSpec[] = [
   { code: '200OFF', student: 'DENIED', schools: [ 'QC Pet Studies', 'QC Wellness Studies' ] },
   { code: '150OFF', student: 'DENIED', schools: [ 'QC Wellness Studies' ] },
   { code: '300OFF', student: 'DENIED', schools: [ 'QC Wellness Studies' ] },
+  { code: '400OFF', student: 'DENIED', schools: [ 'QC Wellness Studies' ] },
   { code: '10PERCENT', student: 'ALLOWED', schools: [ 'QC Makeup Academy', 'QC Design School', 'QC Event School', 'QC Pet Studies', 'QC Wellness Studies', 'Winghill Writing School' ] },
   { code: 'FC25PERCENT', student: 'DENIED', schools: [ 'QC Wellness Studies' ] },
 

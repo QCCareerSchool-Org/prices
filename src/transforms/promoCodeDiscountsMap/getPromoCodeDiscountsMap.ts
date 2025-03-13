@@ -55,35 +55,37 @@ export const getPromoCodeDiscountsMap = (now: Date, currencyCode: string, option
           ? currencyCode === 'GBP' ? 150 : 200
           : applies(promoCodeSpecs.find(v => v.code === '300OFF'))
             ? 300
-            : applies(promoCodeSpecs.find(v => v.code === 'PET100OFF'))
-              ? currencyCode === 'GBP' ? 75 : 100
-              : applies(promoCodeSpecs.find(v => v.code === 'PET150OFF'))
-                ? currencyCode === 'GBP' ? 100 : 150
-                : applies(promoCodeSpecs.find(v => v.code === 'PET200OFF'))
-                  ? currencyCode === 'GBP' ? 150 : 200
-                  : applies(promoCodeSpecs.find(v => v.code === 'PET300OFF'))
-                    ? 300 // £300 for UK
-                    : applies(promoCodeSpecs.find(v => v.code === 'PET400OFF'))
-                      ? 400 // £400 for UK
-                      : applies(promoCodeSpecs.find(v => v.code === 'PET500OFF'))
-                        ? 500 // £400 for UK
-                        : applies(promoCodeSpecs.find(v => v.code === 'DESIGN100OFF')) || applies(promoCodeSpecs.find(v => v.code === 'EVENT100OFF'))
-                          ? currencyCode === 'GBP' ? 75 : 100
-                          : applies(promoCodeSpecs.find(v => v.code === 'DESIGN200OFF')) || applies(promoCodeSpecs.find(v => v.code === 'EVENT200OFF'))
-                            ? currencyCode === 'GBP' ? 150 : 200
-                            : applies(promoCodeSpecs.find(v => v.code === 'BOGO200'))
+            : applies(promoCodeSpecs.find(v => v.code === '400OFF'))
+              ? 400
+              : applies(promoCodeSpecs.find(v => v.code === 'PET100OFF'))
+                ? currencyCode === 'GBP' ? 75 : 100
+                : applies(promoCodeSpecs.find(v => v.code === 'PET150OFF'))
+                  ? currencyCode === 'GBP' ? 100 : 150
+                  : applies(promoCodeSpecs.find(v => v.code === 'PET200OFF'))
+                    ? currencyCode === 'GBP' ? 150 : 200
+                    : applies(promoCodeSpecs.find(v => v.code === 'PET300OFF'))
+                      ? 300 // £300 for UK
+                      : applies(promoCodeSpecs.find(v => v.code === 'PET400OFF'))
+                        ? 400 // £400 for UK
+                        : applies(promoCodeSpecs.find(v => v.code === 'PET500OFF'))
+                          ? 500 // £400 for UK
+                          : applies(promoCodeSpecs.find(v => v.code === 'DESIGN100OFF')) || applies(promoCodeSpecs.find(v => v.code === 'EVENT100OFF'))
+                            ? currencyCode === 'GBP' ? 75 : 100
+                            : applies(promoCodeSpecs.find(v => v.code === 'DESIGN200OFF')) || applies(promoCodeSpecs.find(v => v.code === 'EVENT200OFF'))
                               ? currencyCode === 'GBP' ? 150 : 200
-                              : applies(promoCodeSpecs.find(v => v.code === 'BOGO100')) || applies(promoCodeSpecs.find(v => v.code === 'BOGOCATALYST100'))
-                                ? 100
-                                : applies(promoCodeSpecs.find(v => v.code === '2SPECIALTY100')) || applies(promoCodeSpecs.find(v => v.code === 'SPECIALTY100'))
+                              : applies(promoCodeSpecs.find(v => v.code === 'BOGO200'))
+                                ? currencyCode === 'GBP' ? 150 : 200
+                                : applies(promoCodeSpecs.find(v => v.code === 'BOGO100')) || applies(promoCodeSpecs.find(v => v.code === 'BOGOCATALYST100'))
                                   ? 100
-                                  : misc50Applies
-                                    ? 50
-                                    : applies(promoCodeSpecs.find(v => v.code === 'DAYCARE300'))
-                                      ? 300
-                                      : applies(promoCodeSpecs.find(v => v.code === 'BOGOMZ300'))
+                                  : applies(promoCodeSpecs.find(v => v.code === '2SPECIALTY100')) || applies(promoCodeSpecs.find(v => v.code === 'SPECIALTY100'))
+                                    ? 100
+                                    : misc50Applies
+                                      ? 50
+                                      : applies(promoCodeSpecs.find(v => v.code === 'DAYCARE300'))
                                         ? 300
-                                        : 0;
+                                        : applies(promoCodeSpecs.find(v => v.code === 'BOGOMZ300'))
+                                          ? 300
+                                          : 0;
 
   const groupDiscountApplies = applies(promoCodeSpecs.find(v => v.code === 'QCGROUP'));
 
