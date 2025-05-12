@@ -86,7 +86,9 @@ export const getPromoCodeDiscountsMap = (now: Date, currencyCode: string, option
                                         ? 300
                                         : applies(promoCodeSpecs.find(v => v.code === 'BOGOMZ300'))
                                           ? 300
-                                          : 0;
+                                          : applies(promoCodeSpecs.find(v => v.code === 'MAKEUP100'))
+                                            ? 100
+                                            : 0;
 
   const groupDiscountApplies = applies(promoCodeSpecs.find(v => v.code === 'QCGROUP'));
 
