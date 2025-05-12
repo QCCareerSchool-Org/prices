@@ -69,6 +69,7 @@ export const promoCodeSpecs: PromoCodeSpec[] = [
   { code: 'FREESTYLE', student: 'DENIED', schools: [ 'QC Makeup Academy' ] },
   { code: 'STYLING60', student: 'ALLOWED', schools: [ 'QC Makeup Academy' ] },
   { code: 'FREEPW', student: 'ALLOWED', schools: [ 'QC Makeup Academy' ] },
+  { code: 'MAKEUP100', student: 'ALLOWED', schools: [ 'QC Makeup Academy' ] },
 
   { code: 'EXPERT', student: 'DENIED', schools: [ 'QC Event School' ] },
   { code: 'BOGO2ANY', student: 'DENIED', schools: [ 'QC Design School', 'QC Event School' ] },
@@ -125,7 +126,7 @@ export const promoCodeSpecs: PromoCodeSpec[] = [
   { code: 'DAYCARE60', student: 'ALLOWED', schools: [ 'QC Pet Studies' ] },
 
   { code: 'BOGO', student: 'DENIED', schools: [ 'QC Design School', 'QC Event School', 'QC Pet Studies' ] },
-  { code: '100OFF', student: 'DENIED', schools: [ 'QC Design School', 'QC Wellness Studies', 'QC Pet Studies', 'QC Makeup Academy' ] },
+  { code: '100OFF', student: 'DENIED', schools: [ 'QC Design School', 'QC Wellness Studies', 'QC Pet Studies' ] },
   { code: '200OFF', student: 'DENIED', schools: [ 'QC Pet Studies', 'QC Wellness Studies' ] },
   { code: '150OFF', student: 'DENIED', schools: [ 'QC Wellness Studies' ] },
   { code: '300OFF', student: 'DENIED', schools: [ 'QC Wellness Studies' ] },
