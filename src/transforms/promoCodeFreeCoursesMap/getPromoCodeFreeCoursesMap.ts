@@ -160,9 +160,16 @@ export const getPromoCodeFreeCourseMap = (now: Date, options?: PriceQueryOptions
     }
 
     if (bogo100Applies && !bogo100Applied) {
-      if (array.length >= 2) {
-        bogo100Applied = true;
-        return freeMap(courseResult);
+      if (options?.school === 'QC Event School') {
+        if (array.length >= 2 && array.some(c => isEventFoundationCourse(c.code))) {
+          bogo100Applied = true;
+          return freeMap(courseResult);
+        }
+      } else {
+        if (array.length >= 2) {
+          bogo100Applied = true;
+          return freeMap(courseResult);
+        }
       }
     }
 
