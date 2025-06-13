@@ -20,6 +20,7 @@ export const getMultiCourseDiscountMap = (now: Date, options?: PriceQueryOptions
   const save60Applies = [ 'SAVE60', 'PORTFOLIO60', 'QCLASHES60', 'COLORWHEEL60' ].some(promoCode => applies(promoCodeSpecs.find(v => v.code === promoCode)));
   const organizing60Applies = applies(promoCodeSpecs.find(v => v.code === 'ORGANIZING60'));
   const styling60Applies = applies(promoCodeSpecs.find(v => v.code === 'STYLING60'));
+  const portdev60Applies = applies(promoCodeSpecs.find(v => v.code === 'PORTDEV60'));
   const corporate60Applies = applies(promoCodeSpecs.find(v => v.code === 'CORPORATE60'));
   const daycare60Applies = applies(promoCodeSpecs.find(v => v.code === 'DAYCARE60'));
   const liveEvent60Applies = applies(promoCodeSpecs.find(v => v.code === 'LIVEEVENT60'));
@@ -50,6 +51,7 @@ export const getMultiCourseDiscountMap = (now: Date, options?: PriceQueryOptions
         (organizing60Applies && courseResult.code === 'PO') ||
         (corporate60Applies && courseResult.code === 'CP') ||
         (styling60Applies && courseResult.code === 'PF') ||
+        (portdev60Applies && courseResult.code === 'PW') ||
         (daycare60Applies && courseResult.code === 'DD')
         ? parseFloat(Big(courseResult.cost).times(0.6).toFixed(2))
         : parseFloat(Big(courseResult.cost).times(courseResult.multiCourseDiscountRate).toFixed(2));
