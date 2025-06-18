@@ -14,6 +14,7 @@ describe('primaryMap', () => {
       promoDiscount: 25,
       shippingDiscount: 0,
       discountedCost: 3207.44,
+      order: 0,
       plans: {
         full: {
           discount: 22.11,
@@ -91,6 +92,7 @@ describe('primaryMap', () => {
           promoDiscount: 25,
           shippingDiscount: 0,
           discountedCost: 3207.44,
+          order: 0,
           plans: {
             full: {
               discount: 22.11,
@@ -127,6 +129,7 @@ describe('primaryMap', () => {
           promoDiscount: 25,
           shippingDiscount: 0,
           discountedCost: 4469.34,
+          order: 0,
           plans: {
             full: {
               discount: 100,
@@ -163,6 +166,7 @@ describe('primaryMap', () => {
           promoDiscount: 25,
           shippingDiscount: 0,
           discountedCost: 4469.34,
+          order: 0,
           plans: {
             full: {
               discount: 100,
@@ -201,6 +205,7 @@ describe('primaryMap', () => {
         promoDiscount: 25,
         shippingDiscount: 0,
         discountedCost: 4469.34,
+        order: 0,
         plans: {
           full: {
             discount: 100,
@@ -238,6 +243,7 @@ describe('primaryMap', () => {
         promoDiscount: 25,
         shippingDiscount: 0,
         discountedCost: 4469.34,
+        order: 0,
         plans: {
           full: {
             discount: 100,

@@ -13,6 +13,7 @@ const fakeCourseResult: CourseResult = {
   promoDiscount: 0,
   shippingDiscount: 0,
   discountedCost: 3232.44,
+  order: 0,
   plans: {
     full: {
       discount: 22.11,
