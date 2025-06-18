@@ -38,6 +38,7 @@ describe('getStudentDiscountMap', () => {
         promoDiscount: 0,
         shippingDiscount: 0,
         discountedCost: 0,
+        order: 0,
         plans: {
           full: {
             discount: 0,
@@ -74,6 +75,7 @@ describe('getStudentDiscountMap', () => {
         promoDiscount: 0,
         shippingDiscount: 0,
         discountedCost: 43982.43,
+        order: 0,
         plans: {
           full: {
             discount: 3490.21,
@@ -110,6 +112,7 @@ describe('getStudentDiscountMap', () => {
         promoDiscount: 0,
         shippingDiscount: 0,
         discountedCost: 78340.43,
+        order: 0,
         plans: {
           full: {
             discount: 9302.34,
@@ -146,6 +149,7 @@ describe('getStudentDiscountMap', () => {
         promoDiscount: 0,
         shippingDiscount: 100.00,
         discountedCost: 4323.23,
+        order: 0,
         plans: {
           full: {
             discount: 200.00,
@@ -184,6 +188,7 @@ describe('getStudentDiscountMap', () => {
         promoDiscount: 0, // no promo discount added because the course is free
         shippingDiscount: 0,
         discountedCost: 0,
+        order: 0,
         plans: {
           full: {
             discount: 0,
@@ -220,6 +225,7 @@ describe('getStudentDiscountMap', () => {
         promoDiscount: 5038.32, // promo discount added
         shippingDiscount: 0,
         discountedCost: 38944.11,
+        order: 0,
         plans: {
           full: {
             discount: 3490.21,
@@ -256,6 +262,7 @@ describe('getStudentDiscountMap', () => {
         promoDiscount: 5038.32, // promo discount added
         shippingDiscount: 0,
         discountedCost: 73302.11,
+        order: 0,
         plans: {
           full: {
             discount: 9302.34,
@@ -292,6 +299,7 @@ describe('getStudentDiscountMap', () => {
         promoDiscount: 4323.23, // smaller promo discount added because the price can't go negative
         shippingDiscount: 100,
         discountedCost: 0,
+        order: 0,
         plans: {
           full: {
             discount: 0,

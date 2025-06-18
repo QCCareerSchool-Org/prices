@@ -12,7 +12,8 @@ SELECT
   p.installments,
   p.course_code courseCode,
   c.name courseName,
-  p.shipping
+  p.shipping,
+  c.order
 FROM
   prices p
 LEFT JOIN

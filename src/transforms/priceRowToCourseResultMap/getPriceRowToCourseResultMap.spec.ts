@@ -35,6 +35,7 @@ describe('priceRowToCourseResultMap', () => {
         courseCode: 'ZU',
         courseName: 'Zergling Herding',
         shipping: 83.113,
+        order: 0,
       };
       const courseResult: CourseResult = {
         code: 'ZU',
@@ -46,6 +47,7 @@ describe('priceRowToCourseResultMap', () => {
         promoDiscount: 0,
         shippingDiscount: 0,
         discountedCost: 3232.44,
+        order: 0,
         plans: {
           full: {
             discount: 22.11,
@@ -87,6 +89,7 @@ describe('priceRowToCourseResultMap', () => {
         courseCode: 'ZU',
         courseName: 'Zergling Herding',
         shipping: 83.113,
+        order: 0,
       };
 
       const result = priceRowToCourseResultMap(priceRow);
@@ -109,6 +112,7 @@ describe('priceRowToCourseResultMap', () => {
         courseCode: 'ZU',
         courseName: 'Zergling Herding',
         shipping: 20,
+        order: 0,
       };
       const result = priceRowToCourseResultMap(priceRow);
       expect(result.cost).toBe(0);
@@ -126,6 +130,7 @@ describe('priceRowToCourseResultMap', () => {
         courseCode: 'ZU',
         courseName: 'Zergling Herding',
         shipping: -20,
+        order: 0,
       };
       const result = priceRowToCourseResultMap(priceRow);
       expect(result.shipping).toBe(0);
@@ -143,6 +148,7 @@ describe('priceRowToCourseResultMap', () => {
         courseCode: 'ZU',
         courseName: 'Zergling Herding',
         shipping: 4800,
+        order: 0,
       };
       const result = priceRowToCourseResultMap(priceRow);
       expect(result.shipping).toBe(900);
@@ -160,6 +166,7 @@ describe('priceRowToCourseResultMap', () => {
         courseCode: 'ZU',
         courseName: 'Zergling Herding',
         shipping: 20,
+        order: 0,
       };
       const result = priceRowToCourseResultMap(priceRow);
       expect(result.multiCourseDiscountRate).toBe(0);
@@ -177,6 +184,7 @@ describe('priceRowToCourseResultMap', () => {
         courseCode: 'ZU',
         courseName: 'Zergling Herding',
         shipping: 20,
+        order: 0,
       };
       const result = priceRowToCourseResultMap(priceRow);
       expect(result.multiCourseDiscountRate).toBe(1);
@@ -194,6 +202,7 @@ describe('priceRowToCourseResultMap', () => {
         courseCode: 'ZU',
         courseName: 'Zergling Herding',
         shipping: 20,
+        order: 0,
       };
       const result = priceRowToCourseResultMap(priceRow);
       expect(result.plans.full.discount).toBe(0);
@@ -211,6 +220,7 @@ describe('priceRowToCourseResultMap', () => {
         courseCode: 'ZU',
         courseName: 'Zergling Herding',
         shipping: 20,
+        order: 0,
       };
       const result = priceRowToCourseResultMap(priceRow);
       expect(result.plans.full.discount).toBe(880);
@@ -228,6 +238,7 @@ describe('priceRowToCourseResultMap', () => {
         courseCode: 'ZU',
         courseName: 'Zergling Herding',
         shipping: 20,
+        order: 0,
       };
       const result = priceRowToCourseResultMap(priceRow);
       expect(result.plans.part.deposit).toBe(900);
@@ -245,6 +256,7 @@ describe('priceRowToCourseResultMap', () => {
         courseCode: 'ZU',
         courseName: 'Zergling Herding',
         shipping: 20,
+        order: 0,
       };
       const result = priceRowToCourseResultMap(priceRow);
       expect(result.plans.part.deposit).toBe(0);
@@ -262,6 +274,7 @@ describe('priceRowToCourseResultMap', () => {
         courseCode: 'ZU',
         courseName: 'Zergling Herding',
         shipping: 20,
+        order: 0,
       };
       const result = priceRowToCourseResultMap(priceRow);
       expect(result.plans.part.installments).toBe(1);
@@ -286,6 +299,7 @@ describe('priceRowToCourseResultMap', () => {
         courseCode: 'ZU',
         courseName: 'Zergling Herding',
         shipping: 83.113,
+        order: 0,
       };
       const courseResult: CourseResult = {
         code: 'ZU',
@@ -297,6 +311,7 @@ describe('priceRowToCourseResultMap', () => {
         promoDiscount: 0,
         shippingDiscount: 0,
         discountedCost: 3232.44,
+        order: 0,
         plans: {
           full: {
             discount: 22.11,

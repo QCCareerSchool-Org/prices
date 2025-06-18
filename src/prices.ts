@@ -79,7 +79,7 @@ export async function prices(
 
   const courseResults = priceRows
     .map(getPriceRowToCourseResultMap(options?.discountAll)) // convert to a course result
-    .sort((a, b) => a.cost - b.cost) // sort by cost in ascending order (cheapest first)
+    .sort((a, b) => (a.cost === b.cost ? a.order - b.order : a.cost - b.cost)) // sort by cost in ascending order (cheapest first)
     .map(freeCourseMap) // determine which courses shoul be free by default
     .sort(getSort(now, options)) // GENERALLY, sort by free in ascending order (free last), then cost in ascending order (cheapest first)
     .map(getPromoCodeFreeCourseMap(now, options)) // determine which courses should be free based on promo codes

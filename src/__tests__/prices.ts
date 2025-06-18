@@ -26,6 +26,7 @@ describe('INTEGRATION prices', () => {
       courseCode: 'ZU',
       courseName: 'Zergling Herding',
       shipping: 83,
+      order: 0,
     };
 
     priceRow2 = {
@@ -39,6 +40,7 @@ describe('INTEGRATION prices', () => {
       courseCode: 'HQ',
       courseName: 'Hydralisk Queueing',
       shipping: 12.132,
+      order: 0,
     };
 
     priceRow3 = {
@@ -52,6 +54,7 @@ describe('INTEGRATION prices', () => {
       courseCode: 'UZ',
       courseName: 'Ultralisk Riding',
       shipping: 402.32,
+      order: 0,
     };
 
     currency = {
@@ -121,6 +124,7 @@ describe('INTEGRATION prices', () => {
           promoDiscount: 0,
           shippingDiscount: 0,
           discountedCost: 4983.44,
+          order: 0,
           plans: {
             full: {
               discount: 100,
@@ -214,6 +218,7 @@ describe('INTEGRATION prices', () => {
           promoDiscount: 0,
           shippingDiscount: 0,
           discountedCost: 4983.44,
+          order: 0,
           plans: {
             full: {
               discount: 100,
@@ -250,6 +255,7 @@ describe('INTEGRATION prices', () => {
           promoDiscount: 0,
           shippingDiscount: 0,
           discountedCost: 1712.88,
+          order: 0,
           plans: {
             full: {
               discount: 0,
@@ -286,6 +292,7 @@ describe('INTEGRATION prices', () => {
           promoDiscount: 0,
           shippingDiscount: 0,
           discountedCost: 1939.46,
+          order: 0,
           plans: {
             full: {
               discount: 0,
@@ -379,6 +386,7 @@ describe('INTEGRATION prices', () => {
           promoDiscount: 0,
           shippingDiscount: 0,
           discountedCost: 1993.38,
+          order: 0,
           plans: {
             full: {
               discount: 0,
@@ -415,6 +423,7 @@ describe('INTEGRATION prices', () => {
           promoDiscount: 0,
           shippingDiscount: 0,
           discountedCost: 1712.88,
+          order: 0,
           plans: {
             full: {
               discount: 0,
@@ -451,6 +460,7 @@ describe('INTEGRATION prices', () => {
           promoDiscount: 0,
           shippingDiscount: 0,
           discountedCost: 1939.46,
+          order: 0,
           plans: {
             full: {
               discount: 0,
@@ -544,6 +554,7 @@ describe('INTEGRATION prices', () => {
           promoDiscount: 50,
           shippingDiscount: 0,
           discountedCost: 1943.38,
+          order: 0,
           plans: {
             full: {
               discount: 0,
@@ -580,6 +591,7 @@ describe('INTEGRATION prices', () => {
           promoDiscount: 50,
           shippingDiscount: 0,
           discountedCost: 1662.88,
+          order: 0,
           plans: {
             full: {
               discount: 0,
@@ -616,6 +628,7 @@ describe('INTEGRATION prices', () => {
           promoDiscount: 50,
           shippingDiscount: 0,
           discountedCost: 1889.46,
+          order: 0,
           plans: {
             full: {
               discount: 0,
@@ -709,6 +722,7 @@ describe('INTEGRATION prices', () => {
           promoDiscount: 1981.25, // not all the custom deposit gets added here because it would make the cost negative (50 + 1931.25 = 1981.25, leaving 68.75 to be added to the next course)
           shippingDiscount: 0,
           discountedCost: 12.13, // the shipping cost remains
+          order: 0,
           plans: {
             full: {
               discount: 0,
@@ -745,6 +759,7 @@ describe('INTEGRATION prices', () => {
           promoDiscount: 118.75, // 50 + 68.75 left over from previous course
           shippingDiscount: 0,
           discountedCost: 1594.13,
+          order: 0,
           plans: {
             full: {
               discount: 0,
@@ -781,6 +796,7 @@ describe('INTEGRATION prices', () => {
           promoDiscount: 50,
           shippingDiscount: 0,
           discountedCost: 1889.46,
+          order: 0,
           plans: {
             full: {
               discount: 0,
@@ -882,6 +898,7 @@ describe('INTEGRATION prices', () => {
           promoDiscount: 1981.25,
           shippingDiscount: 12.13,
           discountedCost: 0, // we have to leave 100 here because the full payment plan has a 100 discount
+          order: 0,
           plans: {
             full: {
               discount: 0,
@@ -918,6 +935,7 @@ describe('INTEGRATION prices', () => {
           promoDiscount: 118.75,
           shippingDiscount: 402.32,
           discountedCost: 1191.81,
+          order: 0,
           plans: {
             full: {
               discount: 0,
@@ -954,6 +972,7 @@ describe('INTEGRATION prices', () => {
           promoDiscount: 50,
           shippingDiscount: 83,
           discountedCost: 1806.46,
+          order: 0,
           plans: {
             full: {
               discount: 0,

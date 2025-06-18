@@ -46,6 +46,7 @@ export const getPriceRowToCourseResultMap = (student?: boolean) => (p: PriceRow)
     promoDiscount: 0,
     shippingDiscount: 0,
     discountedCost: cost,
+    order: p.order,
     plans: {
       full: {
         discount: fullDiscount,

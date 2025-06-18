@@ -86,6 +86,7 @@ export type CourseResult = {
   discountMessage: string | null;
   /** the discount on courses after the first course */
   multiCourseDiscountRate: number;
+  order: number;
 } & Price;
 
 export interface Currency {
@@ -107,4 +108,5 @@ export interface PriceRow {
   courseCode: string;
   courseName: string;
   shipping: number;
+  order: number;
 }

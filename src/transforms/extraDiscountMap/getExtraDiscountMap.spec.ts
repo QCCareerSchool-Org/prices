@@ -59,6 +59,7 @@ describe('getExtraDiscountMap', () => {
           promoDiscount: 0,
           shippingDiscount: 0,
           discountedCost: 0,
+          order: 0,
           plans: {
             full: {
               discount: 0,
@@ -95,6 +96,7 @@ describe('getExtraDiscountMap', () => {
           promoDiscount: 0,
           shippingDiscount: 0,
           discountedCost: 43982.43,
+          order: 0,
           plans: {
             full: {
               discount: 3490.21,
@@ -131,6 +133,7 @@ describe('getExtraDiscountMap', () => {
           promoDiscount: 5000, // note: some promo discount already applied
           shippingDiscount: 0,
           discountedCost: 78340.43,
+          order: 0,
           plans: {
             full: {
               discount: 9302.34,
@@ -167,6 +170,7 @@ describe('getExtraDiscountMap', () => {
           promoDiscount: 0,
           shippingDiscount: 100.00,
           discountedCost: 4323.23,
+          order: 0,
           plans: {
             full: {
               discount: 200.00,
@@ -203,6 +207,7 @@ describe('getExtraDiscountMap', () => {
           promoDiscount: 65000,
           shippingDiscount: 0,
           discountedCost: 10963.54,
+          order: 0,
           plans: {
             full: {
               discount: 10000,
@@ -255,6 +260,7 @@ describe('getExtraDiscountMap', () => {
           promoDiscount: 0, // no promo discount added because the course is free
           shippingDiscount: 0,
           discountedCost: 0,
+          order: 0,
           plans: {
             full: {
               discount: 0,
@@ -291,6 +297,7 @@ describe('getExtraDiscountMap', () => {
           promoDiscount: 43654, // 43654 promo discount added (126046.09 - 43654 = 82392.09 remaining for other courses )
           shippingDiscount: 0,
           discountedCost: 328.43,
+          order: 0,
           plans: {
             full: {
               discount: 328.43,
@@ -327,6 +334,7 @@ describe('getExtraDiscountMap', () => {
           promoDiscount: 74106, // 69106 promo discount added to existing 5000 (82392.09 - 69106 = 13286.09 remaining to add to other courses)
           shippingDiscount: 0,
           discountedCost: 4234.43,
+          order: 0,
           plans: {
             full: {
               discount: 4234.43,
@@ -363,6 +371,7 @@ describe('getExtraDiscountMap', () => {
           promoDiscount: 4323.23, // 4323.23 promo discount added (13286.09 - 4323.23 = 8962.86 remaining to be added to other courses)
           shippingDiscount: 100,
           discountedCost: 0,
+          order: 0,
           plans: {
             full: {
               discount: 0,
@@ -399,6 +408,7 @@ describe('getExtraDiscountMap', () => {
           promoDiscount: 73962.86, // 8962.68 promo discount added to existing 65000 (none remaining to be added to other courses)
           shippingDiscount: 0,
           discountedCost: 2000.68,
+          order: 0,
           plans: {
             full: {
               discount: 2000.68,
