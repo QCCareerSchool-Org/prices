@@ -11,6 +11,9 @@ export const courseSort = (a: CourseResult, b: CourseResult): number => {
   if (a.primary === b.primary) {
     if (a.free === b.free) {
       if (a.cost === b.cost) {
+        if (a.discountedCost === b.discountedCost) {
+          return b.order - a.order;
+        }
         return b.discountedCost - a.discountedCost;
       }
       return b.cost - a.cost;
