@@ -83,7 +83,7 @@ export async function prices(
     .map(freeCourseMap) // determine which courses shoul be free by default
     .sort(getSort(now, options)) // GENERALLY, sort by free in ascending order (free last), then cost in ascending order (cheapest first)
     .map(getPromoCodeFreeCourseMap(now, options)) // determine which courses should be free based on promo codes
-    .sort((a, b) => (a.free === b.free ? b.cost - a.cost : a.free ? 1 : -1)) // sort by free in ascending order (free last), then cost in descending order (cheapest last)
+    .sort((a, b) => (a.free === b.free ? (a.cost === b.cost ? a.order - b.order : b.cost - a.cost) : a.free ? 1 : -1)) // sort by free in ascending order (free last), then cost in descending order (cheapest last)
     .map(primaryMap) // mark first course primary and adjust other courses' installments to match the primary course
     .map(getShippingMap(noShipping)) // apply shipping discounts
     .map(getMultiCourseDiscountMap(now, options)) // apply multi-course discounts
