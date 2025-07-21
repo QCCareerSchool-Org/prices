@@ -21,6 +21,7 @@ export const getPromoCodeDiscountsMap = (now: Date, currencyCode: string, option
   const master300Applies = applies(promoCodeSpecs.find(v => v.code === 'MASTER300'));
   const skincare100Applies = applies(promoCodeSpecs.find(v => v.code === 'SKINCARE100'));
   const skincare300Applies = applies(promoCodeSpecs.find(v => v.code === 'SKINCARE300'));
+  const mz100Applies = applies(promoCodeSpecs.find(v => v.code === 'MZ100'));
 
   const dgDiscount = applies(promoCodeSpecs.find(v => v.code === 'DG150'))
     ? 150
@@ -95,6 +96,7 @@ export const getPromoCodeDiscountsMap = (now: Date, currencyCode: string, option
   let masterclassApplied = false;
   let masterclass150Applied = false;
   let foundation200OApplied = false;
+  let mz100Applied = false;
 
   return (courseResult: CourseResult, index: number, array: CourseResult[]): CourseResult => {
     // take 25% off the discounted (before payment-plan discounts) price
@@ -218,6 +220,23 @@ export const getPromoCodeDiscountsMap = (now: Date, currencyCode: string, option
       // subtract all the discounts we have so far (use `shipping` instead of `shippingDiscount`) from the cost to determine the lowest possible price we might display (before payment-plan discounts)
       const minimumPrice = parseFloat(Big(courseResult.cost).minus(courseResult.shipping).minus(courseResult.multiCourseDiscount).minus(courseResult.promoDiscount).toFixed(2));
       const extraDiscount = Math.min(minimumPrice, dtDiscount);
+      // for all promo discounts, add to the existing promo discount value rather than overwriting it
+      const promoDiscount = parseFloat(Big(courseResult.promoDiscount).plus(extraDiscount).toFixed(2));
+      const discountedCost = parseFloat(Big(courseResult.cost).minus(courseResult.shippingDiscount).minus(courseResult.multiCourseDiscount).minus(promoDiscount).toFixed(2));
+      const [ full, part ] = calculatePlans(courseResult.plans, discountedCost);
+      return {
+        ...courseResult,
+        promoDiscount,
+        discountedCost,
+        plans: { full, part },
+      };
+    }
+
+    if (mz100Applies && array.some(c => c.code === 'MZ') && !mz100Applied) {
+      mz100Applied = true;
+      // subtract all the discounts we have so far (use `shipping` instead of `shippingDiscount`) from the cost to determine the lowest possible price we might display (before payment-plan discounts)
+      const minimumPrice = parseFloat(Big(courseResult.cost).minus(courseResult.shipping).minus(courseResult.multiCourseDiscount).minus(courseResult.promoDiscount).toFixed(2));
+      const extraDiscount = Math.min(minimumPrice, 100);
       // for all promo discounts, add to the existing promo discount value rather than overwriting it
       const promoDiscount = parseFloat(Big(courseResult.promoDiscount).plus(extraDiscount).toFixed(2));
       const discountedCost = parseFloat(Big(courseResult.cost).minus(courseResult.shippingDiscount).minus(courseResult.multiCourseDiscount).minus(promoDiscount).toFixed(2));
