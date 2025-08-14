@@ -46,6 +46,7 @@ export const getPromoCodeFreeCourseMap = (now: Date, options?: PriceQueryOptions
   let daycare300Applied = false;
   let bogo2anyCount = 0;
   let bogoVirtualCount = 0;
+  let bogoVirtualOther = false;
 
   return (courseResult: CourseResult, index: number, array: CourseResult[]): CourseResult => {
 
@@ -216,15 +217,26 @@ export const getPromoCodeFreeCourseMap = (now: Date, options?: PriceQueryOptions
       }
     }
 
+    // I'm sure this could be better
     if (bogoVirtualApplies) {
+      const virtualSelected = array.some(c => (options?.school === 'QC Design School' && c.code === 'VD') || (options?.school === 'QC Event School' && c.code === 'VE'));
+
       if (array.length >= 2) {
-        if (bogoVirtualCount < 2 && bogoVirtualCount < array.length - 1 && ((options?.school === 'QC Design School' && courseResult.code === 'VD') || (options?.school === 'QC Event School' && courseResult.code === 'VE'))) {
-          bogoVirtualCount++;
-          return freeMap(courseResult);
-        }
-        if (bogoVirtualCount < 2 && bogoVirtualCount < array.length - 1) {
-          bogoVirtualCount++;
-          return freeMap(courseResult);
+        if (virtualSelected) {
+          if ((options?.school === 'QC Design School' && courseResult.code === 'VD') || (options?.school === 'QC Event School' && courseResult.code === 'VE')) {
+            return freeMap(courseResult);
+          }
+          if (!bogoVirtualOther && bogoVirtualCount < 2 && bogoVirtualCount < array.length) {
+            bogoVirtualOther = true;
+            bogoVirtualCount++;
+            return freeMap(courseResult);
+          }
+        } else {
+          if (!bogoVirtualOther && bogoVirtualCount < 1 && bogoVirtualCount < array.length) {
+            bogoVirtualOther = true;
+            bogoVirtualCount++;
+            return freeMap(courseResult);
+          }
         }
       }
     }
