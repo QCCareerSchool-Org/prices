@@ -30,6 +30,7 @@ export const getPromoCodeFreeCourseMap = (now: Date, options?: PriceQueryOptions
   const bogo2anyApplies = applies(promoCodeSpecs.find(v => v.code === 'BOGO2ANY'));
   const freeStyleApplies = applies(promoCodeSpecs.find(v => v.code === 'FREESTYLE'));
   const freePWApplies = applies(promoCodeSpecs.find(v => v.code === 'FREEPW'));
+  const bogoVirtualApplies = applies(promoCodeSpecs.find(v => v.code === 'BOGOVIRTUAL'));
 
   let expertApplied = false;
   let bogoApplied = false;
@@ -44,6 +45,7 @@ export const getPromoCodeFreeCourseMap = (now: Date, options?: PriceQueryOptions
   let bogoMZApplied = false;
   let daycare300Applied = false;
   let bogo2anyCount = 0;
+  let bogoVirtualCount = 0;
 
   return (courseResult: CourseResult, index: number, array: CourseResult[]): CourseResult => {
 
@@ -211,6 +213,19 @@ export const getPromoCodeFreeCourseMap = (now: Date, options?: PriceQueryOptions
     if (freePWApplies) {
       if (courseResult.code === 'PW' && array.some(c => c.code === 'MZ')) {
         return freeMap(courseResult);
+      }
+    }
+
+    if (bogoVirtualApplies) {
+      if (array.length >= 2) {
+        if (bogoVirtualCount < 2 && bogoVirtualCount < array.length - 1 && ((options?.school === 'QC Design School' && courseResult.code === 'VD') || (options?.school === 'QC Event School' && courseResult.code === 'VE'))) {
+          bogoVirtualCount++;
+          return freeMap(courseResult);
+        }
+        if (bogoVirtualCount < 2 && bogoVirtualCount < array.length - 1) {
+          bogoVirtualCount++;
+          return freeMap(courseResult);
+        }
       }
     }
 
