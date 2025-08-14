@@ -107,6 +107,7 @@ export const promoCodeSpecs: PromoCodeSpec[] = [
   { code: 'LIVEEVENT60', student: 'ALLOWED', schools: [ 'QC Event School' ], start: new Date(Date.UTC(2024, 2, 6, 22)), end: new Date(Date.UTC(2024, 2, 13, 22)) },
   { code: 'ORGANIZING60', student: 'ALLOWED', schools: [ 'QC Design School' ] },
   { code: 'CORPORATE60', student: 'ALLOWED', schools: [ 'QC Event School' ] },
+  { code: 'BOGOVIRTUAL', student: 'ALLOWED', schools: [ 'QC Design School', 'QC Event School' ] },
 
   { code: 'WOOFGANG', student: 'DENIED', schools: [ 'QC Pet Studies' ] },
   { code: 'DG150', student: 'DENIED', schools: [ 'QC Pet Studies' ] },
