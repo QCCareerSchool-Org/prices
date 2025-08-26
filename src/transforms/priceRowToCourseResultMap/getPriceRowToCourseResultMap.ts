@@ -24,7 +24,7 @@ export const getPriceRowToCourseResultMap = (student?: boolean) => (p: PriceRow)
 
   const fullTotal = parseFloat(Big(cost).minus(fullDiscount).toFixed(2));
 
-  const partDiscount = 0; // always zero
+  const partDiscount = clamp(parseFloat(p.partDiscount.toFixed(2)), 0, minimumPrice);
 
   const partTotal = parseFloat(Big(cost).minus(partDiscount).toFixed(2));
 
@@ -32,9 +32,9 @@ export const getPriceRowToCourseResultMap = (student?: boolean) => (p: PriceRow)
 
   const partInstallments = Math.round(Math.max(1, student ? p.installments / 2 : p.installments)); // the number of installments must be at least 1 and must be a whole number
 
-  const partInstallmentSize = parseFloat(Big(cost).minus(partDeposit).div(partInstallments).round(2, 0).toFixed(2)); // always round down so that the actual price will never be more than the quoted price
+  const partInstallmentSize = parseFloat(Big(partTotal).minus(partDeposit).div(partInstallments).round(2, 0).toFixed(2)); // always round down so that the actual price will never be more than the quoted price
 
-  const partRemainder = parseFloat(Big(cost).minus(partDeposit).minus(Big(partInstallmentSize).times(partInstallments)).toFixed(2));
+  const partRemainder = parseFloat(Big(partTotal).minus(partDeposit).minus(Big(partInstallmentSize).times(partInstallments)).toFixed(2));
 
   return {
     code: p.courseCode,

@@ -8,6 +8,7 @@ SELECT
   p.cost,
   p.secondary_discount multiCourseDiscountRate,
   p.discount,
+  p.part_discount partDiscount,
   p.deposit,
   p.installments,
   p.course_code courseCode,

@@ -104,6 +104,7 @@ export interface PriceRow {
   multiCourseDiscountRate: number;
   deposit: number;
   discount: number;
+  partDiscount: number;
   installments: number;
   courseCode: string;
   courseName: string;
