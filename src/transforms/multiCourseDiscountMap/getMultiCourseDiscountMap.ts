@@ -25,6 +25,10 @@ export const getMultiCourseDiscountMap = (now: Date, options?: PriceQueryOptions
   const daycare60Applies = applies(promoCodeSpecs.find(v => v.code === 'DAYCARE60'));
   const liveEvent60Applies = applies(promoCodeSpecs.find(v => v.code === 'LIVEEVENT60'));
 
+  const sfx60Applies = applies(promoCodeSpecs.find(v => v.code === 'SFX60'));
+  const business60Applies = applies(promoCodeSpecs.find(v => v.code === 'BUSINESS60'));
+  const training60Applies = applies(promoCodeSpecs.find(v => v.code === 'TRAINING60'));
+
   return (courseResult: CourseResult, index: number, array: CourseResult[]) => {
     // skip free courses
     if (courseResult.free) {
@@ -52,7 +56,10 @@ export const getMultiCourseDiscountMap = (now: Date, options?: PriceQueryOptions
         (corporate60Applies && courseResult.code === 'CP') ||
         (styling60Applies && courseResult.code === 'PF') ||
         (portdev60Applies && courseResult.code === 'PW') ||
-        (daycare60Applies && courseResult.code === 'DD')
+        (daycare60Applies && courseResult.code === 'DD') ||
+        (sfx60Applies && courseResult.code === 'SF') ||
+        (business60Applies && (courseResult.code === 'EB' || courseResult.code === 'DB')) ||
+        (training60Applies && courseResult.code === 'DT')
         ? parseFloat(Big(courseResult.cost).times(0.6).toFixed(2))
         : parseFloat(Big(courseResult.cost).times(courseResult.multiCourseDiscountRate).toFixed(2));
 
