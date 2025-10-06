@@ -59,7 +59,7 @@ export const getMultiCourseDiscountMap = (now: Date, options?: PriceQueryOptions
         (daycare60Applies && courseResult.code === 'DD') ||
         (sfx60Applies && courseResult.code === 'SF') ||
         (business60Applies && (courseResult.code === 'EB' || courseResult.code === 'DB')) ||
-        (training60Applies && courseResult.code === 'DT')
+        (training60Applies && (courseResult.code === 'DT' || courseResult.code === 'DC'))
         ? parseFloat(Big(courseResult.cost).times(0.6).toFixed(2))
         : parseFloat(Big(courseResult.cost).times(courseResult.multiCourseDiscountRate).toFixed(2));
 
