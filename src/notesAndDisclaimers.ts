@@ -300,12 +300,6 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
     notes.push('No tools');
   }
 
-  if (applies(promoCodeSpecs.find(v => v.code === 'HALLOWEENSFX'))) {
-    disclaimers.push('You\'ll get the Luminous Makeup Collection');
-    disclaimers.push('You\'ll get the special FX makeup kit.');
-    notes.push('SFX kit');
-  }
-
   if (applies(promoCodeSpecs.find(v => v.code === 'BOGOCATALYST')) || applies(promoCodeSpecs.find(v => v.code === 'BOGOCATALYST100'))) {
     disclaimers.push('You\'ll get the Career Catalyst Toolkit');
     notes.push('Career Catalyst Toolkit');
