@@ -30,8 +30,8 @@ export const getOverridesMap = (courses: string[], depositOverrides: PriceQueryO
     if (depositOverrides?.[courseResult.code] && installmentsOverride) {
       const deposit = depositOverrides[courseResult.code];
       const installments = Math.round(installmentsOverride);
-      const installmentSize = parseFloat(Big(courseResult.discountedCost).minus(deposit).div(installments).round(2, 0).toFixed(2)); // always round down so that the actual price will never be more than the quoted price
-      const remainder = parseFloat(Big(courseResult.discountedCost).minus(deposit).minus(Big(installmentSize).times(installments)).toFixed(2));
+      const installmentSize = parseFloat(Big(courseResult.discountedCost).minus(courseResult.plans.part.discount).minus(deposit).div(installments).round(2, 0).toFixed(2)); // always round down so that the actual price will never be more than the quoted price
+      const remainder = parseFloat(Big(courseResult.discountedCost).minus(courseResult.plans.part.discount).minus(deposit).minus(Big(installmentSize).times(installments)).toFixed(2));
       return {
         ...courseResult,
         plans: {
