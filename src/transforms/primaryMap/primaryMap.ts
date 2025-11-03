@@ -34,7 +34,7 @@ export const primaryMap = (c: CourseResult, i: number, a: CourseResult[]): Cours
       },
     };
   } catch (err) {
-    logger.error('Erorr in primaryMap', err, a);
+    logger.error('Erorr in primaryMap', a);
     throw err;
   }
 };
