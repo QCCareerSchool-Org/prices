@@ -30,11 +30,11 @@ export const getPriceRowToCourseResultMap = (student?: boolean) => (p: PriceRow)
 
   const partDeposit = clamp(parseFloat(p.deposit.toFixed(2)), 0, partTotal); // the deposit can't be greater than the cost and can't be negative
 
-  const partInstallments = Math.round(student ? p.installments / 2 : p.installments); // the number of installments must be at least 1 and must be a whole number
+  const partInstallments = p.installments ? Math.round(student ? p.installments / 2 : p.installments) : undefined; // the number of installments must be at least 1 and must be a whole number
 
-  const partInstallmentSize = parseFloat(Big(partTotal).minus(partDeposit).div(partInstallments).round(2, 0).toFixed(2)); // always round down so that the actual price will never be more than the quoted price
+  const partInstallmentSize = p.installments ? parseFloat(Big(partTotal).minus(partDeposit).div(partInstallments!).round(2, 0).toFixed(2)) : undefined; // always round down so that the actual price will never be more than the quoted price
 
-  const partRemainder = parseFloat(Big(partTotal).minus(partDeposit).minus(Big(partInstallmentSize).times(partInstallments)).toFixed(2));
+  const partRemainder = p.installments ? parseFloat(Big(partTotal).minus(partDeposit).minus(Big(partInstallmentSize!).times(partInstallments!)).toFixed(2)) : undefined;
 
   return {
     code: p.courseCode,
@@ -58,13 +58,13 @@ export const getPriceRowToCourseResultMap = (student?: boolean) => (p: PriceRow)
         originalDeposit: fullTotal,
         originalInstallments: 0,
       },
-      part: partInstallments > 0
+      part: partInstallments
         ? {
           discount: partDiscount,
           deposit: partDeposit,
-          installmentSize: partInstallmentSize,
-          installments: partInstallments,
-          remainder: partRemainder,
+          installmentSize: partInstallmentSize as number,
+          installments: partInstallments as number,
+          remainder: partRemainder as number,
           total: partTotal,
           originalDeposit: partDeposit,
           originalInstallments: partInstallments,
