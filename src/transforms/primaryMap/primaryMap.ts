@@ -17,7 +17,17 @@ export const primaryMap = (c: CourseResult, i: number, a: CourseResult[]): Cours
     if (i === 0) {
       return { ...c, primary: true };
     }
-    const partInstallments = a[0].plans.part.installments;
+
+    if (typeof c.plans.part === 'undefined' || a.some(x => typeof x.plans.part === 'undefined')) {
+      return {
+        ...c,
+        plans: {
+          ...c.plans,
+        },
+      };
+    }
+
+    const partInstallments = a[0].plans.part!.installments; // can't be undefined
     const partInstallmentSize = parseFloat(Big(c.discountedCost).minus(c.plans.part.deposit).div(partInstallments).round(2, 0).toFixed(2));
     const partRemainder = parseFloat(Big(c.discountedCost).minus(c.plans.part.deposit).minus(Big(partInstallmentSize).times(partInstallments)).toFixed(2));
     return {

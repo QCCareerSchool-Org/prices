@@ -30,7 +30,7 @@ export const getPriceRowToCourseResultMap = (student?: boolean) => (p: PriceRow)
 
   const partDeposit = clamp(parseFloat(p.deposit.toFixed(2)), 0, partTotal); // the deposit can't be greater than the cost and can't be negative
 
-  const partInstallments = Math.round(Math.max(1, student ? p.installments / 2 : p.installments)); // the number of installments must be at least 1 and must be a whole number
+  const partInstallments = Math.round(student ? p.installments / 2 : p.installments); // the number of installments must be at least 1 and must be a whole number
 
   const partInstallmentSize = parseFloat(Big(partTotal).minus(partDeposit).div(partInstallments).round(2, 0).toFixed(2)); // always round down so that the actual price will never be more than the quoted price
 
@@ -58,16 +58,18 @@ export const getPriceRowToCourseResultMap = (student?: boolean) => (p: PriceRow)
         originalDeposit: fullTotal,
         originalInstallments: 0,
       },
-      part: {
-        discount: partDiscount,
-        deposit: partDeposit,
-        installmentSize: partInstallmentSize,
-        installments: partInstallments,
-        remainder: partRemainder,
-        total: partTotal,
-        originalDeposit: partDeposit,
-        originalInstallments: partInstallments,
-      },
+      part: partInstallments > 0
+        ? {
+          discount: partDiscount,
+          deposit: partDeposit,
+          installmentSize: partInstallmentSize,
+          installments: partInstallments,
+          remainder: partRemainder,
+          total: partTotal,
+          originalDeposit: partDeposit,
+          originalInstallments: partInstallments,
+        }
+        : undefined,
     },
     shipping,
     free: false,

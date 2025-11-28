@@ -3,7 +3,11 @@ import Big from 'big.js';
 
 import { CourseResult, MapFunction, PriceQueryOptions } from '../../types';
 
-export const getOverridesMap = (courses: string[], depositOverrides: PriceQueryOptions['depositOverrides'], installmentsOverride: PriceQueryOptions['installmentsOverride']): MapFunction<CourseResult, CourseResult> => {
+export const getOverridesMap = (courses: string[], depositOverrides: PriceQueryOptions['depositOverrides'], installmentsOverride: PriceQueryOptions['installmentsOverride'], somePartsMissing: boolean): MapFunction<CourseResult, CourseResult> => {
+  if (somePartsMissing) {
+    return (c: CourseResult) => c;
+  }
+
   if (typeof depositOverrides !== 'undefined') {
     // ensure a deposit override exists for each course
     courses.forEach(course => {
@@ -30,14 +34,14 @@ export const getOverridesMap = (courses: string[], depositOverrides: PriceQueryO
     if (depositOverrides?.[courseResult.code] && installmentsOverride) {
       const deposit = depositOverrides[courseResult.code];
       const installments = Math.round(installmentsOverride);
-      const installmentSize = parseFloat(Big(courseResult.discountedCost).minus(courseResult.plans.part.discount).minus(deposit).div(installments).round(2, 0).toFixed(2)); // always round down so that the actual price will never be more than the quoted price
-      const remainder = parseFloat(Big(courseResult.discountedCost).minus(courseResult.plans.part.discount).minus(deposit).minus(Big(installmentSize).times(installments)).toFixed(2));
+      const installmentSize = parseFloat(Big(courseResult.discountedCost).minus(courseResult.plans.part!.discount).minus(deposit).div(installments).round(2, 0).toFixed(2)); // always round down so that the actual price will never be more than the quoted price
+      const remainder = parseFloat(Big(courseResult.discountedCost).minus(courseResult.plans.part!.discount).minus(deposit).minus(Big(installmentSize).times(installments)).toFixed(2));
       return {
         ...courseResult,
         plans: {
           ...courseResult.plans,
           part: {
-            ...courseResult.plans.part,
+            ...courseResult.plans.part!,
             deposit,
             installments,
             installmentSize,

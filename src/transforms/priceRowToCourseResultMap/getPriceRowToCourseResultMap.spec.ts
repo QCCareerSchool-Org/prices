@@ -98,7 +98,7 @@ describe('priceRowToCourseResultMap', () => {
       expect(result.cost).toBe(3232.44);
       expect(result.multiCourseDiscountRate).toBe(0.40);
       expect(result.plans.full.discount).toBe(22.11);
-      expect(result.plans.part.installments).toBe(4);
+      expect(result.plans.part?.installments).toBe(4);
       expect(result.shipping).toBe(83.11);
     });
 
@@ -251,7 +251,7 @@ describe('priceRowToCourseResultMap', () => {
         order: 0,
       };
       const result = priceRowToCourseResultMap(priceRow);
-      expect(result.plans.part.deposit).toBe(900);
+      expect(result.plans.part?.deposit).toBe(900);
     });
 
     it('should ensure the part payment plan deposit is greater than or equal to 0', () => {
@@ -270,7 +270,7 @@ describe('priceRowToCourseResultMap', () => {
         order: 0,
       };
       const result = priceRowToCourseResultMap(priceRow);
-      expect(result.plans.part.deposit).toBe(0);
+      expect(result.plans.part?.deposit).toBe(0);
     });
 
     it('should ensure the part payment plan installments is greater than or equal to 1', () => {
@@ -289,7 +289,7 @@ describe('priceRowToCourseResultMap', () => {
         order: 0,
       };
       const result = priceRowToCourseResultMap(priceRow);
-      expect(result.plans.part.installments).toBe(1);
+      expect(result.plans.part?.installments).toBe(1);
     });
   });
 
