@@ -91,7 +91,7 @@ export async function prices(
     .map(getExtraDiscountMap(currencyCode, options)) // apply extra promotional discounts
     .map(getPromoCodeDiscountsMap(now, currencyCode, options)) // apply promotional discounts based on promo codes
     .map(getToolsDiscountMap(now, currencyCode, options)) // apply discounts for skipping tools
-    .map(getOverridesMap(courses, options?.depositOverrides, options?.installmentsOverride)) // update the courseResults based on the sales agent's overrides
+    .map(getOverridesMap(courses, options?.depositOverrides, options?.installmentsOverride, priceRows.some(p => p.installments === 0))) // update the courseResults based on the sales agent's overrides
     .sort(courseSort); // sort by primary, free, cost, discounted cost
 
   const [ notes, disclaimers, promoWarnings ] = notesAndDisclaimers(now, courses, countryCode, noShipping, options);
