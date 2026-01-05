@@ -37,7 +37,7 @@
     "dotenv": "^8.6.0",
     "express": "^4.22.1",
     "helmet": "^4.6.0",
-    "nodemailer": "^6.10.1",
+    "nodemailer": "^7.0.12",
     "promise-mysql": "^5.2.0",
     "winston": "^3.19.0",
     "yup": "^1.7.1"
