@@ -23,7 +23,7 @@
     "@types/jest": "^30.0.0",
     "@types/nodemailer": "^7.0.4",
     "faker": "^5.5.3",
-    "typescript": "^4.9.5",
+    "typescript": "^4.9.5"
   },
   "dependencies": {
     "@qccareerschool/helper-functions": "^1.6.1",
