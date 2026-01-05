@@ -1,5 +1,6 @@
 import { audCountry, gbpCountry, nzdCountry } from '@qccareerschool/helper-functions';
-import { CurrencyCode } from './types';
+
+import type { CurrencyCode } from './types';
 
 /**
  * Determines the currency we should assume the courses will be priced in based on the country

@@ -1,5 +1,6 @@
-import { PoolConnection } from 'promise-mysql';
-import { PriceRow } from './types';
+import type { PoolConnection } from 'promise-mysql';
+
+import type { PriceRow } from './types';
 
 const sqlLookupPrice = `
 SELECT

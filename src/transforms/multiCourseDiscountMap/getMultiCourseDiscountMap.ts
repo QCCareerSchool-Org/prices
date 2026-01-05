@@ -1,9 +1,10 @@
 import Big from 'big.js';
 
-import { calculatePlans } from '../../calculatePlans';
-import { PromoCodeSpec, promoCodeSpecs, specApplies } from '../../promoCodes';
-import { CourseResult, MapFunction, PriceQueryOptions } from '../../types';
 import { shouldGetMultiCourseDiscount } from './shouldGetMultiCourseDiscount';
+import { calculatePlans } from '../../calculatePlans';
+import type { PromoCodeSpec } from '../../promoCodes';
+import { promoCodeSpecs, specApplies } from '../../promoCodes';
+import type { CourseResult, MapFunction, PriceQueryOptions } from '../../types';
 
 /**
  * Creates a map function that adds the multi-course discount to course results

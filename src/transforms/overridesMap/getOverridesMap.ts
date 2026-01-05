@@ -1,7 +1,7 @@
 import * as HttpStatus from '@qccareerschool/http-status';
 import Big from 'big.js';
 
-import { CourseResult, MapFunction, PriceQueryOptions } from '../../types';
+import type { CourseResult, MapFunction, PriceQueryOptions } from '../../types';
 
 export const getOverridesMap = (courses: string[], depositOverrides: PriceQueryOptions['depositOverrides'], installmentsOverride: PriceQueryOptions['installmentsOverride'], somePartsMissing: boolean): MapFunction<CourseResult, CourseResult> => {
   if (somePartsMissing) {

@@ -1,7 +1,7 @@
 import Big from 'big.js';
 
 import { sumBigArray } from './lib/sumBigArray';
-import { CourseResult, Currency, NoShipping, PriceResult } from './types';
+import type { CourseResult, Currency, NoShipping, PriceResult } from './types';
 
 /**
  * Creates the final response by combining the values from each course

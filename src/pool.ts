@@ -1,5 +1,5 @@
-import fs from 'fs';
 import dotenv from 'dotenv';
+import fs from 'fs';
 import mysql from 'promise-mysql';
 
 dotenv.config();

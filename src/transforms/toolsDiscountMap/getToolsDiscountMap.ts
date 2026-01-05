@@ -1,11 +1,12 @@
 import Big from 'big.js';
 
 import { calculatePlans } from '../../calculatePlans';
-import { CourseResult, MapFunction, PriceQueryOptions } from '../../types';
+import type { CourseResult, MapFunction, PriceQueryOptions } from '../../types';
 
 export const getToolsDiscountMap = (now: Date, currencyCode: string, options?: PriceQueryOptions): MapFunction<CourseResult, CourseResult> => {
   const dgDiscountAmount = currencyCode === 'GBP' ? 150 : 200;
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   return (courseResult: CourseResult, index: number, array: CourseResult[]): CourseResult => {
     // skip free courses
     if (courseResult.free) {

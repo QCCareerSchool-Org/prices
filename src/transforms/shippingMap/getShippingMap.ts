@@ -1,7 +1,7 @@
 import Big from 'big.js';
 
 import { calculatePlans } from '../../calculatePlans';
-import { CourseResult, NoShipping } from '../../types';
+import type { CourseResult, NoShipping } from '../../types';
 
 /**
  * Maps a course tesult to another course result with the shipping discount applied as needed

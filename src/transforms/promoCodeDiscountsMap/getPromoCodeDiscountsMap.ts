@@ -2,8 +2,9 @@ import Big from 'big.js';
 
 import { calculatePlans } from '../../calculatePlans';
 import { isEventFoundationCourse, isMakeupFoundationCourse } from '../../courses';
-import { PromoCodeSpec, promoCodeSpecs, specApplies, studentSupport100Specs, studentSupport150Specs, studentSupport50Specs } from '../../promoCodes';
-import { CourseResult, MapFunction, PriceQueryOptions } from '../../types';
+import type { PromoCodeSpec } from '../../promoCodes';
+import { promoCodeSpecs, specApplies, studentSupport100Specs, studentSupport150Specs, studentSupport50Specs } from '../../promoCodes';
+import type { CourseResult, MapFunction, PriceQueryOptions } from '../../types';
 
 export const getPromoCodeDiscountsMap = (now: Date, currencyCode: string, options?: PriceQueryOptions): MapFunction<CourseResult, CourseResult> => {
   const applies = (spec?: PromoCodeSpec): boolean => typeof spec !== 'undefined' && specApplies(spec, now, options?.discountAll, options?.promoCode, options?.school);

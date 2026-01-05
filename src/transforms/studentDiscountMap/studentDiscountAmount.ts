@@ -1,4 +1,4 @@
-import { CurrencyCode } from '../../types';
+import type { CurrencyCode } from '../../types';
 
 const gbpDiscount = 25;
 const otherDiscount = 50;

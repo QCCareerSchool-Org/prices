@@ -1,5 +1,5 @@
 import { PromoCodeSpec, promoCodeSpecs, specApplies } from '../../promoCodes';
-import { PriceQueryOptions } from '../../types';
+import type { PriceQueryOptions } from '../../types';
 
 /**
  * Determines whether a course should get the multi-course discount or not

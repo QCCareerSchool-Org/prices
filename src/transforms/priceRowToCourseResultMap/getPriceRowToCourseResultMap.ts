@@ -1,6 +1,6 @@
 import Big from 'big.js';
 
-import { CourseResult, PriceRow } from '../../types';
+import type { CourseResult, PriceRow } from '../../types';
 
 export const clamp = (value: number, min: number, max: number): number => Math.min(Math.max(value, min), max);
 
@@ -62,9 +62,9 @@ export const getPriceRowToCourseResultMap = (student?: boolean) => (p: PriceRow)
         ? {
           discount: partDiscount,
           deposit: partDeposit,
-          installmentSize: partInstallmentSize as number,
-          installments: partInstallments as number,
-          remainder: partRemainder as number,
+          installmentSize: partInstallmentSize!,
+          installments: partInstallments,
+          remainder: partRemainder!,
           total: partTotal,
           originalDeposit: partDeposit,
           originalInstallments: partInstallments,

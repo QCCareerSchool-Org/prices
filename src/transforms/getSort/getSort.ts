@@ -1,5 +1,6 @@
-import { PromoCodeSpec, promoCodeSpecs, specApplies } from '../../promoCodes';
-import { CourseResult, PriceQueryOptions } from '../../types';
+import type { PromoCodeSpec } from '../../promoCodes';
+import { promoCodeSpecs, specApplies } from '../../promoCodes';
+import type { CourseResult, PriceQueryOptions } from '../../types';
 
 type SortFunction<T> = (a: T, b: T) => number;
 
