@@ -11,7 +11,7 @@ import { prices } from './prices';
 import { PriceQuery, PriceQueryOptions, PriceResult, School } from './types';
 
 // validate the parameters
-const priceSchema = yup.object<PriceQuery>({
+const priceShape = {
   courses: yup.array(yup.string().required()).default([]),
   countryCode: yup.string().length(2).required(),
   provinceCode: yup.string().max(3),
@@ -33,16 +33,18 @@ const priceSchema = yup.object<PriceQuery>({
     installmentsOverride: yup.number().min(1).max(24),
     studentDiscount: yup.boolean(),
     withoutTools: yup.boolean(),
-    school: yup.string<School>().oneOf([ 'QC Career School', 'QC Makeup Academy', 'QC Design School', 'QC Event School', 'QC Pet Studies', 'QC Wellness Studies', 'Winghill Writing School', 'QC Pet Studies (EarthWise)' ]),
+    school: yup.string().oneOf<School>([ 'QC Career School', 'QC Makeup Academy', 'QC Design School', 'QC Event School', 'QC Pet Studies', 'QC Wellness Studies', 'Winghill Writing School', 'QC Pet Studies (EarthWise)' ]),
     promoCode: yup.string(),
     dateOverride: yup.date(),
   }),
-}).required();
+} satisfies yup.ObjectShape;
 
-const oldPriceSchema = yup.object<OldPriceQuery>({ // the old way of calling this endpoint
+const priceSchema: yup.ObjectSchema<PriceQuery> = yup.object(priceShape).required();
+
+const oldPriceShape = { // the old way of calling this endpoint
   courses: yup.array(yup.string().required()).default([]),
   countryCode: yup.string().length(2).required(),
-  provinceCode: yup.string().max(3).nullable(true).default(null).required(),
+  provinceCode: yup.string().max(3).nullable().default(null).required(),
   discountAll: yup.number(),
   options: yup.object({
     discountAll: yup.boolean(),
@@ -57,7 +59,9 @@ const oldPriceSchema = yup.object<OldPriceQuery>({ // the old way of calling thi
     discountSignatureGBP: yup.string(),
   }),
   _: yup.number(),
-}).required();
+} satisfies yup.ObjectShape;
+
+const oldPriceSchema: yup.ObjectSchema<OldPriceQuery> = yup.object(oldPriceShape).required();
 
 export const router = express.Router();
 
@@ -97,7 +101,7 @@ const oldPrices = async (req: Request): Promise<OldPriceResult> => {
       }
       throw new HttpStatus.BadRequest('unknown error');
     }
-    return await oldGetPrices(connection, query.courses, query.countryCode, query.provinceCode, query.discountAll, query.options);
+    return await oldGetPrices(connection, query.courses, query.countryCode, query.provinceCode, query.discountAll ?? 0, query.options);
   } finally {
     connection.release();
   }

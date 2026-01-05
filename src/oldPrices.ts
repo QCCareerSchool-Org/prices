@@ -29,9 +29,9 @@ export interface OldPriceQuery {
   courses?: string[];
   countryCode: string;
   provinceCode: string | null;
-  discountAll: number;
+  discountAll?: number;
   options?: OldPriceQueryOptions;
-  _: number;
+  _?: number;
 }
 
 export const oldGetPrices = async (
