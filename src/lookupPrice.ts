@@ -1,7 +1,7 @@
-import { audCountry, gbpCountry, nzdCountry } from '@qccareerschool/helper-functions';
 import * as HttpStatus from '@qccareerschool/http-status';
 import type { PoolConnection } from 'promise-mysql';
 
+import { audCountry, gbpCountry, nzdCountry } from './lib/helper-functions';
 import { lookupPriceByCountryAndProvince } from './lookupPriceByCountryAndProvince';
 import type { PriceRow } from './types';
 

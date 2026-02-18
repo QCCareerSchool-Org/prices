@@ -1,9 +1,9 @@
-import { noShipCountry } from '@qccareerschool/helper-functions';
 import * as HttpStatus from '@qccareerschool/http-status';
 import type { PoolConnection } from 'promise-mysql';
 
 import { collateResults } from './collateResults';
 import { defaultCurrencyCode } from './defaultCurrencyCode';
+import { noShipCountry } from './lib/helper-functions';
 import { lookupCurrency } from './lookupCurrency';
 import { lookupPrice } from './lookupPrice';
 import { noShippingMessage } from './noShippingMessage';

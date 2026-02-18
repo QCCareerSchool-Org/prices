@@ -1,5 +1,4 @@
-import { audCountry, gbpCountry, nzdCountry } from '@qccareerschool/helper-functions';
-
+import { audCountry, gbpCountry, nzdCountry } from './lib/helper-functions';
 import type { CurrencyCode } from './types';
 
 /**
