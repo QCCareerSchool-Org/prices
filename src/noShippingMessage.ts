@@ -1,6 +1,5 @@
-import { telephoneNumber } from '@qccareerschool/helper-functions';
-
 import { isDesignCourse, isMakeupCourse } from './courses';
+import { telephoneNumber } from './lib/helper-functions';
 import type { NoShipping } from './types';
 
 export const noShippingMessage = (noShipping: NoShipping, courses: string[], countryCode: string): string | undefined => {
