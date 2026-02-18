@@ -1,6 +1,7 @@
-import { NodemailerTransport } from '@qccareerschool/winston-nodemailer';
 import dotenv from 'dotenv';
 import winston, { format, transports } from 'winston';
+
+import { NodemailerTransport } from './lib/winston-nodemailer';
 
 dotenv.config();
 
