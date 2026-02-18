@@ -155,7 +155,7 @@ export const promoCodeSpecs: PromoCodeSpec[] = [
  */
 export const promoCodeRecognized = (now: Date, options?: PriceQueryOptions): boolean | undefined => {
   if (options?.promoCode) {
-    return promoCodeSpecs.some(p => specApplies(p, now, options?.discountAll, options?.promoCode, options?.school));
+    return promoCodeSpecs.some(p => specApplies(p, now, options.discountAll, options.promoCode, options.school));
   }
 };
 
