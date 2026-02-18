@@ -1,6 +1,6 @@
-import * as util from 'util';
 import * as nodemailer from 'nodemailer';
 import type { Address } from 'nodemailer/lib/mailer';
+import * as util from 'util';
 import Transport from 'winston-transport';
 
 export interface INodemailerOptions extends Transport.TransportStreamOptions {
@@ -59,11 +59,11 @@ export class NodemailerTransport extends Transport {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public log(info: any, next: () => void): any {
     if (this.silent) {
-      return next();
+      next(); return;
     }
 
     if (this.filter && !this.filter(info)) {
-      return next();
+      next(); return;
     }
 
     let text = 'undefined';

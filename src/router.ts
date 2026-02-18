@@ -35,7 +35,7 @@ const priceSchema: yup.ObjectSchema<PriceQuery> = yup.object({
     installmentsOverride: yup.number().min(1).max(24),
     studentDiscount: yup.boolean(),
     withoutTools: yup.boolean(),
-    school: yup.string().oneOf<School>([ 'QC Career School', 'QC Makeup Academy', 'QC Design School', 'QC Event School', 'QC Pet Studies', 'QC Wellness Studies', 'Winghill Writing School', 'QC Pet Studies (EarthWise)' ]),
+    school: yup.string().oneOf<School>([ 'QC Career School', 'QC Makeup Academy', 'QC Design School', 'QC Event School', 'QC Pet Studies', 'QC Wellness Studies', 'Winghill Writing School', 'QC Pet Studies (EarthWise)', 'Paw Parent Academy' ]),
     promoCode: yup.string(),
     dateOverride: yup.date(),
   }),
