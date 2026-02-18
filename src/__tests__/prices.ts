@@ -1,7 +1,7 @@
-import { PoolConnection } from 'promise-mysql';
+import type { PoolConnection } from 'promise-mysql';
 
 import { prices } from '../prices';
-import { Currency, PriceQueryOptions, PriceResult, PriceRow } from '../types';
+import type { Currency, PriceQueryOptions, PriceResult, PriceRow } from '../types';
 
 describe('INTEGRATION prices', () => {
   let connection: { query: jest.Mock };

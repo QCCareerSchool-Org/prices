@@ -1,7 +1,8 @@
 import { isDesignCourse, isEventFoundationCourse, isEventSpecialtyCourse } from '../../courses';
 import { freeMap } from '../../lib/freeMap';
-import { PromoCodeSpec, promoCodeSpecs, specApplies } from '../../promoCodes';
-import { CourseResult, MapFunction, PriceQueryOptions } from '../../types';
+import type { PromoCodeSpec } from '../../promoCodes';
+import { promoCodeSpecs, specApplies } from '../../promoCodes';
+import type { CourseResult, MapFunction, PriceQueryOptions } from '../../types';
 
 export const getPromoCodeFreeCourseMap = (now: Date, options?: PriceQueryOptions): MapFunction<CourseResult, CourseResult> => {
   const applies = (spec?: PromoCodeSpec): boolean => typeof spec !== 'undefined' && specApplies(spec, now, options?.discountAll, options?.promoCode, options?.school);

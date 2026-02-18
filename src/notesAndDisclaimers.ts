@@ -1,6 +1,7 @@
 import { isEventFoundationCourse, isEventSpecialtyCourse } from './courses';
-import { PromoCodeSpec, promoCodeSpecs, specApplies } from './promoCodes';
-import { NoShipping, PriceQueryOptions } from './types';
+import type { PromoCodeSpec } from './promoCodes';
+import { promoCodeSpecs, specApplies } from './promoCodes';
+import type { NoShipping, PriceQueryOptions } from './types';
 
 /**
  * Returns a tuple of string arrays [ notes, disclaimers, promoWarnings ]

@@ -13,15 +13,15 @@
  * const mothersdayMakeup = promoCodeSpecs.find(v => v.code === 'MOTHERSDAY' && v.schools.includes('QC Makeup Academy'))
  * const mothersdayDesign = promoCodeSpecs.find(v => v.code === 'MOTHERSDAY' && v.schools.includes('QC Design School'))
  */
-import { PriceQueryOptions, School } from './types';
+import type { PriceQueryOptions, School } from './types';
 
-export type PromoCodeSpec = {
+export interface PromoCodeSpec {
   code: string;
   schools?: School[];
   student: 'ALLOWED' | 'DENIED' | 'ONLY';
   start?: Date;
   end?: Date;
-};
+}
 
 const studentSupportNames = [ 'NATHAN', 'EMILY', 'HEATHER', 'TAYLOR', 'KAYLA', 'PAMELA', 'SASHA', 'SHANNON', 'SONA', 'VICKY', 'MALCOLM' ];
 
@@ -155,7 +155,7 @@ export const promoCodeSpecs: PromoCodeSpec[] = [
  */
 export const promoCodeRecognized = (now: Date, options?: PriceQueryOptions): boolean | undefined => {
   if (options?.promoCode) {
-    return promoCodeSpecs.some(p => specApplies(p, now, options?.discountAll, options?.promoCode, options?.school));
+    return promoCodeSpecs.some(p => specApplies(p, now, options.discountAll, options.promoCode, options.school));
   }
 };
 

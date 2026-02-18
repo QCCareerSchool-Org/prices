@@ -1,5 +1,5 @@
 import faker from 'faker';
-import { PoolConnection } from 'promise-mysql';
+import type { PoolConnection } from 'promise-mysql';
 
 import { lookupCurrency } from './lookupCurrency';
 

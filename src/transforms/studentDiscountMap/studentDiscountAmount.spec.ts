@@ -1,7 +1,7 @@
 import faker from 'faker';
 
-import { CurrencyCode } from '../../types';
 import { studentDiscountAmount } from './studentDiscountAmount';
+import type { CurrencyCode } from '../../types';
 
 describe('studentDiscountAmount', () => {
 

@@ -1,9 +1,9 @@
 import * as HttpStatus from '@qccareerschool/http-status';
 import Big from 'big.js';
 
-import { calculatePlans } from '../../calculatePlans';
-import { CourseResult, CurrencyCode, MapFunction, PriceQueryOptions } from '../../types';
 import { validateDiscounts } from './validateDiscounts';
+import { calculatePlans } from '../../calculatePlans';
+import type { CourseResult, CurrencyCode, MapFunction, PriceQueryOptions } from '../../types';
 
 /**
  * Creates a map function that adds the extra discount to course results

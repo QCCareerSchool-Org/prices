@@ -1,5 +1,6 @@
 import * as HttpStatus from '@qccareerschool/http-status';
-import { NextFunction, Request, Response } from 'express';
+import type { NextFunction, Request, Response } from 'express';
+
 import { logger } from '../logger';
 
 export const httpErrorHandler = (err: Error, req: Request, res: Response, next: NextFunction): void => {

@@ -24,7 +24,7 @@ try {
   if (!verifySignature(JSON.stringify(discount), sig)) {
     throw Error('invalid signature');
   }
-  // eslint-disable-next-line no-console
+
   console.log(sig);
 
   //   const oldDiscount = 75;

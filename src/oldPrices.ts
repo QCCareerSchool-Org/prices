@@ -1,12 +1,11 @@
-/* eslint-disable camelcase */
-import crypto from 'crypto';
-import fs from 'fs';
-import path from 'path';
 import * as helpers from '@qccareerschool/helper-functions';
 import * as HttpStatus from '@qccareerschool/http-status';
 import { Big } from 'big.js';
+import crypto from 'crypto';
 import debug from 'debug';
-import { PoolConnection } from 'promise-mysql';
+import fs from 'fs';
+import path from 'path';
+import type { PoolConnection } from 'promise-mysql';
 
 const publicKey = fs.readFileSync(path.join(__dirname, '../public.pem'), 'utf8');
 
@@ -29,9 +28,9 @@ export interface OldPriceQuery {
   courses?: string[];
   countryCode: string;
   provinceCode: string | null;
-  discountAll: number;
+  discountAll?: number;
   options?: OldPriceQueryOptions;
-  _: number;
+  _?: number;
 }
 
 export const oldGetPrices = async (
@@ -81,7 +80,7 @@ export const oldGetPrices = async (
     validDiscount = true;
   }
 
-  if (validDiscount === false) {
+  if (!validDiscount) {
     if (typeof options?.discount !== 'undefined') {
       if (typeof options.discountSignature !== 'undefined') {
         const verify = crypto.createVerify('SHA256');
@@ -159,7 +158,7 @@ export const oldGetPrices = async (
     noShipping: false,
     numCourses: 0,
     courses: {},
-    discountAll: (!!(typeof options?.discountAll !== 'undefined' && options?.discountAll === true)),
+    discountAll: (typeof options?.discountAll !== 'undefined' && options.discountAll),
     complete: false,
     noShipCountry: helpers.noShipCountry(countryCode),
   };
@@ -170,21 +169,21 @@ export const oldGetPrices = async (
 
   const freeCourses: string[] = []; // array of courses that should be free
 
-  if (typeof options?.MMFreeMW !== 'undefined' && options?.MMFreeMW === true) {
+  if (typeof options?.MMFreeMW !== 'undefined' && options.MMFreeMW) {
     if (courses.includes('MM') || courses.includes('MZ')) {
       freeCourses.push('MW');
       result.notes.push('free MW course');
     }
   }
 
-  if (typeof options?.deluxeKit !== 'undefined' && options?.deluxeKit === true) {
+  if (typeof options?.deluxeKit !== 'undefined' && options.deluxeKit) {
     if (courses.includes('MM')) {
       result.notes.push('deluxe kit');
       result.disclaimers.push('You will recieve the deluxe makeup kit with your Master Makeup Artistry course.');
     }
   }
 
-  if (typeof options?.portfolio !== 'undefined' && options?.portfolio === true) {
+  if (typeof options?.portfolio !== 'undefined' && options.portfolio) {
     result.notes.push('portfolio');
   }
 
@@ -305,7 +304,7 @@ export const oldGetPrices = async (
 
     // if discountAll is false (default), the primary course doesn't get the secondary discount
     // if discountAll is true, then no course is primary and all courses get the secondary discount
-    if (result.discountAll === false) {
+    if (!result.discountAll) {
       result.courses[primaryCourse].secondaryDiscount = 0;
       result.courses[primaryCourse].secondaryDiscountAmount = 0;
     }
@@ -319,7 +318,7 @@ export const oldGetPrices = async (
     // figure out aggregate values of for the cost and the discounts
     for (const course of courses) {
 
-      if (result.courses[course].primary === false || result.discountAll === true) { // for any non-primary course
+      if (!result.courses[course].primary || result.discountAll) { // for any non-primary course
 
         // non-primary courses don't get the payment plan discounts
         result.courses[course].discount.full = 0;
@@ -353,7 +352,7 @@ export const oldGetPrices = async (
 
     logger('got a hard-coded discount, skipping campaign check');
 
-    result.notes.push('Discount ' + options.discount);
+    result.notes.push(`Discount ${options.discount}`);
 
     result.campaign = {
       id: null,
@@ -369,7 +368,7 @@ export const oldGetPrices = async (
       requirementsMet: true,
     };
 
-  } else if (typeof options?.campaignId !== 'undefined' && typeof options?.discountCode !== 'undefined') {
+  } else if (typeof options?.campaignId !== 'undefined' && typeof options.discountCode !== 'undefined') {
 
     logger('doing campaign check');
 
@@ -565,7 +564,7 @@ export const oldGetPrices = async (
 
   if (courses.length) {
 
-    if (typeof result.campaign !== 'undefined' && result.campaign.requirementsMet) {
+    if (result.campaign?.requirementsMet) {
 
       result.campaign.discount = result.campaign.potentialDiscount;
 
@@ -619,7 +618,7 @@ export const oldGetPrices = async (
         totalCampaignDiscountAccelerated = totalCampaignDiscountAccelerated.plus(c.campaignDiscount.accelerated);
         totalCampaignDiscountPart = totalCampaignDiscountPart.plus(c.campaignDiscount.part);
 
-        logger(`totalCampaignDiscountFull =        '${totalCampaignDiscountFull}'`);
+        logger(`totalCampaignDiscountFull =        '${totalCampaignDiscountFull.toFixed(2)}'`);
 
       } // for (const course of courses)
 
@@ -1131,7 +1130,7 @@ export interface OldPriceResult {
   noShipping: boolean;
   noShippingMessage?: string;
   numCourses: number;
-  courses: { [course: string]: OldCourse };
+  courses: Record<string, OldCourse>;
   discountAll: boolean;
   complete: boolean;
   noShipCountry: boolean;

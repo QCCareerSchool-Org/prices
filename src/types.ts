@@ -4,14 +4,14 @@ export type NoShipping = 'ALLOWED' | 'APPLIED' | 'REQUIRED' | 'FORBIDDEN';
 
 export type CurrencyCode = 'CAD' | 'USD' | 'GBP' | 'AUD' | 'NZD';
 
-export type School = 'QC Career School' | 'QC Makeup Academy' | 'QC Design School' | 'QC Event School' | 'QC Pet Studies' | 'QC Wellness Studies' | 'Winghill Writing School' | 'QC Pet Studies (EarthWise)';
+export type School = 'QC Career School' | 'QC Makeup Academy' | 'QC Design School' | 'QC Event School' | 'QC Pet Studies' | 'QC Wellness Studies' | 'Winghill Writing School' | 'QC Pet Studies (EarthWise)' | 'Paw Parent Academy';
 
 export interface PriceQueryOptions {
   noShipping?: boolean;
   discountAll?: boolean;
-  discount?: { [d in CurrencyCode]?: number; } & { default: number };
+  discount?: Partial<Record<CurrencyCode, number>> & { default: number };
   discountSignature?: string;
-  depositOverrides?: { [code: string]: number };
+  depositOverrides?: Record<string, number>;
   installmentsOverride?: number;
   studentDiscount?: boolean;
   withoutTools?: boolean;

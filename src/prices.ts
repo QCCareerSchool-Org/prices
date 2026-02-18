@@ -1,6 +1,6 @@
 import { noShipCountry } from '@qccareerschool/helper-functions';
 import * as HttpStatus from '@qccareerschool/http-status';
-import { PoolConnection } from 'promise-mysql';
+import type { PoolConnection } from 'promise-mysql';
 
 import { collateResults } from './collateResults';
 import { defaultCurrencyCode } from './defaultCurrencyCode';
@@ -29,7 +29,7 @@ import { getPromoCodeFreeCourseMap } from './transforms/promoCodeFreeCoursesMap/
 import { getShippingMap } from './transforms/shippingMap/getShippingMap';
 import { getStudentDiscountMap } from './transforms/studentDiscountMap/getStudentDiscountMap';
 import { getToolsDiscountMap } from './transforms/toolsDiscountMap/getToolsDiscountMap';
-import { CourseResult, NoShipping, PriceQueryOptions, PriceResult } from './types';
+import type { CourseResult, NoShipping, PriceQueryOptions, PriceResult } from './types';
 
 export async function prices(
   connection: PoolConnection,
@@ -57,7 +57,7 @@ export async function prices(
 
   // make sure each price row uses the same currency
   if (priceRows.some(p => p.currencyCode !== currencyCode)) {
-    throw new HttpStatus.InternalServerError(`Currency mismatch: ${courses} ${countryCode} ${provinceCode}`);
+    throw new HttpStatus.InternalServerError(`Currency mismatch: ${courses.toString()} ${countryCode} ${provinceCode}`);
   }
 
   // determine whether we'll be shipping materials or not
@@ -68,13 +68,13 @@ export async function prices(
     : new Date();
 
   const freeCourseMap = options?.school === 'QC Design School'
-    ? options?.discountAll === true ? getDefaultFreeDesignExistingStudentMap(now) : getDefaultFreeDesignNewStudentMap(now)
+    ? options.discountAll === true ? getDefaultFreeDesignExistingStudentMap(now) : getDefaultFreeDesignNewStudentMap(now)
     : options?.school === 'QC Event School'
-      ? options?.discountAll === true ? getDefaultFreeEventExistingStudentMap(now) : getDefaultFreeEventNewStudentMap(now)
+      ? options.discountAll === true ? getDefaultFreeEventExistingStudentMap(now) : getDefaultFreeEventNewStudentMap(now)
       : options?.school === 'QC Pet Studies'
-        ? options?.discountAll === true ? getDefaultFreePetExistingStudentMap(now) : getDefaultFreePetNewStudentMap(now)
+        ? options.discountAll === true ? getDefaultFreePetExistingStudentMap(now) : getDefaultFreePetNewStudentMap(now)
         : options?.school === 'QC Makeup Academy'
-          ? options?.discountAll === true ? getDefaultFreeMakeupExistingStudentMap(now) : getDefaultFreeMakeupNewStudentMap(now)
+          ? options.discountAll === true ? getDefaultFreeMakeupExistingStudentMap(now) : getDefaultFreeMakeupNewStudentMap(now)
           : (c: CourseResult) => c; // identity function (do nothing)
 
   const courseResults = priceRows

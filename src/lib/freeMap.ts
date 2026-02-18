@@ -1,4 +1,4 @@
-import { CourseResult } from '../types';
+import type { CourseResult } from '../types';
 
 export const freeMap = (courseResult: CourseResult): CourseResult => ({
   ...courseResult,

@@ -1,7 +1,7 @@
 import Big from 'big.js';
-import { logger } from '../../logger';
 
-import { CourseResult } from '../../types';
+import { logger } from '../../logger';
+import type { CourseResult } from '../../types';
 
 /**
  * Map function that sets the first CourseResult's `primary` value to `true` and ajusts other CourseResults'

@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/explicit-module-boundary-types */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /**
  * Applies a function to each value of an object, similar to Array.prototype.map
  * @param obj the object whose values we'll apply the function

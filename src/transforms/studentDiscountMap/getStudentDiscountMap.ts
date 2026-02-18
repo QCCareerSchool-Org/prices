@@ -1,8 +1,8 @@
 import Big from 'big.js';
 
-import { calculatePlans } from '../../calculatePlans';
-import { CourseResult, CurrencyCode, MapFunction, PriceQueryOptions } from '../../types';
 import { studentDiscountAmount } from './studentDiscountAmount';
+import { calculatePlans } from '../../calculatePlans';
+import type { CourseResult, CurrencyCode, MapFunction, PriceQueryOptions } from '../../types';
 
 /**
  * Creates a map function that adds the student promo discount to course results

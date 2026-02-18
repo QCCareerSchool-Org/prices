@@ -1,17 +1,19 @@
 import * as HttpStatus from '@qccareerschool/http-status';
-import express, { Request } from 'express';
+import type { Request } from 'express';
+import express from 'express';
 import * as yup from 'yup';
 
 import { asyncWrapper } from './lib/asyncWrapper';
 import { objectMap } from './lib/objectMap';
 import { logger } from './logger';
-import { oldGetPrices, OldPriceQuery, OldPriceResult } from './oldPrices';
+import type { OldPriceQuery, OldPriceResult } from './oldPrices';
+import { oldGetPrices } from './oldPrices';
 import { pool } from './pool';
 import { prices } from './prices';
-import { PriceQuery, PriceQueryOptions, PriceResult, School } from './types';
+import type { PriceQuery, PriceQueryOptions, PriceResult, School } from './types';
 
 // validate the parameters
-const priceSchema = yup.object<PriceQuery>({
+const priceSchema: yup.ObjectSchema<PriceQuery> = yup.object({
   courses: yup.array(yup.string().required()).default([]),
   countryCode: yup.string().length(2).required(),
   provinceCode: yup.string().max(3),
@@ -33,16 +35,16 @@ const priceSchema = yup.object<PriceQuery>({
     installmentsOverride: yup.number().min(1).max(24),
     studentDiscount: yup.boolean(),
     withoutTools: yup.boolean(),
-    school: yup.string<School>().oneOf([ 'QC Career School', 'QC Makeup Academy', 'QC Design School', 'QC Event School', 'QC Pet Studies', 'QC Wellness Studies', 'Winghill Writing School', 'QC Pet Studies (EarthWise)' ]),
+    school: yup.string().oneOf<School>([ 'QC Career School', 'QC Makeup Academy', 'QC Design School', 'QC Event School', 'QC Pet Studies', 'QC Wellness Studies', 'Winghill Writing School', 'QC Pet Studies (EarthWise)' ]),
     promoCode: yup.string(),
     dateOverride: yup.date(),
   }),
 }).required();
 
-const oldPriceSchema = yup.object<OldPriceQuery>({ // the old way of calling this endpoint
-  courses: yup.array(yup.string().required()).default([]),
+const oldPriceSchema: yup.ObjectSchema<OldPriceQuery> = yup.object({
+  courses: yup.array(yup.string().required()).default(() => ([])).defined(),
   countryCode: yup.string().length(2).required(),
-  provinceCode: yup.string().max(3).nullable(true).default(null).required(),
+  provinceCode: yup.string().max(3).nullable().default(null).required(),
   discountAll: yup.number(),
   options: yup.object({
     discountAll: yup.boolean(),
@@ -97,7 +99,7 @@ const oldPrices = async (req: Request): Promise<OldPriceResult> => {
       }
       throw new HttpStatus.BadRequest('unknown error');
     }
-    return await oldGetPrices(connection, query.courses, query.countryCode, query.provinceCode, query.discountAll, query.options);
+    return await oldGetPrices(connection, query.courses, query.countryCode, query.provinceCode, query.discountAll ?? 0, query.options);
   } finally {
     connection.release();
   }

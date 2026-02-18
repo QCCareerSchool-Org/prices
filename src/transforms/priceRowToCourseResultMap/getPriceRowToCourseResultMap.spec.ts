@@ -1,5 +1,5 @@
-import { CourseResult, PriceRow } from '../../types';
 import { getPriceRowToCourseResultMap } from './getPriceRowToCourseResultMap';
+import type { CourseResult, PriceRow } from '../../types';
 
 // TODO: test negative cost, negative discount, discount > cost, 0 installment
 

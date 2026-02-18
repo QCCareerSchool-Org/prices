@@ -1,5 +1,5 @@
-import { CourseResult } from '../../types';
 import { primaryMap } from './primaryMap';
+import type { CourseResult } from '../../types';
 
 describe('primaryMap', () => {
 
