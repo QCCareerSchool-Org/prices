@@ -1,9 +1,9 @@
-import * as HttpStatus from '@qccareerschool/http-status';
 import type { Request } from 'express';
 import express from 'express';
 import * as yup from 'yup';
 
 import { asyncWrapper } from './lib/asyncWrapper';
+import * as HttpStatus from './lib/http-status';
 import { objectMap } from './lib/objectMap';
 import { logger } from './logger';
 import type { OldPriceQuery, OldPriceResult } from './oldPrices';

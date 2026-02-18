@@ -40,7 +40,6 @@
     "typescript-eslint": "^8.56.0"
   },
   "dependencies": {
-    "@qccareerschool/http-status": "^2.1.1",
     "@qccareerschool/winston-nodemailer": "^5.1.0",
     "big.js": "^7.0.1",
     "body-parser": "^2.2.2",
