@@ -1,8 +1,8 @@
-import * as HttpStatus from '@qccareerschool/http-status';
 import Big from 'big.js';
 
 import { validateDiscounts } from './validateDiscounts';
 import { calculatePlans } from '../../calculatePlans';
+import * as HttpStatus from '../../lib/http-status';
 import type { CourseResult, CurrencyCode, MapFunction, PriceQueryOptions } from '../../types';
 
 /**

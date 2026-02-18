@@ -1,6 +1,6 @@
-import * as HttpStatus from '@qccareerschool/http-status';
 import type { PoolConnection } from 'promise-mysql';
 
+import * as HttpStatus from './lib/http-status';
 import type { Currency, CurrencyCode } from './types';
 
 export const lookupCurrency = async (connection: PoolConnection, currencyCode: CurrencyCode): Promise<Currency> => {

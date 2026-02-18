@@ -1,4 +1,3 @@
-import * as HttpStatus from '@qccareerschool/http-status';
 import { Big } from 'big.js';
 import crypto from 'crypto';
 import debug from 'debug';
@@ -7,6 +6,7 @@ import path from 'path';
 import type { PoolConnection } from 'promise-mysql';
 
 import * as helpers from './lib/helper-functions';
+import * as HttpStatus from './lib/http-status';
 
 const publicKey = fs.readFileSync(path.join(__dirname, '../public.pem'), 'utf8');
 
