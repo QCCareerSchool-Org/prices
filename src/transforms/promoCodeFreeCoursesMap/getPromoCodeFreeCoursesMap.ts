@@ -4,6 +4,8 @@ import type { PromoCodeSpec } from '../../promoCodes';
 import { promoCodeSpecs, specApplies } from '../../promoCodes';
 import type { CourseResult, MapFunction, PriceQueryOptions } from '../../types';
 
+const allAccessFreeCourses = [ 'CP', 'ED', 'DW', 'LW', 'PE', 'FL', 'EB', 'VE' ];
+
 export const getPromoCodeFreeCourseMap = (now: Date, options?: PriceQueryOptions): MapFunction<CourseResult, CourseResult> => {
   const applies = (spec?: PromoCodeSpec): boolean => typeof spec !== 'undefined' && specApplies(spec, now, options?.discountAll, options?.promoCode, options?.school);
 
@@ -32,6 +34,7 @@ export const getPromoCodeFreeCourseMap = (now: Date, options?: PriceQueryOptions
   const freeStyleApplies = applies(promoCodeSpecs.find(v => v.code === 'FREESTYLE'));
   const freePWApplies = applies(promoCodeSpecs.find(v => v.code === 'FREEPW'));
   const bogoVirtualApplies = applies(promoCodeSpecs.find(v => v.code === 'BOGOVIRTUAL'));
+  const allAccessApplies = applies(promoCodeSpecs.find(v => v.code === 'ALLACCESS'));
 
   let expertApplied = false;
   let bogoApplied = false;
@@ -47,7 +50,6 @@ export const getPromoCodeFreeCourseMap = (now: Date, options?: PriceQueryOptions
   let daycare300Applied = false;
   let bogo2anyCount = 0;
   let bogoVirtualCount = 0;
-  const bogoVirtualOther = false;
 
   return (courseResult: CourseResult, index: number, array: CourseResult[]): CourseResult => {
 
@@ -239,6 +241,12 @@ export const getPromoCodeFreeCourseMap = (now: Date, options?: PriceQueryOptions
             return freeMap(courseResult);
           }
         }
+      }
+    }
+
+    if (allAccessApplies && array.some(c => c.code === 'AA')) {
+      if (allAccessFreeCourses.includes(courseResult.code)) {
+        return freeMap(courseResult);
       }
     }
 
