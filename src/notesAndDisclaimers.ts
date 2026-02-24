@@ -31,6 +31,7 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
       promoWarnings.push('You entered the <strong>ELITE</strong> promo code, but have chosen to not have any materials shipped. You will not receive any makeup kits.');
     } else if (noShipping === 'REQUIRED') {
       promoWarnings.push('You entered the <strong>ELITE</strong> promo code, but we do not ship to your country. You will not receive any makeup kits.');
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     } else if (noShipping === 'ALLOWED' || noShipping === 'FORBIDDEN') {
       if (!courses.includes('MZ')) {
         promoWarnings.push('You have entered the <strong>ELITE</strong> promo code but have not selected the <strong>Master Makeup Artistry</strong> course.');
@@ -289,11 +290,11 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
     disclaimers.push('This promotion is only available to Woof Gang Bakery employees, managers and store owners.');
   }
 
-  if (courses.includes('FL')) {
+  if (courses.includes('FL') && !courses.includes('AA')) {
     disclaimers.push('The Festivals &amp; Live Events Course requires corporate event training.');
   }
 
-  if (courses.includes('PE')) {
+  if (courses.includes('PE') && !courses.includes('AA')) {
     disclaimers.push('The Promotional Event Planning Course requires corporate event training.');
   }
 
