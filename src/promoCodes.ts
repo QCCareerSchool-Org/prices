@@ -13,7 +13,10 @@
  * const mothersdayMakeup = promoCodeSpecs.find(v => v.code === 'MOTHERSDAY' && v.schools.includes('QC Makeup Academy'))
  * const mothersdayDesign = promoCodeSpecs.find(v => v.code === 'MOTHERSDAY' && v.schools.includes('QC Design School'))
  */
+import rawGroomCodes from './codes/GROOM.json';
 import type { PriceQueryOptions, School } from './types';
+
+const groomCodes: readonly string[] = rawGroomCodes;
 
 export interface PromoCodeSpec {
   code: string;
@@ -31,19 +34,25 @@ export const studentSupport50Specs: PromoCodeSpec[] = studentSupportNames.map<Pr
   code: name + '50',
   student: 'ALLOWED',
   schools: studentSupportSchools,
-} as const));
+}));
 
 export const studentSupport100Specs: PromoCodeSpec[] = studentSupportNames.map<PromoCodeSpec>(name => ({
   code: name + '100',
   student: 'ALLOWED',
   schools: studentSupportSchools,
-} as const));
+}));
 
 export const studentSupport150Specs: PromoCodeSpec[] = studentSupportNames.map<PromoCodeSpec>(name => ({
   code: name + '150',
   student: 'ALLOWED',
   schools: studentSupportSchools,
-} as const));
+}));
+
+export const ppaFreeCourseSpecs: PromoCodeSpec[] = groomCodes.map<PromoCodeSpec>(name => ({
+  code: 'GROOM' + name,
+  student: 'DENIED',
+  schools: [ 'Paw Parent Academy' ],
+}));
 
 export const promoCodeSpecs: PromoCodeSpec[] = [
   { code: 'SAVE50', student: 'DENIED', schools: [ 'QC Makeup Academy', 'QC Design School', 'QC Event School' ] },
@@ -141,6 +150,8 @@ export const promoCodeSpecs: PromoCodeSpec[] = [
   { code: '400OFF', student: 'DENIED', schools: [ 'QC Wellness Studies' ] },
   { code: '10PERCENT', student: 'ALLOWED', schools: [ 'QC Makeup Academy', 'QC Design School', 'QC Event School', 'QC Pet Studies', 'QC Wellness Studies', 'Winghill Writing School' ] },
   { code: 'FC25PERCENT', student: 'DENIED', schools: [ 'QC Wellness Studies' ] },
+
+  { code: 'GROOM', student: 'DENIED', schools: [ 'Paw Parent Academy' ] },
 
   { code: 'QCGROUP', student: 'DENIED' },
 

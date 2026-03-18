@@ -21,6 +21,7 @@ const origin = [
   /\.qcwellnessstudies\.com$/iu,
   /\.qcpetstudies\.com$/iu,
   /\.winghill\.com$/iu,
+  /\.pawparentacademy\.com$/iu,
   'https://blissful-hopper-b5c7db.netlify.com',
   /www-qcwellnessstudies-com\.now\.sh$/iu,
   /\.qccareerschool\.now\.sh$/iu,

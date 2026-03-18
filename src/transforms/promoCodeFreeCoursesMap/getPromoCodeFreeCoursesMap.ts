@@ -1,7 +1,7 @@
 import { isDesignCourse, isEventFoundationCourse, isEventSpecialtyCourse } from '../../courses';
 import { freeMap } from '../../lib/freeMap';
 import type { PromoCodeSpec } from '../../promoCodes';
-import { promoCodeSpecs, specApplies } from '../../promoCodes';
+import { ppaFreeCourseSpecs, promoCodeSpecs, specApplies } from '../../promoCodes';
 import type { CourseResult, MapFunction, PriceQueryOptions } from '../../types';
 
 const allAccessFreeCourses = [ 'CP', 'ED', 'DW', 'LW', 'PE', 'FL', 'EB', 'VE' ];
@@ -9,6 +9,7 @@ const allAccessFreeCourses = [ 'CP', 'ED', 'DW', 'LW', 'PE', 'FL', 'EB', 'VE' ];
 export const getPromoCodeFreeCourseMap = (now: Date, options?: PriceQueryOptions): MapFunction<CourseResult, CourseResult> => {
   const applies = (spec?: PromoCodeSpec): boolean => typeof spec !== 'undefined' && specApplies(spec, now, options?.discountAll, options?.promoCode, options?.school);
 
+  const ppaFreeCourseApplies = ppaFreeCourseSpecs.some(applies);
   const freeProApplies = applies(promoCodeSpecs.find(v => v.code === 'FREEPRO'));
   const expertApplies = applies(promoCodeSpecs.find(v => v.code === 'EXPERT'));
   const bogoApplies = applies(promoCodeSpecs.find(v => v.code === 'BOGO')) || applies(promoCodeSpecs.find(v => v.code === 'BOGOCATALYST')) || applies(promoCodeSpecs.find(v => v.code === 'BOGOCATALYST100'));
@@ -248,6 +249,10 @@ export const getPromoCodeFreeCourseMap = (now: Date, options?: PriceQueryOptions
       if (allAccessFreeCourses.includes(courseResult.code)) {
         return freeMap(courseResult);
       }
+    }
+
+    if (ppaFreeCourseApplies && index === 0) {
+      return freeMap(courseResult);
     }
 
     return courseResult;
