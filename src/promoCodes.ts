@@ -158,6 +158,7 @@ export const promoCodeSpecs: PromoCodeSpec[] = [
   ...studentSupport50Specs,
   ...studentSupport100Specs,
   ...studentSupport150Specs,
+  ...ppaFreeCourseSpecs,
 ];
 
 /**
