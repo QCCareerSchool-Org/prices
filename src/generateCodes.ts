@@ -12,7 +12,7 @@ function createSeededRng(seed: string) {
 
 function generateList(seed: string, count: number): string[] {
   const rng = createSeededRng(seed);
-  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
 
   const result = new Set<string>();
 
