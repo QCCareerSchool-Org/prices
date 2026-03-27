@@ -80,7 +80,7 @@ export const getPromoCodeDiscountsMap = (now: Date, currencyCode: string, option
                                 ? currencyCode === 'GBP' ? 150 : 200
                                 : applies(promoCodeSpecs.find(v => v.code === 'BOGO100')) || applies(promoCodeSpecs.find(v => v.code === 'BOGOCATALYST100'))
                                   ? 100
-                                  : applies(promoCodeSpecs.find(v => v.code === '2SPECIALTY100')) || applies(promoCodeSpecs.find(v => v.code === 'SPECIALTY100'))
+                                  : applies(promoCodeSpecs.find(v => v.code === '2SPECIALTY100')) || applies(promoCodeSpecs.find(v => v.code === 'SPECIALTY100')) || applies(promoCodeSpecs.find(v => v.code === 'PROFITPIVOT'))
                                     ? 100
                                     : misc50Applies
                                       ? 50
