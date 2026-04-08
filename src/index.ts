@@ -3,6 +3,7 @@ import cors from 'cors';
 import express from 'express';
 import helmet from 'helmet';
 
+import { botHandler } from './handlers/botHandler';
 import { errorHandler } from './handlers/errorHandler';
 import { httpErrorHandler } from './handlers/httpErrorHandler';
 import { versionMiddleware } from './handlers/versionMiddleware';
@@ -30,6 +31,7 @@ app.use(cors({ origin }));
 app.use(helmet());
 app.use(compression());
 app.use(versionMiddleware);
+app.use(botHandler);
 app.use('/prices', router);
 app.use(httpErrorHandler);
 app.use(errorHandler);
