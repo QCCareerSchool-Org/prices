@@ -34,6 +34,7 @@ export const botHandler: RequestHandler = (req, res, next) => {
 const botExclusions = [
   /^node$/iu,
   /^axios(?:\/[\d.]+)?$/iu,
+  /^PostmanRuntime(?:\/[\d.]+)?$/iu,
 ];
 
 const knownCrawlers: RegExp[] = [
