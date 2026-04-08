@@ -18,14 +18,14 @@ export const botHandler: RequestHandler = (req, res, next) => {
   }
 
   if (knownCrawlers.some(regex => regex.test(userAgent))) {
-    logger.info('Blocked crawler', { userAgent, path: req.path, method: req.method });
+    logger.info('Blocked crawler', { userAgent, path: req.path, query: req.query, method: req.method });
 
     res.sendStatus(403);
     return;
   }
 
   if (botExclusions.every(regex => !regex.test(userAgent)) && isbot(userAgent)) {
-    logger.info('Detected bot', { userAgent, path: req.path, method: req.method });
+    logger.info('Detected bot', { userAgent, path: req.path, query: req.query, method: req.method });
   }
 
   next();
