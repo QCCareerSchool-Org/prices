@@ -8,7 +8,7 @@ export const botHandler: RequestHandler = (req, res, next) => {
 
   const userAgent = req.headers['user-agent'];
 
-  if (isbot(userAgent)) {
+  if (userAgent !== 'node' && isbot(userAgent)) {
     logger.info('Blocked bot request', { userAgent, path: req.path, method: req.method });
 
     res.sendStatus(403);
