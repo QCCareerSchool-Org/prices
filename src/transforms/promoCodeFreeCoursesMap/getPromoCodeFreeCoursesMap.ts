@@ -267,7 +267,7 @@ export const getPromoCodeFreeCourseMap = (now: Date, options?: PriceQueryOptions
     }
 
     if (vddbFreeApplies) {
-      if (courseResult.code === 'VD' && array.some(c => c.code === 'DB')) {
+      if (courseResult.code === 'VD' || courseResult.code === 'DB') {
         return freeMap(courseResult);
       }
     }
