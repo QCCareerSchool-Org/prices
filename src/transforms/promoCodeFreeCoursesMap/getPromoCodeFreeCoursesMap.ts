@@ -37,6 +37,7 @@ export const getPromoCodeFreeCourseMap = (now: Date, options?: PriceQueryOptions
   const bogoVirtualApplies = applies(promoCodeSpecs.find(v => v.code === 'BOGOVIRTUAL'));
   const allAccessApplies = applies(promoCodeSpecs.find(v => v.code === 'ALLACCESS'));
   const profitPivotApplies = applies(promoCodeSpecs.find(v => v.code === 'PROFITPIVOT'));
+  const vddbFreeApplies = applies(promoCodeSpecs.find(v => v.code === 'VDDBFREE'));
 
   let expertApplied = false;
   let bogoApplied = false;
@@ -263,6 +264,12 @@ export const getPromoCodeFreeCourseMap = (now: Date, options?: PriceQueryOptions
 
     if (ppaFreeCourseApplies && index === 0) {
       return freeMap(courseResult);
+    }
+
+    if (vddbFreeApplies) {
+      if (courseResult.code === 'VD' && array.some(c => c.code === 'DB')) {
+        return freeMap(courseResult);
+      }
     }
 
     return courseResult;
