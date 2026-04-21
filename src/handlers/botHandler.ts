@@ -45,6 +45,8 @@ const knownCrawlers: RegExp[] = [
   /duckduckbot/iu,
   /baiduspider/iu,
   /yandex(bot)?/iu,
+  /AdsBot-Google/iu,
+  /googleother/iu,
 
   // Apple / misc legit crawlers
   /applebot/iu,
