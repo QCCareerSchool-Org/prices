@@ -25,6 +25,15 @@ export const botHandler: RequestHandler = (req, res, next) => {
   }
 
   if (botExclusions.every(regex => !regex.test(userAgent)) && isbot(userAgent)) {
+    const countryCode = typeof req.query.countryCode === 'string' ? req.query.countryCode.toUpperCase() : undefined;
+    const provinceCode = typeof req.query.provinceCode === 'string' ? req.query.provinceCode.toUpperCase() : undefined;
+
+    if ((countryCode === 'CA' || countryCode === 'US') && !provinceCode) {
+      logger.info('Blocked bot', { userAgent, path: req.path, query: req.query, method: req.method });
+
+      res.sendStatus(403);
+    }
+
     logger.info('Detected bot', { userAgent, path: req.path, query: req.query, method: req.method });
   }
 
