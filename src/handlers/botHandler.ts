@@ -32,6 +32,7 @@ export const botHandler: RequestHandler = (req, res, next) => {
       logger.info('Blocked bot', { userAgent, path: req.path, query: req.query, method: req.method });
 
       res.sendStatus(403);
+      return;
     }
 
     logger.info('Detected bot', { userAgent, path: req.path, query: req.query, method: req.method });
