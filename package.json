@@ -1,11 +1,11 @@
 {
   "name": "prices",
-  "version": "3.16.15",
+  "version": "3.16.16",
   "description": "",
   "scripts": {
     "test": "jest",
     "start": "node dist",
-    "build": "tsc",
+    "build": "tsc -p tsconfig.build.json",
     "lint": "eslint --ext .ts src"
   },
   "author": "Dave Welsh",

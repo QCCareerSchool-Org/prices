@@ -5,9 +5,6 @@ import * as yup from 'yup';
 import { asyncWrapper } from './lib/asyncWrapper';
 import * as HttpStatus from './lib/http-status';
 import { objectMap } from './lib/objectMap';
-import { logger } from './logger';
-import type { OldPriceQuery, OldPriceResult } from './oldPrices';
-import { oldGetPrices } from './oldPrices';
 import { pool } from './pool';
 import { prices } from './prices';
 import type { PriceQuery, PriceQueryOptions, PriceResult, School } from './types';
@@ -41,31 +38,14 @@ const priceSchema: yup.ObjectSchema<PriceQuery> = yup.object({
   }),
 }).required();
 
-const oldPriceSchema: yup.ObjectSchema<OldPriceQuery> = yup.object({
-  courses: yup.array(yup.string().required()).default(() => ([])).defined(),
-  countryCode: yup.string().length(2).required(),
-  provinceCode: yup.string().max(3).nullable().default(null).required(),
-  discountAll: yup.number(),
-  options: yup.object({
-    discountAll: yup.boolean(),
-    discount: yup.number().min(0),
-    discountSignature: yup.string(),
-    MMFreeMW: yup.boolean(),
-    deluxeKit: yup.boolean(),
-    portfolio: yup.boolean(),
-    campaignId: yup.string(),
-    discountCode: yup.string(),
-    discountGBP: yup.number().min(0),
-    discountSignatureGBP: yup.string(),
-  }),
-  _: yup.number(),
-}).required();
-
 export const router = express.Router();
 
 router.get('/', asyncWrapper(async (req, res) => {
   res.setHeader('Cache-Control', 'public, max-age=300'); // five minutes
-  res.send(res.locals.apiVersion === 2 ? await newPrices(req) : await oldPrices(req));
+  if (res.locals.apiVersion !== 2) {
+    res.sendStatus(400);
+  }
+  res.send(await newPrices(req));
 }));
 
 const newPrices = async (req: Request): Promise<PriceResult> => {
@@ -81,25 +61,6 @@ const newPrices = async (req: Request): Promise<PriceResult> => {
       throw new HttpStatus.BadRequest('unknown error');
     }
     return await prices(connection, query.courses, query.countryCode, query.provinceCode, query.options);
-  } finally {
-    connection.release();
-  }
-};
-
-const oldPrices = async (req: Request): Promise<OldPriceResult> => {
-  logger.warn('Old prices function called', req.headers.origin);
-  const connection = await (await pool).getConnection();
-  try {
-    let query: OldPriceQuery;
-    try {
-      query = await oldPriceSchema.validate(req.query);
-    } catch (err) {
-      if (err instanceof yup.ValidationError) {
-        throw new HttpStatus.BadRequest(err.message);
-      }
-      throw new HttpStatus.BadRequest('unknown error');
-    }
-    return await oldGetPrices(connection, query.courses, query.countryCode, query.provinceCode, query.discountAll ?? 0, query.options);
   } finally {
     connection.release();
   }

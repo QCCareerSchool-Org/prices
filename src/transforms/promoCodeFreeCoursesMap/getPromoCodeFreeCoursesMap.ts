@@ -265,6 +265,10 @@ export const getPromoCodeFreeCourseMap = (now: Date, options?: PriceQueryOptions
       return freeMap(courseResult);
     }
 
+    if ((courseResult.code === 'VD' || courseResult.code === 'DB') && array.some(c => c.code === 'I2')) {
+      return freeMap(courseResult);
+    }
+
     return courseResult;
   };
 };
