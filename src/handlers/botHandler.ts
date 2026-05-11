@@ -1,8 +1,6 @@
 import type { RequestHandler } from 'express';
 import { isbot } from 'isbot';
 
-import { logger } from '../logger';
-
 export const botHandler: RequestHandler = (req, res, next) => {
   res.setHeader('X-Robots-Tag', 'noindex');
 
@@ -18,7 +16,7 @@ export const botHandler: RequestHandler = (req, res, next) => {
   }
 
   if (knownCrawlers.some(regex => regex.test(userAgent))) {
-    logger.info('Blocked crawler', { userAgent, path: req.path, query: req.query, method: req.method });
+    console.info('Blocked crawler', { userAgent, path: req.path, query: req.query, method: req.method });
 
     res.sendStatus(403);
     return;
@@ -29,13 +27,13 @@ export const botHandler: RequestHandler = (req, res, next) => {
     const provinceCode = typeof req.query.provinceCode === 'string' ? req.query.provinceCode.toUpperCase() : undefined;
 
     if ((countryCode === 'CA' || countryCode === 'US') && !provinceCode) {
-      logger.info('Blocked bot', { userAgent, path: req.path, query: req.query, method: req.method });
+      console.info('Blocked bot', { userAgent, path: req.path, query: req.query, method: req.method });
 
       res.sendStatus(403);
       return;
     }
 
-    logger.info('Detected bot', { userAgent, path: req.path, query: req.query, method: req.method });
+    console.info('Detected bot', { userAgent, path: req.path, query: req.query, method: req.method });
   }
 
   next();

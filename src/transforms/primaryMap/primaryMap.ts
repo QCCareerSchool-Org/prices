@@ -1,6 +1,5 @@
 import Big from 'big.js';
 
-import { logger } from '../../logger';
 import type { CourseResult } from '../../types';
 
 /**
@@ -53,7 +52,7 @@ export const primaryMap = (c: CourseResult, i: number, a: CourseResult[]): Cours
       },
     };
   } catch (err) {
-    logger.error('Erorr in primaryMap', a);
+    console.error('Erorr in primaryMap', a);
     throw err;
   }
 };
