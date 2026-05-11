@@ -52,7 +52,6 @@
     "isbot": "^5.1.37",
     "mysql2": "^3.22.3",
     "nodemailer": "^7.0.13",
-    "promise-mysql": "^5.2.0",
     "winston": "^3.19.0",
     "yup": "^1.7.1"
   }
