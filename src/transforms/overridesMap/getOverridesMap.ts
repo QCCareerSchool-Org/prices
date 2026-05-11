@@ -32,16 +32,19 @@ export const getOverridesMap = (courses: string[], depositOverrides: PriceQueryO
 
   return (courseResult: CourseResult): CourseResult => {
     if (depositOverrides?.[courseResult.code] && installmentsOverride) {
-      const deposit = depositOverrides[courseResult.code];
+      if (typeof courseResult.plans.part === 'undefined') {
+        throw Error('Part plan undefined');
+      }
+      const deposit = depositOverrides[courseResult.code] ?? 0;
       const installments = Math.round(installmentsOverride);
-      const installmentSize = parseFloat(Big(courseResult.discountedCost).minus(courseResult.plans.part!.discount).minus(deposit).div(installments).round(2, 0).toFixed(2)); // always round down so that the actual price will never be more than the quoted price
-      const remainder = parseFloat(Big(courseResult.discountedCost).minus(courseResult.plans.part!.discount).minus(deposit).minus(Big(installmentSize).times(installments)).toFixed(2));
+      const installmentSize = parseFloat(Big(courseResult.discountedCost).minus(courseResult.plans.part.discount).minus(deposit).div(installments).round(2, 0).toFixed(2)); // always round down so that the actual price will never be more than the quoted price
+      const remainder = parseFloat(Big(courseResult.discountedCost).minus(courseResult.plans.part.discount).minus(deposit).minus(Big(installmentSize).times(installments)).toFixed(2));
       return {
         ...courseResult,
         plans: {
           ...courseResult.plans,
           part: {
-            ...courseResult.plans.part!,
+            ...courseResult.plans.part,
             deposit,
             installments,
             installmentSize,

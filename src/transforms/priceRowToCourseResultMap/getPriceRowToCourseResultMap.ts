@@ -1,6 +1,7 @@
 import Big from 'big.js';
 
-import type { CourseResult, PriceRow } from '../../types';
+import type { PriceRow } from '../../data/lookupPrice';
+import type { CourseResult } from '../../types';
 
 export const clamp = (value: number, min: number, max: number): number => Math.min(Math.max(value, min), max);
 
@@ -30,11 +31,11 @@ export const getPriceRowToCourseResultMap = (student?: boolean) => (p: PriceRow)
 
   const partDeposit = clamp(parseFloat(p.deposit.toFixed(2)), 0, partTotal); // the deposit can't be greater than the cost and can't be negative
 
-  const partInstallments = p.installments ? Math.round(student ? p.installments / 2 : p.installments) : undefined; // the number of installments must be at least 1 and must be a whole number
+  const partInstallments = p.installments ? Math.round(student ? p.installments / 2 : p.installments) : 1; // the number of installments must be at least 1 and must be a whole number
 
-  const partInstallmentSize = p.installments ? parseFloat(Big(partTotal).minus(partDeposit).div(partInstallments!).round(2, 0).toFixed(2)) : undefined; // always round down so that the actual price will never be more than the quoted price
+  const partInstallmentSize = p.installments ? parseFloat(Big(partTotal).minus(partDeposit).div(partInstallments).round(2, 0).toFixed(2)) : 0; // always round down so that the actual price will never be more than the quoted price
 
-  const partRemainder = p.installments ? parseFloat(Big(partTotal).minus(partDeposit).minus(Big(partInstallmentSize!).times(partInstallments!)).toFixed(2)) : undefined;
+  const partRemainder = p.installments ? parseFloat(Big(partTotal).minus(partDeposit).minus(Big(partInstallmentSize).times(partInstallments)).toFixed(2)) : undefined;
 
   return {
     code: p.courseCode,
@@ -62,8 +63,9 @@ export const getPriceRowToCourseResultMap = (student?: boolean) => (p: PriceRow)
         ? {
           discount: partDiscount,
           deposit: partDeposit,
-          installmentSize: partInstallmentSize!,
+          installmentSize: partInstallmentSize,
           installments: partInstallments,
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           remainder: partRemainder!,
           total: partTotal,
           originalDeposit: partDeposit,

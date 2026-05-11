@@ -5,16 +5,15 @@ import * as yup from 'yup';
 import { asyncWrapper } from './lib/asyncWrapper';
 import * as HttpStatus from './lib/http-status';
 import { objectMap } from './lib/objectMap';
-import { pool } from './pool';
 import { prices } from './prices';
-import type { PriceQuery, PriceQueryOptions, PriceResult, School } from './types';
+import type { PriceQuery, PriceResult, School } from './types';
 
 // validate the parameters
 const priceSchema: yup.ObjectSchema<PriceQuery> = yup.object({
   courses: yup.array(yup.string().required()).default([]),
   countryCode: yup.string().length(2).required(),
   provinceCode: yup.string().max(3),
-  options: yup.object<PriceQueryOptions>({
+  options: yup.object({
     noShipping: yup.boolean(),
     discountAll: yup.boolean(),
     discount: yup.object({ // keys must be in opposite order because yup reverses them
@@ -49,19 +48,14 @@ router.get('/', asyncWrapper(async (req, res) => {
 }));
 
 const newPrices = async (req: Request): Promise<PriceResult> => {
-  const connection = await (await pool).getConnection();
+  let query: PriceQuery;
   try {
-    let query: PriceQuery;
-    try {
-      query = await priceSchema.validate(req.query);
-    } catch (err) {
-      if (err instanceof yup.ValidationError) {
-        throw new HttpStatus.BadRequest(err.message);
-      }
-      throw new HttpStatus.BadRequest('unknown error');
+    query = await priceSchema.validate(req.query);
+  } catch (err) {
+    if (err instanceof yup.ValidationError) {
+      throw new HttpStatus.BadRequest(err.message);
     }
-    return await prices(connection, query.courses, query.countryCode, query.provinceCode, query.options);
-  } finally {
-    connection.release();
+    throw new HttpStatus.BadRequest('unknown error');
   }
+  return await prices(query.courses, query.countryCode, query.provinceCode, query.options);
 };

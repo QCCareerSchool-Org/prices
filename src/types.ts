@@ -7,24 +7,24 @@ export type CurrencyCode = 'CAD' | 'USD' | 'GBP' | 'AUD' | 'NZD';
 export type School = 'QC Career School' | 'QC Makeup Academy' | 'QC Design School' | 'QC Event School' | 'QC Pet Studies' | 'QC Wellness Studies' | 'Winghill Writing School' | 'QC Pet Studies (EarthWise)' | 'Paw Parent Academy';
 
 export interface PriceQueryOptions {
-  noShipping?: boolean;
-  discountAll?: boolean;
-  discount?: Partial<Record<CurrencyCode, number>> & { default: number };
-  discountSignature?: string;
-  depositOverrides?: Record<string, number>;
-  installmentsOverride?: number;
-  studentDiscount?: boolean;
-  withoutTools?: boolean;
-  school?: School;
-  promoCode?: string;
-  dateOverride?: Date;
+  noShipping?: boolean | undefined;
+  discountAll?: boolean | undefined;
+  discount?: Partial<Record<CurrencyCode, number | undefined>> & { default: number } | undefined;
+  discountSignature?: string | undefined;
+  depositOverrides?: Record<string, number> | undefined;
+  installmentsOverride?: number | undefined;
+  studentDiscount?: boolean | undefined;
+  withoutTools?: boolean | undefined;
+  school?: School | undefined;
+  promoCode?: string | undefined;
+  dateOverride?: Date | undefined;
 }
 
 export interface PriceQuery {
-  courses?: string[];
+  courses?: string[] | undefined;
   countryCode: string;
-  provinceCode?: string;
-  options?: PriceQueryOptions;
+  provinceCode?: string | undefined;
+  options?: PriceQueryOptions | undefined;
 }
 
 export interface Plan {
@@ -58,22 +58,22 @@ export interface Price {
   /** the discounted price (before payment plan discount) */
   discountedCost: number;
   /** the payment plans */
-  plans: { full: Plan; part?: Plan };
+  plans: { full: Plan; part?: Plan | undefined };
   /** what our cost for shipping would be if we shipped */
   shipping: number;
 }
 
 export type PriceResult = {
   countryCode: string;
-  provinceCode?: string;
+  provinceCode?: string | undefined;
   currency: Currency;
   disclaimers: string[];
   notes: string[];
   promoWarnings: string[];
   noShipping: NoShipping;
-  noShippingMessage?: string;
-  promoCodeRecognized?: boolean;
-  promoCode?: string;
+  noShippingMessage?: string | undefined;
+  promoCodeRecognized?: boolean | undefined;
+  promoCode?: string | undefined;
   courses: CourseResult[];
 } & Price;
 
@@ -94,20 +94,4 @@ export interface Currency {
   symbol: string;
   name: string;
   exchangeRate: number;
-}
-
-export interface PriceRow {
-  // noShipping: number;
-  code: string;
-  currencyCode: string;
-  cost: number;
-  multiCourseDiscountRate: number;
-  deposit: number;
-  discount: number;
-  partDiscount: number;
-  installments: number | null;
-  courseCode: string;
-  courseName: string;
-  shipping: number;
-  order: number;
 }

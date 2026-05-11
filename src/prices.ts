@@ -1,11 +1,9 @@
-import type { PoolConnection } from 'promise-mysql';
-
 import { collateResults } from './collateResults';
+import { lookupCurrency } from './data/lookupCurrency';
+import { lookupPrice } from './data/lookupPrice';
 import { defaultCurrencyCode } from './defaultCurrencyCode';
 import { noShipCountry } from './lib/helper-functions';
 import * as HttpStatus from './lib/http-status';
-import { lookupCurrency } from './lookupCurrency';
-import { lookupPrice } from './lookupPrice';
 import { noShippingMessage } from './noShippingMessage';
 import { notesAndDisclaimers } from './notesAndDisclaimers';
 import { promoCodeRecognized } from './promoCodes';
@@ -32,7 +30,6 @@ import { getToolsDiscountMap } from './transforms/toolsDiscountMap/getToolsDisco
 import type { CourseResult, NoShipping, PriceQueryOptions, PriceResult } from './types';
 
 export async function prices(
-  connection: PoolConnection,
   courses: string[] = [],
   countryCode: string,
   provinceCode?: string,
@@ -43,12 +40,17 @@ export async function prices(
     courses
       .map(c => c.toUpperCase()) // convert all course codes to upper case for easier comparison later
       .filter((item, pos, self) => self.indexOf(item) === pos) // strip out any duplicate courses
-      .map(async course => lookupPrice(connection, course, countryCode, provinceCode)), // convert to priceRow promises
+      .map(async course => lookupPrice(course, countryCode, provinceCode)), // convert to priceRow promises
   );
+
+  const firstRow = priceRows[0];
+  if (!firstRow) {
+    throw Error('No rows found');
+  }
 
   // determine the currency we'll be using
   // if we have one or more price rows, pick the currency of the first price row (it doesn't matter which we pick); otherwise choose a currency based on the country
-  const currencyCode = priceRows.length ? priceRows[0].currencyCode : defaultCurrencyCode(countryCode);
+  const currencyCode = priceRows.length ? firstRow.currencyCode : defaultCurrencyCode(countryCode);
 
   // only accept certain currencies
   if (currencyCode !== 'CAD' && currencyCode !== 'USD' && currencyCode !== 'GBP' && currencyCode !== 'AUD' && currencyCode !== 'NZD') {
@@ -101,7 +103,7 @@ export async function prices(
   return collateResults(
     countryCode,
     provinceCode ?? null,
-    await lookupCurrency(connection, currencyCode),
+    await lookupCurrency(currencyCode),
     courseResults,
     disclaimers,
     notes,

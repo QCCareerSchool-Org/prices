@@ -27,7 +27,16 @@ export const primaryMap = (c: CourseResult, i: number, a: CourseResult[]): Cours
       };
     }
 
-    const partInstallments = a[0].plans.part!.installments; // can't be undefined
+    const first = a[0];
+    if (typeof first === 'undefined') {
+      throw Error('No element found');
+    }
+
+    if (typeof first.plans.part === 'undefined') {
+      throw Error('Part plan undefined');
+    }
+
+    const partInstallments = first.plans.part.installments; // can't be undefined
     const partInstallmentSize = parseFloat(Big(c.discountedCost).minus(c.plans.part.deposit).div(partInstallments).round(2, 0).toFixed(2));
     const partRemainder = parseFloat(Big(c.discountedCost).minus(c.plans.part.deposit).minus(Big(partInstallmentSize).times(partInstallments)).toFixed(2));
     return {

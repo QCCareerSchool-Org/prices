@@ -7,10 +7,7 @@ import { botHandler } from './handlers/botHandler';
 import { errorHandler } from './handlers/errorHandler';
 import { httpErrorHandler } from './handlers/httpErrorHandler';
 import { versionMiddleware } from './handlers/versionMiddleware';
-import { logger } from './logger';
 import { router } from './router';
-
-const HTTP_PORT = 15004;
 
 const origin = [
   /(?:.*\.)?localhost(?::\d{1,5})?$/iu,
@@ -36,6 +33,8 @@ app.use('/prices', router);
 app.use(httpErrorHandler);
 app.use(errorHandler);
 
-app.listen(HTTP_PORT, () => {
-  logger.info(`Server running on port ${HTTP_PORT}`);
-});
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(8080);
+}
+
+export default app;
