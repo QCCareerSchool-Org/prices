@@ -4,7 +4,7 @@ import { studentDiscountAmount } from './studentDiscountAmount';
 import { calculatePlans } from '../../calculatePlans';
 import type { CurrencyCode } from '../../domain/currencyCode';
 import type { MapFunction } from '../../domain/mapFunction';
-import type { PriceOptions } from '../../domain/priceOptions';
+import type { PriceOptions } from '../../domain/priceQuery';
 import type { CoursePrice } from '@/domain/price';
 
 /**

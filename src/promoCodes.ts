@@ -14,7 +14,7 @@
  * const mothersdayDesign = promoCodeSpecs.find(v => v.code === 'MOTHERSDAY' && v.schools.includes('QC Design School'))
  */
 import rawGroomCodes from './codes/GROOM.json';
-import type { PriceOptions } from './domain/priceOptions';
+import type { PriceOptions } from './domain/priceQuery';
 import type { School } from './domain/school';
 
 const groomCodes: readonly string[] = rawGroomCodes;

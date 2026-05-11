@@ -3,9 +3,9 @@ import { failure, type Result, success } from 'generic-result-type';
 import type { ParsedQs } from 'qs';
 import * as yup from 'yup';
 
-import type { PriceOptions } from '@/domain/priceOptions';
+import { getPrices } from '../getPrices';
+import type { PriceQuery } from '@/domain/priceQuery';
 import type { School } from '@/domain/school';
-import { getPrices } from '@/getPrices';
 import { objectMap } from '@/lib/objectMap';
 
 export const priceHandler: Handler = async (req, res) => {
@@ -49,7 +49,7 @@ const schema: yup.ObjectSchema<PriceQuery> = yup.object({
       default: yup.number().required(),
     }).default(undefined),
     discountSignature: yup.string(),
-    depositOverrides: yup.lazy(obj => yup.object(
+    depositOverrides: yup.lazy(obj => yup.object<Record<string, number>>(
       objectMap(obj, () => yup.number()),
     )),
     installmentsOverride: yup.number().min(1).max(24),
@@ -60,10 +60,3 @@ const schema: yup.ObjectSchema<PriceQuery> = yup.object({
     dateOverride: yup.date(),
   }),
 }).required();
-
-interface PriceQuery {
-  courses?: string[] | undefined;
-  countryCode: string;
-  provinceCode?: string | undefined;
-  options?: PriceOptions | undefined;
-}

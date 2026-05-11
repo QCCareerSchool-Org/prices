@@ -4,7 +4,7 @@ import { shouldGetMultiCourseDiscount } from './shouldGetMultiCourseDiscount';
 import { calculatePlans } from '@/calculatePlans';
 import type { MapFunction } from '@/domain/mapFunction';
 import type { CoursePrice } from '@/domain/price';
-import type { PriceOptions } from '@/domain/priceOptions';
+import type { PriceOptions } from '@/domain/priceQuery';
 import type { PromoCodeSpec } from '@/promoCodes';
 import { promoCodeSpecs, specApplies } from '@/promoCodes';
 

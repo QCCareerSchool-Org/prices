@@ -2,7 +2,7 @@ import crypto from 'crypto';
 import fs from 'fs';
 import path from 'path';
 
-import type { PriceOptions } from '../../domain/priceOptions';
+import type { PriceOptions } from '../../domain/priceQuery';
 
 const publicKey = fs.readFileSync(path.join(__dirname, '../../../public.pem'), 'utf8');
 

@@ -2,7 +2,7 @@ import Big from 'big.js';
 
 import { calculatePlans } from '../../calculatePlans';
 import type { MapFunction } from '../../domain/mapFunction';
-import type { PriceOptions } from '../../domain/priceOptions';
+import type { PriceOptions } from '../../domain/priceQuery';
 import type { CoursePrice } from '@/domain/price';
 
 export const getToolsDiscountMap = (now: Date, currencyCode: string, options?: PriceOptions): MapFunction<CoursePrice, CoursePrice> => {

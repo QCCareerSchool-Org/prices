@@ -1,6 +1,6 @@
 import { isEventFoundationCourse, isEventSpecialtyCourse } from './courses';
 import type { NoShipping } from './domain/noShipping';
-import type { PriceOptions } from './domain/priceOptions';
+import type { PriceOptions } from './domain/priceQuery';
 import type { PromoCodeSpec } from './promoCodes';
 import { promoCodeSpecs, specApplies } from './promoCodes';
 

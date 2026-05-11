@@ -1,4 +1,4 @@
-import type { PriceOptions } from '../../domain/priceOptions';
+import type { PriceOptions } from '../../domain/priceQuery';
 import type { PromoCodeSpec } from '../../promoCodes';
 import { promoCodeSpecs, specApplies } from '../../promoCodes';
 import type { CoursePrice } from '@/domain/price';

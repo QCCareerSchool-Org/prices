@@ -27,7 +27,7 @@ export function noShipCountry(countryCode: string | null): boolean {
   countryCode = countryCode.toUpperCase();
 
   // US embargo countries
-  if ([ 'IR', 'KP', 'CU', 'MM', 'SD', 'SY' ].indexOf(countryCode) !== -1) {
+  if ([ 'IR', 'KP', 'CU', 'MM', 'SD', 'SY' ].includes(countryCode)) {
     return true;
   }
 
@@ -48,13 +48,13 @@ export function noShipCountry(countryCode: string | null): boolean {
 
   // Africa
   const africanCountries = [ 'DZ', 'AO', 'BJ', 'BW', 'BF', 'BI', 'CM', 'CV', 'CF', 'TD', 'KM', 'CD', 'DJ', 'GQ', 'EG', 'ER', 'ET', 'GA', 'GH', 'GN', 'GW', 'CI', 'KE', 'LS', 'LR', 'LY', 'MG', 'MW', 'ML', 'MR', 'MU', 'MA', 'MZ', 'NA', 'NE', 'NG', 'CG', 'RW', 'ST', 'SN', 'SC', 'SL', 'SO', 'SS', 'SD', 'SZ', 'TZ', 'GM', 'TG', 'TN', 'UG', 'ZA', 'ZM', 'ZW' ];
-  if (africanCountries.indexOf(countryCode.toUpperCase()) !== -1) {
+  if (africanCountries.includes(countryCode.toUpperCase())) {
     return true;
   }
 
   // additional FedEx restrictions
   const fedexCountries = [ 'CF', 'KM', 'CU', 'GQ', 'FK', 'GW', 'IR', 'KI', 'KP', 'YT', 'MM', 'NR', 'NU', 'PM', 'ST', 'SL', 'SB', 'SO', 'SH', 'SD', 'SY', 'TJ', 'TK', 'TM', 'TV', 'UM' ];
-  if (fedexCountries.indexOf(countryCode.toUpperCase()) !== -1) {
+  if (fedexCountries.includes(countryCode.toUpperCase())) {
     return true;
   }
 
@@ -77,7 +77,7 @@ export function euCountry(countryCode: string | null): boolean {
   if (countryCode === null) {
     return false;
   }
-  return euCountries.indexOf(countryCode.toUpperCase()) !== -1;
+  return euCountries.includes(countryCode.toUpperCase());
 }
 
 const eurozoneCountries = [ 'AT', 'BE', 'CY', 'EE', 'FI', 'FR', 'DE', 'GR', 'IE', 'IT', 'LU', 'MT', 'NL', 'PT', 'SK', 'SI', 'ES' ];
@@ -87,7 +87,7 @@ export const eurozone = (countryCode: string | null): boolean => {
   if (countryCode === null) {
     return false;
   }
-  return eurozoneCountries.indexOf(countryCode.toUpperCase()) !== -1;
+  return eurozoneCountries.includes(countryCode.toUpperCase());
 };
 
 const euroUsingCountries = [ 'VA', 'MC', 'SM' ];
@@ -97,7 +97,7 @@ export const euroUsingCountry = (countryCode: string | null): boolean => {
   if (countryCode === null) {
     return false;
   }
-  return eurozone(countryCode) || euroUsingCountries.indexOf(countryCode.toUpperCase()) !== -1;
+  return eurozone(countryCode) || euroUsingCountries.includes(countryCode.toUpperCase());
 };
 
 const euroCountries = [ 'AL', 'AD', 'AM', 'AZ', 'BY', 'BA', 'BG', 'HR', 'CZ', 'DK', 'GE', 'HU', 'IS', 'LV', 'LU', 'LT', 'MK', 'MD', 'ME', 'NO', 'PL', 'RO', 'RU', 'RS', 'SE', 'CH', 'TR', 'UA' ];
@@ -107,7 +107,7 @@ export const euroCountry = (countryCode: string | null): boolean => {
   if (countryCode === null) {
     return false;
   }
-  return euroUsingCountry(countryCode) || euroCountries.indexOf(countryCode.toUpperCase()) !== -1;
+  return euroUsingCountry(countryCode) || euroCountries.includes(countryCode.toUpperCase());
 };
 
 const gbpCountries = [ 'GB', 'IM', 'GG', 'JE', 'GS' ];
@@ -117,7 +117,7 @@ export const gbpCountry = (countryCode: string | null): boolean => {
   if (countryCode === null) {
     return false;
   }
-  return gbpCountries.indexOf(countryCode.toUpperCase()) !== -1;
+  return gbpCountries.includes(countryCode.toUpperCase());
 };
 
 const audCountries = [ 'AU', 'CX', 'CC', 'NR', 'NF', 'HM' ];
@@ -127,7 +127,7 @@ export const audCountry = (countryCode: string | null): boolean => {
   if (countryCode === null) {
     return false;
   }
-  return audCountries.indexOf(countryCode.toUpperCase()) !== -1;
+  return audCountries.includes(countryCode.toUpperCase());
 };
 
 const nzdCountries = [ 'NZ', 'TK', 'NU', 'PN' ];
@@ -137,7 +137,7 @@ export const nzdCountry = (countryCode: string | null): boolean => {
   if (countryCode === null) {
     return false;
   }
-  return nzdCountries.indexOf(countryCode.toUpperCase()) !== -1;
+  return nzdCountries.includes(countryCode.toUpperCase());
 };
 
 const needsPostalCountries = [ 'AO', 'AG', 'AW', 'BS', 'BZ', 'BJ', 'BW', 'BF', 'BI', 'CM', 'TD', 'KM', 'CD', 'CG', 'CK', 'CW', 'DJ', 'DM', 'GQ', 'ER', 'FJ', 'GA', 'GM', 'GH', 'GD', 'GY', 'HM', 'HK', 'CI', 'JM', 'KI', 'LY', 'MO', 'MW', 'ML', 'MR', 'MS', 'NA', 'NR', 'NU', 'KP', 'PA', 'QA', 'RE', 'RW', 'KN', 'LC', 'WS', 'ST', 'SC', 'SL', 'MF', 'SB', 'GS', 'SR', 'SY', 'TZ', 'TG', 'TK', 'TO', 'TT', 'TV', 'UG', 'AE', 'VU', 'YE', 'ZW' ];
@@ -146,7 +146,7 @@ export const needsPostal = (countryCode: string | null): boolean => {
   if (countryCode === null) {
     return false;
   }
-  return needsPostalCountries.indexOf(countryCode.toUpperCase()) === -1;
+  return !needsPostalCountries.includes(countryCode.toUpperCase());
 };
 
 export const needsProvince = (countryCode?: string | null): boolean => {
@@ -184,7 +184,7 @@ export const naTelephoneNumber = (countryCode: string | null): boolean => {
     'KN',
     'JM',
   ];
-  return countries.indexOf(countryCode.toUpperCase()) !== -1;
+  return countries.includes(countryCode.toUpperCase());
 };
 
 export function fixTelephoneNumber(t: string): string {
@@ -263,7 +263,7 @@ export function fixTelephoneNumber(t: string): string {
  * @returns {boolean}
  */
 export function isCallingCode44(countryCode: string): boolean {
-  return [ 'GB', 'IM', 'GG', 'JE' ].indexOf(countryCode) !== -1;
+  return [ 'GB', 'IM', 'GG', 'JE' ].includes(countryCode);
 }
 
 /**
@@ -272,7 +272,7 @@ export function isCallingCode44(countryCode: string): boolean {
  * @returns {boolean}
  */
 export function isCallingCode61(countryCode: string): boolean {
-  return [ 'AU', 'CX', 'CC' ].indexOf(countryCode) !== -1;
+  return [ 'AU', 'CX', 'CC' ].includes(countryCode);
 }
 
 /**
@@ -281,7 +281,7 @@ export function isCallingCode61(countryCode: string): boolean {
  * @returns {boolean}
  */
 export function isCallingCode64(countryCode: string): boolean {
-  return [ 'NZ', 'PN' ].indexOf(countryCode) !== -1;
+  return [ 'NZ', 'PN' ].includes(countryCode);
 }
 
 /**
@@ -317,7 +317,7 @@ export function isCallingCode1(countryCode: string): boolean {
     'VG',
     'VI',
     'UM',
-  ].indexOf(countryCode) !== -1;
+  ].includes(countryCode);
 }
 
 /**

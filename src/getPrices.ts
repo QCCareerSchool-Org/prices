@@ -4,7 +4,7 @@ import { lookupPrice } from './data/lookupPrice';
 import { defaultCurrencyCode } from './defaultCurrencyCode';
 import type { NoShipping } from './domain/noShipping';
 import type { CoursePrice, Price } from './domain/price';
-import type { PriceOptions } from './domain/priceOptions';
+import type { PriceOptions } from './domain/priceQuery';
 import { noShipCountry } from './lib/helper-functions';
 import * as HttpStatus from './lib/http-status';
 import { noShippingMessage } from './noShippingMessage';

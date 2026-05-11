@@ -3,7 +3,7 @@ import Big from 'big.js';
 import { calculatePlans } from '../../calculatePlans';
 import { isEventFoundationCourse, isMakeupFoundationCourse } from '../../courses';
 import type { MapFunction } from '../../domain/mapFunction';
-import type { PriceOptions } from '../../domain/priceOptions';
+import type { PriceOptions } from '../../domain/priceQuery';
 import type { PromoCodeSpec } from '../../promoCodes';
 import { promoCodeSpecs, specApplies, studentSupport100Specs, studentSupport150Specs, studentSupport50Specs } from '../../promoCodes';
 import type { CoursePrice } from '@/domain/price';

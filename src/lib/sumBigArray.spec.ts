@@ -6,7 +6,7 @@ import { sumBigArray } from './sumBigArray';
 describe('sumBigArray', () => {
 
   it('should sum properly', () => {
-    const numbers = Array(14).fill(null).map(() => Big(faker.random.number()));
+    const numbers = Array(14).fill(null).map(() => Big(faker.datatype.number()));
     let manualSum = Big(0);
     numbers.forEach(n => {
       manualSum = manualSum.plus(n);

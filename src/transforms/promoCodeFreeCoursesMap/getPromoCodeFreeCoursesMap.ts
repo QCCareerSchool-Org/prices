@@ -1,6 +1,6 @@
 import { isDesignCourse, isEventFoundationCourse, isEventSpecialtyCourse } from '../../courses';
 import type { MapFunction } from '../../domain/mapFunction';
-import type { PriceOptions } from '../../domain/priceOptions';
+import type { PriceOptions } from '../../domain/priceQuery';
 import { freeMap } from '../../lib/freeMap';
 import type { PromoCodeSpec } from '../../promoCodes';
 import { ppaFreeCourseSpecs, promoCodeSpecs, specApplies } from '../../promoCodes';

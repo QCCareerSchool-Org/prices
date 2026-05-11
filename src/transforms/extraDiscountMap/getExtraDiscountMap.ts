@@ -5,7 +5,7 @@ import { calculatePlans } from '@/calculatePlans';
 import type { CurrencyCode } from '@/domain/currencyCode';
 import type { MapFunction } from '@/domain/mapFunction';
 import type { CoursePrice } from '@/domain/price';
-import type { PriceOptions } from '@/domain/priceOptions';
+import type { PriceOptions } from '@/domain/priceQuery';
 import * as HttpStatus from '@/lib/http-status';
 
 /**

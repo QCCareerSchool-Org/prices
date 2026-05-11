@@ -1,7 +1,7 @@
 import Big from 'big.js';
 
 import type { MapFunction } from '../../domain/mapFunction';
-import type { PriceOptions } from '../../domain/priceOptions';
+import type { PriceOptions } from '../../domain/priceQuery';
 import * as HttpStatus from '../../lib/http-status';
 import type { CoursePrice } from '@/domain/price';
 
