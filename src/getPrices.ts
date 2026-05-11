@@ -2,6 +2,9 @@ import { collateResults } from './collateResults';
 import { lookupCurrency } from './data/lookupCurrency';
 import { lookupPrice } from './data/lookupPrice';
 import { defaultCurrencyCode } from './defaultCurrencyCode';
+import type { NoShipping } from './domain/noShipping';
+import type { CoursePrice, Price } from './domain/price';
+import type { PriceOptions } from './domain/priceOptions';
 import { noShipCountry } from './lib/helper-functions';
 import * as HttpStatus from './lib/http-status';
 import { noShippingMessage } from './noShippingMessage';
@@ -20,25 +23,15 @@ import { getExtraDiscountMap } from './transforms/extraDiscountMap/getExtraDisco
 import { getSort } from './transforms/getSort/getSort';
 import { getMultiCourseDiscountMap } from './transforms/multiCourseDiscountMap/getMultiCourseDiscountMap';
 import { getOverridesMap } from './transforms/overridesMap/getOverridesMap';
-import { getPriceRowToCourseResultMap } from './transforms/priceRowToCourseResultMap/getPriceRowToCourseResultMap';
+import { getPriceRowToCoursePriceMap } from './transforms/priceRowToCoursePriceMap/getPriceRowToCoursePriceMap';
 import { primaryMap } from './transforms/primaryMap/primaryMap';
 import { getPromoCodeDiscountsMap } from './transforms/promoCodeDiscountsMap/getPromoCodeDiscountsMap';
 import { getPromoCodeFreeCourseMap } from './transforms/promoCodeFreeCoursesMap/getPromoCodeFreeCoursesMap';
 import { getShippingMap } from './transforms/shippingMap/getShippingMap';
 import { getStudentDiscountMap } from './transforms/studentDiscountMap/getStudentDiscountMap';
 import { getToolsDiscountMap } from './transforms/toolsDiscountMap/getToolsDiscountMap';
-import type { CourseResult, NoShipping, PriceQueryOptions, PriceResult } from './types';
 
-export async function prices(
-  courses: string[] = [],
-  countryCode: string,
-  provinceCode?: string,
-  options?: PriceQueryOptions,
-): Promise<PriceResult> {
-  // look up all the prices from the database
-
-  console.log(courses);
-
+export async function getPrices(courses: string[], countryCode: string, provinceCode?: string, options?: PriceOptions): Promise<Price> {
   const priceRows = await Promise.all(
     courses
       .map(c => c.toUpperCase()) // convert all course codes to upper case for easier comparison later
@@ -80,10 +73,10 @@ export async function prices(
         ? options.discountAll === true ? getDefaultFreePetExistingStudentMap(now) : getDefaultFreePetNewStudentMap(now)
         : options?.school === 'QC Makeup Academy'
           ? options.discountAll === true ? getDefaultFreeMakeupExistingStudentMap(now) : getDefaultFreeMakeupNewStudentMap(now)
-          : (c: CourseResult) => c; // identity function (do nothing)
+          : (c: CoursePrice) => c; // identity function (do nothing)
 
   const courseResults = priceRows
-    .map(getPriceRowToCourseResultMap(options?.discountAll)) // convert to a course result
+    .map(getPriceRowToCoursePriceMap(options?.discountAll)) // convert to a course result
     .sort((a, b) => (a.cost === b.cost ? b.order - a.order : a.cost - b.cost)) // sort by cost in ascending order (cheapest first)
     .map(freeCourseMap) // determine which courses shoul be free by default
     .sort(getSort(now, options)) // GENERALLY, sort by free in ascending order (free last), then cost in ascending order (cheapest first)

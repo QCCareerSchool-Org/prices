@@ -1,12 +1,14 @@
 import { isDesignCourse, isEventFoundationCourse, isEventSpecialtyCourse } from '../../courses';
+import type { MapFunction } from '../../domain/mapFunction';
+import type { PriceOptions } from '../../domain/priceOptions';
 import { freeMap } from '../../lib/freeMap';
 import type { PromoCodeSpec } from '../../promoCodes';
 import { ppaFreeCourseSpecs, promoCodeSpecs, specApplies } from '../../promoCodes';
-import type { CourseResult, MapFunction, PriceQueryOptions } from '../../types';
+import type { CoursePrice } from '@/domain/price';
 
 const allAccessFreeCourses = [ 'CP', 'ED', 'DW', 'LW', 'PE', 'FL', 'EB', 'VE' ];
 
-export const getPromoCodeFreeCourseMap = (now: Date, options?: PriceQueryOptions): MapFunction<CourseResult, CourseResult> => {
+export const getPromoCodeFreeCourseMap = (now: Date, options?: PriceOptions): MapFunction<CoursePrice, CoursePrice> => {
   const applies = (spec?: PromoCodeSpec): boolean => typeof spec !== 'undefined' && specApplies(spec, now, options?.discountAll, options?.promoCode, options?.school);
 
   const ppaFreeCourseApplies = ppaFreeCourseSpecs.some(applies);
@@ -54,7 +56,7 @@ export const getPromoCodeFreeCourseMap = (now: Date, options?: PriceQueryOptions
   let bogo2anyCount = 0;
   let bogoVirtualCount = 0;
 
-  return (courseResult: CourseResult, index: number, array: CourseResult[]): CourseResult => {
+  return (courseResult: CoursePrice, index: number, array: CoursePrice[]): CoursePrice => {
 
     if (freeProApplies) {
       if (courseResult.code === 'MW' && array.some(c => c.code === 'MZ')) {

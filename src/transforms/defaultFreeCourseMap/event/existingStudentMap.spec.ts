@@ -1,7 +1,8 @@
 import faker from 'faker';
 
 import { getDefaultFreeEventExistingStudentMap } from './existingStudentMap';
-import type { CourseResult, MapFunction } from '../../../types';
+import type { CourseResult } from '../../../domain/types';
+import type { MapFunction } from "../../../domain/mapFunction";
 
 const fakeCourseResult: CourseResult = {
   code: 'ZU',

@@ -1,7 +1,8 @@
 import Big from 'big.js';
 
 import { calculatePlans } from '../../calculatePlans';
-import type { CourseResult, NoShipping } from '../../types';
+import type { NoShipping } from '../../domain/noShipping';
+import type { CoursePrice } from '@/domain/price';
 
 /**
  * Maps a course tesult to another course result with the shipping discount applied as needed
@@ -9,7 +10,7 @@ import type { CourseResult, NoShipping } from '../../types';
  * @param noShipping whether we're allowed to have shipping or not and whether it is applied
  * @param options the options sent with the price request
  */
-export const getShippingMap = (noShipping: NoShipping) => (courseResult: CourseResult): CourseResult => {
+export const getShippingMap = (noShipping: NoShipping) => (courseResult: CoursePrice): CoursePrice => {
   // skip free courses
   if (courseResult.free) {
     return courseResult;

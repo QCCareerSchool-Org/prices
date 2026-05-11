@@ -1,11 +1,13 @@
 import Big from 'big.js';
 
+import type { MapFunction } from '../../domain/mapFunction';
+import type { PriceOptions } from '../../domain/priceOptions';
 import * as HttpStatus from '../../lib/http-status';
-import type { CourseResult, MapFunction, PriceQueryOptions } from '../../types';
+import type { CoursePrice } from '@/domain/price';
 
-export const getOverridesMap = (courses: string[], depositOverrides: PriceQueryOptions['depositOverrides'], installmentsOverride: PriceQueryOptions['installmentsOverride'], somePartsMissing: boolean): MapFunction<CourseResult, CourseResult> => {
+export const getOverridesMap = (courses: string[], depositOverrides: PriceOptions['depositOverrides'], installmentsOverride: PriceOptions['installmentsOverride'], somePartsMissing: boolean): MapFunction<CoursePrice, CoursePrice> => {
   if (somePartsMissing) {
-    return (c: CourseResult) => c;
+    return (c: CoursePrice) => c;
   }
 
   if (typeof depositOverrides !== 'undefined') {
@@ -30,7 +32,7 @@ export const getOverridesMap = (courses: string[], depositOverrides: PriceQueryO
     }
   }
 
-  return (courseResult: CourseResult): CourseResult => {
+  return (courseResult: CoursePrice): CoursePrice => {
     if (depositOverrides?.[courseResult.code] && installmentsOverride) {
       if (typeof courseResult.plans.part === 'undefined') {
         throw Error('Part plan undefined');

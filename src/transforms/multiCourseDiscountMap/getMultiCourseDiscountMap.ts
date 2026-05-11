@@ -1,17 +1,19 @@
 import Big from 'big.js';
 
 import { shouldGetMultiCourseDiscount } from './shouldGetMultiCourseDiscount';
-import { calculatePlans } from '../../calculatePlans';
-import type { PromoCodeSpec } from '../../promoCodes';
-import { promoCodeSpecs, specApplies } from '../../promoCodes';
-import type { CourseResult, MapFunction, PriceQueryOptions } from '../../types';
+import { calculatePlans } from '@/calculatePlans';
+import type { MapFunction } from '@/domain/mapFunction';
+import type { CoursePrice } from '@/domain/price';
+import type { PriceOptions } from '@/domain/priceOptions';
+import type { PromoCodeSpec } from '@/promoCodes';
+import { promoCodeSpecs, specApplies } from '@/promoCodes';
 
 /**
  * Creates a map function that adds the multi-course discount to course results
  *
  * @param options the PriceQueryOptions
  */
-export const getMultiCourseDiscountMap = (now: Date, options?: PriceQueryOptions): MapFunction<CourseResult, CourseResult> => {
+export const getMultiCourseDiscountMap = (now: Date, options?: PriceOptions): MapFunction<CoursePrice, CoursePrice> => {
   const applies = (spec?: PromoCodeSpec): boolean => typeof spec !== 'undefined' && specApplies(spec, now, options?.discountAll, options?.promoCode, options?.school);
 
   const skincare60Applies = applies(promoCodeSpecs.find(v => v.code === 'SKINCARE60'));
@@ -30,7 +32,7 @@ export const getMultiCourseDiscountMap = (now: Date, options?: PriceQueryOptions
   const business60Applies = applies(promoCodeSpecs.find(v => v.code === 'BUSINESS60'));
   const training60Applies = applies(promoCodeSpecs.find(v => v.code === 'TRAINING60'));
 
-  return (courseResult: CourseResult, index: number, array: CourseResult[]) => {
+  return (courseResult: CoursePrice, index: number, array: CoursePrice[]) => {
     // skip free courses
     if (courseResult.free) {
       return courseResult;

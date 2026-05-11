@@ -1,7 +1,8 @@
 import { isEventFoundationCourse, isEventSpecialtyCourse } from './courses';
+import type { NoShipping } from './domain/noShipping';
+import type { PriceOptions } from './domain/priceOptions';
 import type { PromoCodeSpec } from './promoCodes';
 import { promoCodeSpecs, specApplies } from './promoCodes';
-import type { NoShipping, PriceQueryOptions } from './types';
 
 /**
  * Returns a tuple of string arrays [ notes, disclaimers, promoWarnings ]
@@ -13,7 +14,7 @@ import type { NoShipping, PriceQueryOptions } from './types';
  * @param courses the courses
  * @param countryCode the country code
  */
-export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: string, noShipping: NoShipping, options?: PriceQueryOptions): [string[], string[], string[]] => {
+export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: string, noShipping: NoShipping, options?: PriceOptions): [string[], string[], string[]] => {
   const notes: string[] = [];
   const disclaimers: string[] = [];
   const promoWarnings: string[] = [];
@@ -31,8 +32,7 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
       promoWarnings.push('You entered the <strong>ELITE</strong> promo code, but have chosen to not have any materials shipped. You will not receive any makeup kits.');
     } else if (noShipping === 'REQUIRED') {
       promoWarnings.push('You entered the <strong>ELITE</strong> promo code, but we do not ship to your country. You will not receive any makeup kits.');
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    } else if (noShipping === 'ALLOWED' || noShipping === 'FORBIDDEN') {
+    } else { // 'ALLOWED', 'FORBIDDEN'
       if (!courses.includes('MZ')) {
         promoWarnings.push('You have entered the <strong>ELITE</strong> promo code but have not selected the <strong>Master Makeup Artistry</strong> course.');
       }

@@ -1,10 +1,11 @@
+import type { PriceOptions } from '../../domain/priceOptions';
 import type { PromoCodeSpec } from '../../promoCodes';
 import { promoCodeSpecs, specApplies } from '../../promoCodes';
-import type { CourseResult, PriceQueryOptions } from '../../types';
+import type { CoursePrice } from '@/domain/price';
 
 type SortFunction<T> = (a: T, b: T) => number;
 
-export const getSort = (now: Date, options?: PriceQueryOptions): SortFunction<CourseResult> => {
+export const getSort = (now: Date, options?: PriceOptions): SortFunction<CoursePrice> => {
   const applies = (spec?: PromoCodeSpec): boolean => typeof spec !== 'undefined' && specApplies(spec, now, options?.discountAll, options?.promoCode, options?.school);
 
   const masterclassApplies = applies(promoCodeSpecs.find(v => v.code === 'MASTERCLASS'));

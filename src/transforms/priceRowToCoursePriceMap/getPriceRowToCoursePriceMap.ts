@@ -1,18 +1,18 @@
 import Big from 'big.js';
 
-import type { PriceRow } from '../../data/lookupPrice';
-import type { CourseResult } from '../../types';
+import type { CoursePrice } from '@/domain/price';
+import type { RawPrice } from '@/domain/rawPrice';
 
 export const clamp = (value: number, min: number, max: number): number => Math.min(Math.max(value, min), max);
 
 /**
- * Function that maps a PriceRow to a CourseResult
+ * Function that maps a PriceRow to a CoursePrice
  * Doesn't add any discounts or promotions
  *
  * @param p the PriceRow
- * @return a CourseResult
+ * @return a CoursePrice
  */
-export const getPriceRowToCourseResultMap = (student?: boolean) => (p: PriceRow): CourseResult => {
+export const getPriceRowToCoursePriceMap = (student?: boolean) => (p: RawPrice): CoursePrice => {
   const cost = parseFloat(Math.max(0, p.cost).toFixed(2)); // the cost can't be negative
 
   const shipping = clamp(parseFloat(p.shipping.toFixed(2)), 0, cost); // potential shipping savings can't be negative and can't be greater than cost

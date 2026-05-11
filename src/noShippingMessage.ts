@@ -1,6 +1,6 @@
 import { isDesignCourse, isMakeupCourse } from './courses';
+import type { NoShipping } from './domain/noShipping';
 import { telephoneNumber } from './lib/helper-functions';
-import type { NoShipping } from './types';
 
 export const noShippingMessage = (noShipping: NoShipping, courses: string[], countryCode: string): string | undefined => {
   if (noShipping === 'REQUIRED') {

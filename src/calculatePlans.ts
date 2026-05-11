@@ -1,6 +1,6 @@
 import Big from 'big.js';
 
-import type { Plan } from './types';
+import type { Plan } from '@/domain/price';
 
 /**
  * Recalculates the payment plans based on the new minimum price

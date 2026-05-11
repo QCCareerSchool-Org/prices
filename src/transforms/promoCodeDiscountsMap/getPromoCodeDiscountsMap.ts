@@ -2,11 +2,13 @@ import Big from 'big.js';
 
 import { calculatePlans } from '../../calculatePlans';
 import { isEventFoundationCourse, isMakeupFoundationCourse } from '../../courses';
+import type { MapFunction } from '../../domain/mapFunction';
+import type { PriceOptions } from '../../domain/priceOptions';
 import type { PromoCodeSpec } from '../../promoCodes';
 import { promoCodeSpecs, specApplies, studentSupport100Specs, studentSupport150Specs, studentSupport50Specs } from '../../promoCodes';
-import type { CourseResult, MapFunction, PriceQueryOptions } from '../../types';
+import type { CoursePrice } from '@/domain/price';
 
-export const getPromoCodeDiscountsMap = (now: Date, currencyCode: string, options?: PriceQueryOptions): MapFunction<CourseResult, CourseResult> => {
+export const getPromoCodeDiscountsMap = (now: Date, currencyCode: string, options?: PriceOptions): MapFunction<CoursePrice, CoursePrice> => {
   const applies = (spec?: PromoCodeSpec): boolean => typeof spec !== 'undefined' && specApplies(spec, now, options?.discountAll, options?.promoCode, options?.school);
 
   const studentSupport50Applies = studentSupport50Specs.some(applies);
@@ -101,7 +103,7 @@ export const getPromoCodeDiscountsMap = (now: Date, currencyCode: string, option
   let foundation200OApplied = false;
   let mz100Applied = false;
 
-  return (courseResult: CourseResult, index: number, array: CourseResult[]): CourseResult => {
+  return (courseResult: CoursePrice, index: number, array: CoursePrice[]): CoursePrice => {
     // take 25% off the discounted (before payment-plan discounts) price
     if (groupDiscountApplies && courseResult.primary) {
       const minimumPrice = parseFloat(Big(courseResult.cost).minus(courseResult.shipping).minus(courseResult.multiCourseDiscount).minus(courseResult.promoDiscount).toFixed(2));

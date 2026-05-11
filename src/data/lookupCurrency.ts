@@ -1,15 +1,11 @@
 import type { RowDataPacket } from 'mysql2';
 
-import * as HttpStatus from '../lib/http-status';
-import { pool } from '../pool';
-import type { Currency, CurrencyCode } from '../types';
+import type { Currency } from '@/domain/currency';
+import type { CurrencyCode } from '@/domain/currencyCode';
+import * as HttpStatus from '@/lib/http-status';
+import { pool } from '@/pool';
 
-interface CurrencyRow extends RowDataPacket {
-  code: string;
-  symbol: string;
-  name: string;
-  exchangeRate: number;
-}
+interface CurrencyRow extends RowDataPacket, Currency {}
 
 const sql = 'SELECT code, name, symbol, exchange exchangeRate FROM currencies WHERE code = ? LIMIT 1';
 

@@ -1,9 +1,12 @@
 import Big from 'big.js';
 
 import { validateDiscounts } from './validateDiscounts';
-import { calculatePlans } from '../../calculatePlans';
-import * as HttpStatus from '../../lib/http-status';
-import type { CourseResult, CurrencyCode, MapFunction, PriceQueryOptions } from '../../types';
+import { calculatePlans } from '@/calculatePlans';
+import type { CurrencyCode } from '@/domain/currencyCode';
+import type { MapFunction } from '@/domain/mapFunction';
+import type { CoursePrice } from '@/domain/price';
+import type { PriceOptions } from '@/domain/priceOptions';
+import * as HttpStatus from '@/lib/http-status';
 
 /**
  * Creates a map function that adds the extra discount to course results
@@ -12,7 +15,7 @@ import type { CourseResult, CurrencyCode, MapFunction, PriceQueryOptions } from 
  * @param currencyCode the currency we're displaying prices in
  * @param options the PriceQueryOptions
  */
-export const getExtraDiscountMap = (currencyCode: CurrencyCode, options?: PriceQueryOptions): MapFunction<CourseResult, CourseResult> => {
+export const getExtraDiscountMap = (currencyCode: CurrencyCode, options?: PriceOptions): MapFunction<CoursePrice, CoursePrice> => {
   // validate promotional discounts
   if (!validateDiscounts(options)) {
     throw new HttpStatus.BadRequest('invalid discount signature');
@@ -20,7 +23,7 @@ export const getExtraDiscountMap = (currencyCode: CurrencyCode, options?: PriceQ
 
   let remainingExtraDiscount = options?.discount ? options.discount[currencyCode] ?? options.discount.default : 0;
 
-  return (courseResult: CourseResult) => {
+  return (courseResult: CoursePrice) => {
     // skip free courses
     if (courseResult.free) {
       return courseResult;

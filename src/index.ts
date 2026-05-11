@@ -6,8 +6,8 @@ import helmet from 'helmet';
 import { botHandler } from './handlers/botHandler';
 import { errorHandler } from './handlers/errorHandler';
 import { httpErrorHandler } from './handlers/httpErrorHandler';
+import { priceHandler } from './handlers/priceHandler';
 import { versionMiddleware } from './handlers/versionMiddleware';
-import { router } from './router';
 
 const origin = [
   /(?:.*\.)?localhost(?::\d{1,5})?$/iu,
@@ -30,7 +30,9 @@ app.use(helmet());
 app.use(compression());
 app.use(versionMiddleware);
 app.use(botHandler);
-app.use('/prices', router);
+
+app.use('/prices', priceHandler);
+
 app.use(httpErrorHandler);
 app.use(errorHandler);
 

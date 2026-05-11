@@ -1,7 +1,7 @@
 import faker from 'faker';
 
 import { shouldGetMultiCourseDiscount } from './shouldGetMultiCourseDiscount';
-import type { PriceQueryOptions } from '../../types';
+import type { PriceQueryOptions } from '../../domain/types';
 
 describe('shouldGetMultiCourseDiscount', () => {
 

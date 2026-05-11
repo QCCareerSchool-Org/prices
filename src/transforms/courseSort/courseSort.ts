@@ -1,4 +1,4 @@
-import type { CourseResult } from '../../types';
+import type { CoursePrice } from '@/domain/price';
 
 /**
  * Sort function for CourseResults
@@ -7,7 +7,7 @@ import type { CourseResult } from '../../types';
  * @param a the first course result
  * @param b the second course result
  */
-export const courseSort = (a: CourseResult, b: CourseResult): number => {
+export const courseSort = (a: CoursePrice, b: CoursePrice): number => {
   if (a.primary === b.primary) {
     if (a.free === b.free) {
       if (a.cost === b.cost) {

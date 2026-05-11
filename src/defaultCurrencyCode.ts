@@ -1,5 +1,5 @@
+import type { CurrencyCode } from './domain/currencyCode';
 import { audCountry, gbpCountry, nzdCountry } from './lib/helper-functions';
-import type { CurrencyCode } from './types';
 
 /**
  * Determines the currency we should assume the courses will be priced in based on the country

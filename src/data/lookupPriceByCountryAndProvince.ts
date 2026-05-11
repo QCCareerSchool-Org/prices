@@ -1,5 +1,9 @@
-import type { PriceRow } from './lookupPrice';
-import { pool } from '../pool';
+import type { RowDataPacket } from 'mysql2';
+
+import type { RawPrice } from '@/domain/rawPrice';
+import { pool } from '@/pool';
+
+interface RawPriceRow extends RowDataPacket, RawPrice {}
 
 const sqlLookupPrice = `
 SELECT
@@ -22,20 +26,20 @@ LEFT JOIN
 WHERE
   NOT p.enabled = 0 AND p.course_code = ?`;
 
-export async function lookupPriceByCountryAndProvince(courseCode: string, countryCode: string | null, provinceCode: string | null): Promise<PriceRow[]> {
+export async function lookupPriceByCountryAndProvince(courseCode: string, countryCode: string | null, provinceCode: string | null): Promise<RawPrice[]> {
   console.log(courseCode, countryCode, provinceCode);
   await using connection = await pool.getConnection();
 
   if (countryCode === null) {
     const sql = `${sqlLookupPrice} AND country_code IS NULL AND province_code IS NULL`;
-    const [ rows ] = await connection.query<PriceRow[]>(sql, [ courseCode ]);
+    const [ rows ] = await connection.query<RawPriceRow[]>(sql, [ courseCode ]);
     return rows;
   } else if (provinceCode === null) {
     const sql = `${sqlLookupPrice} AND country_code = ? AND province_code IS NULL`;
-    const [ rows ] = await connection.query<PriceRow[]>(sql, [ courseCode, countryCode ]);
+    const [ rows ] = await connection.query<RawPriceRow[]>(sql, [ courseCode, countryCode ]);
     return rows;
   }
   const sql = `${sqlLookupPrice} AND country_code = ? AND province_code = ?`;
-  const [ rows ] = await connection.query<PriceRow[]>(sql, [ courseCode, countryCode, provinceCode ]);
+  const [ rows ] = await connection.query<RawPriceRow[]>(sql, [ courseCode, countryCode, provinceCode ]);
   return rows;
 }

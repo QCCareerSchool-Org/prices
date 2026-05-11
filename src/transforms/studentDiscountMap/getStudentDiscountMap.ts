@@ -2,7 +2,10 @@ import Big from 'big.js';
 
 import { studentDiscountAmount } from './studentDiscountAmount';
 import { calculatePlans } from '../../calculatePlans';
-import type { CourseResult, CurrencyCode, MapFunction, PriceQueryOptions } from '../../types';
+import type { CurrencyCode } from '../../domain/currencyCode';
+import type { MapFunction } from '../../domain/mapFunction';
+import type { PriceOptions } from '../../domain/priceOptions';
+import type { CoursePrice } from '@/domain/price';
 
 /**
  * Creates a map function that adds the student promo discount to course results
@@ -10,9 +13,9 @@ import type { CourseResult, CurrencyCode, MapFunction, PriceQueryOptions } from 
  * @param currencyCode the currency we're displaying prices in
  * @param options the PriceQueryOptions
  */
-export const getStudentDiscountMap = (currencyCode: CurrencyCode, options?: PriceQueryOptions): MapFunction<CourseResult, CourseResult> => {
+export const getStudentDiscountMap = (currencyCode: CurrencyCode, options?: PriceOptions): MapFunction<CoursePrice, CoursePrice> => {
 
-  return (courseResult: CourseResult) => {
+  return (courseResult: CoursePrice) => {
     // skip free courses
     if (courseResult.free) {
       return courseResult;

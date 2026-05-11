@@ -1,8 +1,10 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import Big from 'big.js';
 
+import type { Currency } from './domain/currency';
+import type { NoShipping } from './domain/noShipping';
+import type { CoursePrice, Price } from './domain/price';
 import { sumBigArray } from './lib/sumBigArray';
-import type { CourseResult, Currency, NoShipping, PriceResult } from './types';
 
 /**
  * Creates the final response by combining the values from each course
@@ -20,7 +22,7 @@ export const collateResults = (
   countryCode: string,
   provinceCode: string | null,
   currency: Currency,
-  courseResults: CourseResult[],
+  courseResults: CoursePrice[],
   disclaimers: string[],
   notes: string[],
   promoWarnings: string[],
@@ -28,7 +30,7 @@ export const collateResults = (
   noShippingMessage?: string,
   promoCodeRecognized?: boolean,
   promoCode?: string,
-): PriceResult => {
+): Price => {
   const firstResult = courseResults[0];
   if (!firstResult) {
     throw Error('No results');

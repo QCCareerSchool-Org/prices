@@ -1,7 +1,7 @@
 import faker from 'faker';
 
 import { courseSort } from './courseSort';
-import type { CourseResult } from '../../types';
+import type { CourseResult } from '../../domain/types';
 
 describe('courseSort', () => {
 

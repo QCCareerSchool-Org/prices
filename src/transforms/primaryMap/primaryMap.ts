@@ -1,6 +1,6 @@
 import Big from 'big.js';
 
-import type { CourseResult } from '../../types';
+import type { CoursePrice } from '@/domain/price';
 
 /**
  * Map function that sets the first CourseResult's `primary` value to `true` and ajusts other CourseResults'
@@ -11,7 +11,7 @@ import type { CourseResult } from '../../types';
  * @param i the index
  * @param a the array of CourseResults
  */
-export const primaryMap = (c: CourseResult, i: number, a: CourseResult[]): CourseResult => {
+export const primaryMap = (c: CoursePrice, i: number, a: CoursePrice[]): CoursePrice => {
   try {
     if (i === 0) {
       return { ...c, primary: true };

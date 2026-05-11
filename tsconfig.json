@@ -44,7 +44,10 @@
 
     "esModuleInterop": true,
     "noEmit": true,
-    "allowJs": true
+    "allowJs": true,
+    "paths": {
+      "@/*": [ "./src/*" ]
+    }
   },
   "include": [ "src", "*.ts", "*.js", "*.mts", "*.mjs" ]
 }

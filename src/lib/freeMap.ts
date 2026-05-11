@@ -1,6 +1,6 @@
-import type { CourseResult } from '../types';
+import type { CoursePrice } from '@/domain/price';
 
-export const freeMap = (courseResult: CourseResult): CourseResult => ({
+export const freeMap = (courseResult: CoursePrice): CoursePrice => ({
   ...courseResult,
   free: true,
   multiCourseDiscountRate: 0,

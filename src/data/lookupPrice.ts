@@ -1,27 +1,10 @@
-import type { RowDataPacket } from 'mysql2';
-
 import { lookupPriceByCountryAndProvince } from './lookupPriceByCountryAndProvince';
-import { audCountry, gbpCountry, nzdCountry } from '../lib/helper-functions';
-import * as HttpStatus from '../lib/http-status';
+import type { RawPrice } from '@/domain/rawPrice';
+import { audCountry, gbpCountry, nzdCountry } from '@/lib/helper-functions';
+import * as HttpStatus from '@/lib/http-status';
 
-export interface PriceRow extends RowDataPacket {
-  // noShipping: number;
-  code: string;
-  currencyCode: string;
-  cost: number;
-  multiCourseDiscountRate: number;
-  deposit: number;
-  discount: number;
-  partDiscount: number;
-  installments: number | null;
-  courseCode: string;
-  courseName: string;
-  shipping: number;
-  order: number;
-}
-
-export const lookupPrice = async (courseCode: string, countryCode: string, provinceCode?: string): Promise<PriceRow> => {
-  let result: (PriceRow | undefined)[];
+export const lookupPrice = async (courseCode: string, countryCode: string, provinceCode?: string): Promise<RawPrice> => {
+  let result: (RawPrice | undefined)[];
 
   console.log('here');
   if (typeof provinceCode !== 'undefined') { // look for this exact country/province combination
