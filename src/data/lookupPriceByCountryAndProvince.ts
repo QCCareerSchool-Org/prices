@@ -23,6 +23,7 @@ WHERE
   NOT p.enabled = 0 AND p.course_code = ?`;
 
 export async function lookupPriceByCountryAndProvince(courseCode: string, countryCode: string | null, provinceCode: string | null): Promise<PriceRow[]> {
+  console.log(courseCode, countryCode, provinceCode);
   await using connection = await pool.getConnection();
 
   if (countryCode === null) {

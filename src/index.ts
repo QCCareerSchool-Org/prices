@@ -24,6 +24,7 @@ const origin = [
 ];
 
 const app = express();
+app.set('query parser', 'extended');
 app.use(cors({ origin }));
 app.use(helmet());
 app.use(compression());

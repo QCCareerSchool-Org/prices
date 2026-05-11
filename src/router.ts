@@ -2,7 +2,6 @@ import type { Request } from 'express';
 import express from 'express';
 import * as yup from 'yup';
 
-import { asyncWrapper } from './lib/asyncWrapper';
 import * as HttpStatus from './lib/http-status';
 import { objectMap } from './lib/objectMap';
 import { prices } from './prices';
@@ -39,13 +38,14 @@ const priceSchema: yup.ObjectSchema<PriceQuery> = yup.object({
 
 export const router = express.Router();
 
-router.get('/', asyncWrapper(async (req, res) => {
+router.get('/', async (req, res) => {
+  console.log(req.query);
   res.setHeader('Cache-Control', 'public, max-age=300'); // five minutes
   if (res.locals.apiVersion !== 2) {
     res.sendStatus(400);
   }
   res.send(await newPrices(req));
-}));
+});
 
 const newPrices = async (req: Request): Promise<PriceResult> => {
   let query: PriceQuery;

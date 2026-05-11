@@ -26,6 +26,7 @@ const options: PoolOptions = {
   debug: process.env.DB_DEBUG === 'TRUE',
   password: process.env.DB_PASSWORD,
   user: process.env.DB_USERNAME,
+  decimalNumbers: true,
 };
 
 if (typeof process.env.DB_SOCKET_PATH !== 'undefined') {

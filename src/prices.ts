@@ -36,6 +36,9 @@ export async function prices(
   options?: PriceQueryOptions,
 ): Promise<PriceResult> {
   // look up all the prices from the database
+
+  console.log(courses);
+
   const priceRows = await Promise.all(
     courses
       .map(c => c.toUpperCase()) // convert all course codes to upper case for easier comparison later
