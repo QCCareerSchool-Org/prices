@@ -6,12 +6,10 @@ import * as HttpStatus from '@/lib/http-status';
 export const lookupPrice = async (courseCode: string, countryCode: string, provinceCode?: string): Promise<RawPrice> => {
   let result: (RawPrice | undefined)[];
 
-  console.log('here');
   if (typeof provinceCode !== 'undefined') { // look for this exact country/province combination
     result = await lookupPriceByCountryAndProvince(courseCode, countryCode, provinceCode);
     const price = result[0];
     if (price) {
-      console.log(price);
       return price;
     }
   }
@@ -20,7 +18,6 @@ export const lookupPrice = async (courseCode: string, countryCode: string, provi
   result = await lookupPriceByCountryAndProvince(courseCode, countryCode, null);
   const price = result[0];
   if (price) {
-    console.log(price);
     return price;
   }
 

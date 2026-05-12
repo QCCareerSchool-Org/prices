@@ -1,4 +1,4 @@
-import type { PriceOptions } from '../../domain/priceQuery';
+import type { PriceOptions } from '../domain/priceQuery';
 
 /**
  * Determines whether a course should get the multi-course discount or not

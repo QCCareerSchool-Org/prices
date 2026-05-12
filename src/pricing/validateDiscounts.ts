@@ -2,9 +2,9 @@ import crypto from 'crypto';
 import fs from 'fs';
 import path from 'path';
 
-import type { PriceOptions } from '../../domain/priceQuery';
+import type { PriceOptions } from '../domain/priceQuery';
 
-const publicKey = fs.readFileSync(path.join(__dirname, '../../../public.pem'), 'utf8');
+const publicKey = fs.readFileSync(path.join(__dirname, '../../public.pem'), 'utf8');
 
 /**
  * Determines if the discount options are valid

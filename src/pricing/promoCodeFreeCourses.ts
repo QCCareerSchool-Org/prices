@@ -1,14 +1,13 @@
-import { isDesignCourse, isEventFoundationCourse, isEventSpecialtyCourse } from '../../courses';
-import type { MapFunction } from '../../domain/mapFunction';
-import type { PriceOptions } from '../../domain/priceQuery';
-import { freeMap } from '../../lib/freeMap';
-import type { PromoCodeSpec } from '../../promoCodes';
-import { ppaFreeCourseSpecs, promoCodeSpecs, specApplies } from '../../promoCodes';
-import type { CoursePrice } from '@/domain/price';
+import { isDesignCourse, isEventFoundationCourse, isEventSpecialtyCourse } from '../courses';
+import type { CoursePrice } from '../domain/price';
+import type { PriceOptions } from '../domain/priceQuery';
+import { freeMap } from '../lib/freeMap';
+import type { PromoCodeSpec } from '../promoCodes';
+import { ppaFreeCourseSpecs, promoCodeSpecs, specApplies } from '../promoCodes';
 
 const allAccessFreeCourses = [ 'CP', 'ED', 'DW', 'LW', 'PE', 'FL', 'EB', 'VE' ];
 
-export const getPromoCodeFreeCourseMap = (now: Date, options?: PriceOptions): MapFunction<CoursePrice, CoursePrice> => {
+export const applyPromoCodeFreeCourses = (courseResults: CoursePrice[], now: Date, options?: PriceOptions): void => {
   const applies = (spec?: PromoCodeSpec): boolean => typeof spec !== 'undefined' && specApplies(spec, now, options?.discountAll, options?.promoCode, options?.school);
 
   const ppaFreeCourseApplies = ppaFreeCourseSpecs.some(applies);
@@ -56,7 +55,7 @@ export const getPromoCodeFreeCourseMap = (now: Date, options?: PriceOptions): Ma
   let bogo2anyCount = 0;
   let bogoVirtualCount = 0;
 
-  return (courseResult: CoursePrice, index: number, array: CoursePrice[]): CoursePrice => {
+  const applyPromoCodeFreeCourse = (courseResult: CoursePrice, index: number, array: CoursePrice[]): CoursePrice => {
 
     if (freeProApplies) {
       if (courseResult.code === 'MW' && array.some(c => c.code === 'MZ')) {
@@ -273,4 +272,8 @@ export const getPromoCodeFreeCourseMap = (now: Date, options?: PriceOptions): Ma
 
     return courseResult;
   };
+
+  for (const [ index, courseResult ] of courseResults.entries()) {
+    courseResults[index] = applyPromoCodeFreeCourse(courseResult, index, courseResults);
+  }
 };

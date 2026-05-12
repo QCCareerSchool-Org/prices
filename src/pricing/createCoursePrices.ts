@@ -1,18 +1,18 @@
 import Big from 'big.js';
 
-import type { CoursePrice } from '@/domain/price';
-import type { RawPrice } from '@/domain/rawPrice';
+import type { CoursePrice } from '../domain/price';
+import type { RawPrice } from '../domain/rawPrice';
 
 export const clamp = (value: number, min: number, max: number): number => Math.min(Math.max(value, min), max);
 
 /**
- * Function that maps a PriceRow to a CoursePrice
+ * Converts a PriceRow to a CoursePrice
  * Doesn't add any discounts or promotions
  *
  * @param p the PriceRow
  * @return a CoursePrice
  */
-export const getPriceRowToCoursePriceMap = (student?: boolean) => (p: RawPrice): CoursePrice => {
+export const createCoursePrice = (p: RawPrice, student?: boolean): CoursePrice => {
   const cost = parseFloat(Math.max(0, p.cost).toFixed(2)); // the cost can't be negative
 
   const shipping = clamp(parseFloat(p.shipping.toFixed(2)), 0, cost); // potential shipping savings can't be negative and can't be greater than cost
@@ -77,4 +77,14 @@ export const getPriceRowToCoursePriceMap = (student?: boolean) => (p: RawPrice):
     free: false,
     discountMessage: null,
   };
+};
+
+export const createCoursePrices = (priceRows: RawPrice[], student?: boolean): CoursePrice[] => {
+  const coursePrices: CoursePrice[] = [];
+
+  for (const priceRow of priceRows) {
+    coursePrices.push(createCoursePrice(priceRow, student));
+  }
+
+  return coursePrices;
 };
