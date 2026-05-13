@@ -1,5 +1,6 @@
 import type { Handler } from 'express';
-import { failure, type Result, success } from 'generic-result-type';
+import type { Result } from 'generic-result-type';
+import { failure, success } from 'generic-result-type';
 import type { ParsedQs } from 'qs';
 import * as yup from 'yup';
 
@@ -19,7 +20,7 @@ export const priceHandler: Handler = async (req, res) => {
 
   const priceQuery = validationResult.value;
 
-  const priceCalculation = new PriceCalculation(priceQuery.courses ?? [], priceQuery.countryCode, priceQuery.provinceCode, priceQuery.options);
+  const priceCalculation = new PriceCalculation(priceQuery.courses ?? [], priceQuery.countryCode, priceQuery.provinceCode, priceQuery.options ?? {});
 
   res.send(await priceCalculation.calculate());
 };

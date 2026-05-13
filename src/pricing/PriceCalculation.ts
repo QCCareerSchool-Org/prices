@@ -40,14 +40,14 @@ export class PriceCalculation {
 
   private somePartsMissing = false;
 
-  public constructor(courseCodes: string[], private readonly countryCode: string, private readonly provinceCode: string | undefined, private readonly options: PriceOptions | undefined) {
+  public constructor(courseCodes: string[], private readonly countryCode: string, private readonly provinceCode: string | undefined, private readonly options: PriceOptions) {
     // convert to uppercase and remove duplicates
     this.courseCodes = courseCodes
       .map(c => c.toLocaleUpperCase())
       .filter((item, pos, self) => self.indexOf(item) === pos);
 
-    this.noShipping = noShipCountry(countryCode) ? 'REQUIRED' : options?.noShipping ? 'APPLIED' : 'ALLOWED' as NoShipping;
-    this.now = process.env.NODE_ENV === 'production' ? new Date() : options?.dateOverride ?? new Date();
+    this.noShipping = noShipCountry(countryCode) ? 'REQUIRED' : options.noShipping ? 'APPLIED' : 'ALLOWED' as NoShipping;
+    this.now = process.env.NODE_ENV === 'production' ? new Date() : options.dateOverride ?? new Date();
     this.promoCodes = new PromoCodes(this.now, options);
   }
 
@@ -229,7 +229,7 @@ export class PriceCalculation {
       noShipping: this.noShipping,
       noShippingMessage: this.noShippingMessage(),
       promoCodeRecognized: this.promoCodes.recognized,
-      promoCode: this.promoCodes.recognized ? this.options?.promoCode : undefined,
+      promoCode: this.promoCodes.recognized ? this.options.promoCode : undefined,
       courses: this.courseResults,
     };
   }
@@ -243,7 +243,7 @@ export class PriceCalculation {
       }
 
       // FA is free if taking DG
-      if (this.options?.discountAll !== true && courseResult.code === 'FA' && this.courseResults.some(c => c.code === 'DG')) {
+      if (this.options.discountAll !== true && courseResult.code === 'FA' && this.courseResults.some(c => c.code === 'DG')) {
         this.courseResults[index] = freeMap(courseResult);
         continue;
       }
@@ -361,7 +361,7 @@ export class PriceCalculation {
   }
 
   private applyStudentDiscounts(): void {
-    if (this.options?.studentDiscount !== true) {
+    if (this.options.studentDiscount !== true) {
       return;
     }
 
@@ -390,7 +390,7 @@ export class PriceCalculation {
       throw new ClientError('invalid discount signature');
     }
 
-    let remainingExtraDiscount = Big(this.options?.discount ? this.options.discount[this.currencyCode] ?? this.options.discount.default : 0);
+    let remainingExtraDiscount = Big(this.options.discount ? this.options.discount[this.currencyCode] ?? this.options.discount.default : 0);
 
     for (const [ index, courseResult ] of this.courseResults.entries()) {
       if (courseResult.free || remainingExtraDiscount.lte(0)) {
@@ -415,7 +415,7 @@ export class PriceCalculation {
   }
 
   private applyToolsDiscounts(): void {
-    if (this.options?.withoutTools !== true) {
+    if (this.options.withoutTools !== true) {
       return;
     }
 
@@ -446,8 +446,8 @@ export class PriceCalculation {
       return;
     }
 
-    const depositOverrides = this.options?.depositOverrides;
-    const installmentsOverride = this.options?.installmentsOverride;
+    const depositOverrides = this.options.depositOverrides;
+    const installmentsOverride = this.options.installmentsOverride;
 
     if (typeof depositOverrides !== 'undefined') {
       for (const course of this.courseCodes) {
@@ -503,7 +503,7 @@ export class PriceCalculation {
 
   private shouldGetMultiCourseDiscount(index: number): boolean {
     // when discountAll is true all courses get the multi-course discount
-    if (this.options?.discountAll) {
+    if (this.options.discountAll) {
       return true;
     }
 
@@ -521,7 +521,7 @@ export class PriceCalculation {
     const partDiscount = clamp(parseFloat(p.partDiscount.toFixed(2)), 0, minimumPrice);
     const partTotal = parseFloat(Big(cost).minus(partDiscount).toFixed(2));
     const partDeposit = clamp(parseFloat(p.deposit.toFixed(2)), 0, partTotal); // the deposit can't be greater than the cost and can't be negative
-    const partInstallments = p.installments ? Math.round(this.options?.discountAll ? p.installments / 2 : p.installments) : 1; // the number of installments must be at least 1 and must be a whole number
+    const partInstallments = p.installments ? Math.round(this.options.discountAll ? p.installments / 2 : p.installments) : 1; // the number of installments must be at least 1 and must be a whole number
     const partInstallmentSize = p.installments ? parseFloat(Big(partTotal).minus(partDeposit).div(partInstallments).round(2, 0).toFixed(2)) : 0; // always round down so that the actual price will never be more than the quoted price
     const partRemainder = p.installments ? parseFloat(Big(partTotal).minus(partDeposit).minus(Big(partInstallmentSize).times(partInstallments)).toFixed(2)) : 0;
 
@@ -580,7 +580,7 @@ export class PriceCalculation {
     const applies = (code: string): boolean => this.promoCodes.code === code;
 
     // studentDiscount option
-    if (this.options?.studentDiscount) {
+    if (this.options.studentDiscount) {
       notes.push('additional discount');
     }
 
@@ -751,7 +751,7 @@ export class PriceCalculation {
       }
     }
 
-    if (this.options?.school === 'QC Wellness Studies' && this.courseCodes.length >= 1) {
+    if (this.options.school === 'QC Wellness Studies' && this.courseCodes.length >= 1) {
       if (this.options.discountAll) {
         // nothing
       } else {
@@ -760,7 +760,7 @@ export class PriceCalculation {
       }
     }
 
-    if (this.options?.school === 'QC Pet Studies' && this.courseCodes.length >= 1) {
+    if (this.options.school === 'QC Pet Studies' && this.courseCodes.length >= 1) {
       if (this.options.discountAll) {
         // nothing
       } else {
@@ -769,7 +769,7 @@ export class PriceCalculation {
       }
     }
 
-    if (this.options?.school === 'QC Makeup Academy' && this.courseCodes.length >= 1) {
+    if (this.options.school === 'QC Makeup Academy' && this.courseCodes.length >= 1) {
       if (this.options.discountAll) {
         if (this.now >= new Date('2025-01-29T03:00-0500') && this.now < new Date('2025-02-01T03:00-0500')) {
           disclaimers.push('You\'ll get the free leather portfolio');
@@ -783,7 +783,7 @@ export class PriceCalculation {
       }
     }
 
-    if (this.options?.school === 'QC Event School' && this.courseCodes.length >= 1) {
+    if (this.options.school === 'QC Event School' && this.courseCodes.length >= 1) {
       if (this.options.discountAll) {
         if (this.now >= new Date('2025-01-29T03:00-0500') && this.now < new Date('2025-02-01T03:00-0500')) {
           disclaimers.push('You\'ll get the free leather portfolio');
@@ -794,7 +794,7 @@ export class PriceCalculation {
       }
     }
 
-    if (this.options?.school === 'QC Design School' && this.courseCodes.length >= 1) {
+    if (this.options.school === 'QC Design School' && this.courseCodes.length >= 1) {
       if (this.options.discountAll) {
         if (this.now >= new Date('2025-01-29T03:00') && this.now < new Date('2025-02-01T03:00')) {
           disclaimers.push('You\'ll get the free leather portfolio');
@@ -856,7 +856,7 @@ export class PriceCalculation {
       disclaimers.push('The Promotional Event Planning Course requires corporate event training.');
     }
 
-    if (this.options?.withoutTools) {
+    if (this.options.withoutTools) {
       notes.push('No tools');
     }
 
