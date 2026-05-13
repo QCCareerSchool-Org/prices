@@ -12,7 +12,7 @@ export interface PromoCodeSpec {
 }
 
 export class PromoCodes {
-  private static readonly studentSupportNames = [ 'NATHAN', 'EMILY', 'HEATHER', 'TAYLOR', 'KAYLA', 'PAMELA', 'SASHA', 'SHANNON', 'SONA', 'VICKY', 'MALCOLM' ];
+  private static readonly studentSupportNames = [ 'NATHAN', 'EMILY', 'SHANNON', 'ARNOLD' ];
 
   private static readonly groomCodes: readonly string[] = rawGroomCodes;
 
@@ -158,42 +158,47 @@ export class PromoCodes {
     ...PromoCodes.ppaFreeCourseSpecs,
   ];
 
-  private readonly specsByCode = new Map<string, PromoCodeSpec[]>();
+  public readonly code: string | undefined;
+
+  private readonly discountAll: boolean | undefined;
+
+  private readonly school: School | undefined;
+
+  private readonly suppliedCode: string | undefined;
 
   public constructor(
     public readonly now: Date,
     public readonly options: PriceOptions | undefined,
   ) {
-    for (const spec of PromoCodes.specs) {
-      this.specsByCode.set(spec.code, [ ...(this.specsByCode.get(spec.code) ?? []), spec ]);
-    }
+    this.discountAll = options?.discountAll;
+    this.school = options?.school;
+    this.suppliedCode = options?.promoCode;
+    this.code = this.findApplicableCode();
   }
 
   public applies(code: string): boolean {
-    return this.findSpecs(code).some(spec => this.specApplies(spec));
+    return this.code === code;
   }
 
   public get recognized(): boolean | undefined {
-    if (this.options?.promoCode) {
-      return PromoCodes.specs.some(spec => this.specApplies(spec));
+    if (typeof this.suppliedCode !== 'undefined') {
+      return typeof this.code !== 'undefined';
     }
   }
 
   private specApplies(spec: PromoCodeSpec): boolean {
-    const options = this.options;
-
-    if (typeof options?.promoCode === 'undefined') {
+    if (typeof this.suppliedCode === 'undefined') {
       return false;
     }
 
-    return options.promoCode === spec.code
-      && (typeof spec.schools === 'undefined' || (typeof options.school !== 'undefined' && spec.schools.includes(options.school)))
+    return this.suppliedCode === spec.code
+      && (typeof spec.schools === 'undefined' || (typeof this.school !== 'undefined' && spec.schools.includes(this.school)))
       && (typeof spec.start === 'undefined' || this.now >= spec.start)
       && (typeof spec.end === 'undefined' || this.now < spec.end)
-      && (spec.student === 'ALLOWED' || (spec.student === 'DENIED' && !options.discountAll) || (spec.student === 'ONLY' && !!options.discountAll));
+      && (spec.student === 'ALLOWED' || (spec.student === 'DENIED' && !this.discountAll) || (spec.student === 'ONLY' && !!this.discountAll));
   }
 
-  private findSpecs(code: string): PromoCodeSpec[] {
-    return this.specsByCode.get(code) ?? [];
+  private findApplicableCode(): string | undefined {
+    return PromoCodes.specs.find(spec => this.specApplies(spec))?.code;
   }
 }

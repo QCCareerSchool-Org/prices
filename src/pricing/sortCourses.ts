@@ -4,7 +4,7 @@ import type { CoursePrice } from '../domain/price';
 type SortFunction<T> = (a: T, b: T) => number;
 
 export const getDefaultCourseSort = (promoCodes: PromoCodes): SortFunction<CoursePrice> => {
-  if (promoCodes.applies('MASTERCLASS')) {
+  if (promoCodes.code === 'MASTERCLASS') {
     return (a, b) => {
       if (a.free === b.free) {
         if (a.cost === b.cost) {
@@ -46,3 +46,13 @@ export const courseSort = (a: CoursePrice, b: CoursePrice): number => {
   }
   return a.primary ? -1 : 1;
 };
+
+export const byCostAscending = (a: CoursePrice, b: CoursePrice): number => (
+  a.cost === b.cost ? b.order - a.order : a.cost - b.cost
+);
+
+export const byFreeThenCostDescending = (a: CoursePrice, b: CoursePrice): number => (
+  a.free === b.free
+    ? (a.cost === b.cost ? a.order - b.order : b.cost - a.cost)
+    : a.free ? 1 : -1
+);

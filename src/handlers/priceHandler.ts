@@ -3,10 +3,10 @@ import { failure, type Result, success } from 'generic-result-type';
 import type { ParsedQs } from 'qs';
 import * as yup from 'yup';
 
-import { getPrices } from '../getPrices';
 import type { PriceQuery } from '@/domain/priceQuery';
 import type { School } from '@/domain/school';
 import { objectMap } from '@/lib/objectMap';
+import { PriceCalculation } from '@/pricing/PriceCalculation';
 
 export const priceHandler: Handler = async (req, res) => {
   res.setHeader('Cache-Control', 'public, max-age=300'); // five minutes
@@ -19,9 +19,9 @@ export const priceHandler: Handler = async (req, res) => {
 
   const priceQuery = validationResult.value;
 
-  const price = await getPrices(priceQuery.courses ?? [], priceQuery.countryCode, priceQuery.provinceCode, priceQuery.options);
+  const priceCalculation = new PriceCalculation(priceQuery.courses ?? [], priceQuery.countryCode, priceQuery.provinceCode, priceQuery.options);
 
-  res.send(price);
+  res.send(await priceCalculation.calculate());
 };
 
 const validate = async (query: ParsedQs): Promise<Result<PriceQuery>> => {
