@@ -1,101 +1,83 @@
 import Big from 'big.js';
 
+import { PromoCodes } from './PromoCodes';
 import { calculatePlans } from '../calculatePlans';
 import { isEventFoundationCourse, isMakeupFoundationCourse } from '../courses';
 import type { CoursePrice } from '../domain/price';
-import type { PriceOptions } from '../domain/priceQuery';
-import type { PromoCodeSpec } from '../promoCodes';
-import { promoCodeSpecs, specApplies, studentSupport100Specs, studentSupport150Specs, studentSupport50Specs } from '../promoCodes';
 
-export const applyPromoCodeDiscounts = (courseResults: CoursePrice[], now: Date, currencyCode: string, options?: PriceOptions): void => {
-  const applies = (spec?: PromoCodeSpec): boolean => typeof spec !== 'undefined' && specApplies(spec, now, options?.discountAll, options?.promoCode, options?.school);
+export const applyPromoCodeDiscounts = (courseResults: CoursePrice[], promoCodes: PromoCodes, currencyCode: string): void => {
+  const applies = (code: string): boolean => promoCodes.applies(code);
+  const anyApply = (codes: string[]): boolean => codes.some(code => applies(code));
 
-  const studentSupport50Applies = studentSupport50Specs.some(applies);
-  const studentSupport100Applies = studentSupport100Specs.some(applies);
-  const studentSupport150Applies = studentSupport150Specs.some(applies);
-  const masterclassApplies = applies(promoCodeSpecs.find(v => v.code === 'MASTERCLASS')) || applies(promoCodeSpecs.find(v => v.code === 'SSMASTERCLASS'));
-  const masterclass150Applies = applies(promoCodeSpecs.find(v => v.code === 'MASTERCLASS150'));
-  const kit200OffApplies = applies(promoCodeSpecs.find(v => v.code === 'KIT200OFF'));
-  const foundation200OApplies = applies(promoCodeSpecs.find(v => v.code === 'FOUNDATION200'));
-  const tenPercentApplies = applies(promoCodeSpecs.find(v => v.code === '10PERCENT'));
-  const misc50Applies = applies(promoCodeSpecs.find(v => v.code === 'PORTFOLIO50')) || applies(promoCodeSpecs.find(v => v.code === 'FANDECK50')) || applies(promoCodeSpecs.find(v => v.code === 'BRUSHSET50'));
-  const fc25Applies = applies(promoCodeSpecs.find(v => v.code === 'FC25PERCENT'));
-  const master300Applies = applies(promoCodeSpecs.find(v => v.code === 'MASTER300'));
-  const skincare100Applies = applies(promoCodeSpecs.find(v => v.code === 'SKINCARE100'));
-  const skincare300Applies = applies(promoCodeSpecs.find(v => v.code === 'SKINCARE300'));
-  const mz100Applies = applies(promoCodeSpecs.find(v => v.code === 'MZ100'));
-
-  const dgDiscount = applies(promoCodeSpecs.find(v => v.code === 'DG150'))
+  const dgDiscount = applies('DG150')
     ? 150
-    : applies(promoCodeSpecs.find(v => v.code === 'DG200'))
+    : applies('DG200')
       ? 200
-      : applies(promoCodeSpecs.find(v => v.code === 'DG300'))
+      : applies('DG300')
         ? 300
-        : applies(promoCodeSpecs.find(v => v.code === 'DG400'))
+        : applies('DG400')
           ? 400
-          : applies(promoCodeSpecs.find(v => v.code === 'DG500'))
+          : applies('DG500')
             ? currencyCode === 'GBP' ? 415 : 500
-            : applies(promoCodeSpecs.find(v => v.code === 'WOOFGANG'))
+            : applies('WOOFGANG')
               ? 500
               : 0;
 
-  const dtDiscount = applies(promoCodeSpecs.find(v => v.code === 'DT150'))
+  const dtDiscount = applies('DT150')
     ? 150
-    : applies(promoCodeSpecs.find(v => v.code === 'DT200'))
+    : applies('DT200')
       ? 200
-      : applies(promoCodeSpecs.find(v => v.code === 'DT300'))
+      : applies('DT300')
         ? 300
-        : applies(promoCodeSpecs.find(v => v.code === 'DT500'))
+        : applies('DT500')
           ? currencyCode === 'GBP' ? 415 : 500
           : 0;
 
-  let remainingExtraDiscount = applies(promoCodeSpecs.find(v => v.code === '50OFF'))
+  let remainingExtraDiscount = applies('50OFF')
     ? 50
-    : applies(promoCodeSpecs.find(v => v.code === '100OFF'))
+    : applies('100OFF')
       ? currencyCode === 'GBP' ? 75 : 100
-      : applies(promoCodeSpecs.find(v => v.code === '150OFF'))
+      : applies('150OFF')
         ? currencyCode === 'GBP' ? 110 : 150
-        : applies(promoCodeSpecs.find(v => v.code === '200OFF'))
+        : applies('200OFF')
           ? currencyCode === 'GBP' ? 150 : 200
-          : applies(promoCodeSpecs.find(v => v.code === '300OFF'))
+          : applies('300OFF')
             ? 300
-            : applies(promoCodeSpecs.find(v => v.code === '400OFF'))
+            : applies('400OFF')
               ? 400
-              : applies(promoCodeSpecs.find(v => v.code === 'PET100OFF'))
+              : applies('PET100OFF')
                 ? currencyCode === 'GBP' ? 75 : 100
-                : applies(promoCodeSpecs.find(v => v.code === 'PET150OFF'))
+                : applies('PET150OFF')
                   ? currencyCode === 'GBP' ? 100 : 150
-                  : applies(promoCodeSpecs.find(v => v.code === 'PET200OFF'))
+                  : applies('PET200OFF')
                     ? currencyCode === 'GBP' ? 150 : 200
-                    : applies(promoCodeSpecs.find(v => v.code === 'PET300OFF'))
+                    : applies('PET300OFF')
                       ? 300 // £300 for UK
-                      : applies(promoCodeSpecs.find(v => v.code === 'PET400OFF'))
+                      : applies('PET400OFF')
                         ? 400 // £400 for UK
-                        : applies(promoCodeSpecs.find(v => v.code === 'PET500OFF'))
+                        : applies('PET500OFF')
                           ? 500 // £400 for UK
-                          : applies(promoCodeSpecs.find(v => v.code === 'DESIGN100OFF')) || applies(promoCodeSpecs.find(v => v.code === 'EVENT100OFF'))
+                          : anyApply([ 'DESIGN100OFF', 'EVENT100OFF' ])
                             ? currencyCode === 'GBP' ? 75 : 100
-                            : applies(promoCodeSpecs.find(v => v.code === 'DESIGN200OFF')) || applies(promoCodeSpecs.find(v => v.code === 'EVENT200OFF'))
+                            : anyApply([ 'DESIGN200OFF', 'EVENT200OFF' ])
                               ? currencyCode === 'GBP' ? 150 : 200
-                              : applies(promoCodeSpecs.find(v => v.code === 'BOGO200'))
+                              : applies('BOGO200')
                                 ? currencyCode === 'GBP' ? 150 : 200
-                                : applies(promoCodeSpecs.find(v => v.code === 'BOGO100')) || applies(promoCodeSpecs.find(v => v.code === 'BOGOCATALYST100'))
+                                : anyApply([ 'BOGO100', 'BOGOCATALYST100' ])
                                   ? 100
-                                  : applies(promoCodeSpecs.find(v => v.code === '2SPECIALTY100')) || applies(promoCodeSpecs.find(v => v.code === 'SPECIALTY100')) || applies(promoCodeSpecs.find(v => v.code === 'PROFITPIVOT'))
+                                  : anyApply([ '2SPECIALTY100', 'SPECIALTY100', 'PROFITPIVOT' ])
                                     ? 100
-                                    : misc50Applies
+                                    : anyApply([ 'PORTFOLIO50', 'FANDECK50', 'BRUSHSET50' ])
                                       ? 50
-                                      : applies(promoCodeSpecs.find(v => v.code === 'DAYCARE300'))
+                                      : applies('DAYCARE300')
                                         ? 300
-                                        : applies(promoCodeSpecs.find(v => v.code === 'BOGOMZ300'))
+                                        : applies('BOGOMZ300')
                                           ? 300
-                                          : applies(promoCodeSpecs.find(v => v.code === 'MAKEUP100'))
+                                          : applies('MAKEUP100')
                                             ? 100
-                                            : applies(promoCodeSpecs.find(v => v.code === 'COACHING50'))
+                                            : applies('COACHING50')
                                               ? 50
                                               : 0;
-
-  const groupDiscountApplies = applies(promoCodeSpecs.find(v => v.code === 'QCGROUP'));
 
   let masterclassApplied = false;
   let masterclass150Applied = false;
@@ -104,7 +86,7 @@ export const applyPromoCodeDiscounts = (courseResults: CoursePrice[], now: Date,
 
   const applyPromoCodeDiscount = (courseResult: CoursePrice, index: number, array: CoursePrice[]): CoursePrice => {
     // take 25% off the discounted (before payment-plan discounts) price
-    if (groupDiscountApplies && courseResult.primary) {
+    if (applies('QCGROUP') && courseResult.primary) {
       const minimumPrice = parseFloat(Big(courseResult.cost).minus(courseResult.shipping).minus(courseResult.multiCourseDiscount).minus(courseResult.promoDiscount).toFixed(2));
       let discountedCost = parseFloat(Big(courseResult.cost).minus(courseResult.shippingDiscount).minus(courseResult.multiCourseDiscount).minus(courseResult.promoDiscount).toFixed(2));
       const extraDiscount = Math.min(Math.round(discountedCost * 0.25 * 100) / 100, minimumPrice);
@@ -121,7 +103,7 @@ export const applyPromoCodeDiscounts = (courseResults: CoursePrice[], now: Date,
     }
 
     // take 10% off the discounted (before payment-plan discounts) price
-    if (tenPercentApplies) {
+    if (applies('10PERCENT')) {
       const minimumPrice = parseFloat(Big(courseResult.cost).minus(courseResult.shipping).minus(courseResult.multiCourseDiscount).minus(courseResult.promoDiscount).toFixed(2));
       let discountedCost = parseFloat(Big(courseResult.cost).minus(courseResult.shippingDiscount).minus(courseResult.multiCourseDiscount).minus(courseResult.promoDiscount).toFixed(2));
       const extraDiscount = Math.min(Math.round(discountedCost * 0.1 * 100) / 100, minimumPrice);
@@ -137,7 +119,7 @@ export const applyPromoCodeDiscounts = (courseResults: CoursePrice[], now: Date,
       };
     }
 
-    if (foundation200OApplies && isEventFoundationCourse(courseResult.code) && !foundation200OApplied) {
+    if (applies('FOUNDATION200') && isEventFoundationCourse(courseResult.code) && !foundation200OApplied) {
       foundation200OApplied = true;
       // subtract all the discounts we have so far (use `shipping` instead of `shippingDiscount`) from the cost to determine the lowest possible price we might display (before payment-plan discounts)
       const minimumPrice = parseFloat(Big(courseResult.cost).minus(courseResult.shipping).minus(courseResult.multiCourseDiscount).minus(courseResult.promoDiscount).toFixed(2));
@@ -154,7 +136,7 @@ export const applyPromoCodeDiscounts = (courseResults: CoursePrice[], now: Date,
       };
     }
 
-    if (kit200OffApplies && isMakeupFoundationCourse(courseResult.code)) {
+    if (applies('KIT200OFF') && isMakeupFoundationCourse(courseResult.code)) {
       // subtract all the discounts we have so far (use `shipping` instead of `shippingDiscount`) from the cost to determine the lowest possible price we might display (before payment-plan discounts)
       const minimumPrice = parseFloat(Big(courseResult.cost).minus(courseResult.shipping).minus(courseResult.multiCourseDiscount).minus(courseResult.promoDiscount).toFixed(2));
       const extraDiscount = Math.min(minimumPrice, currencyCode === 'GBP' ? 100 : 200);
@@ -170,7 +152,7 @@ export const applyPromoCodeDiscounts = (courseResults: CoursePrice[], now: Date,
       };
     }
 
-    if (masterclassApplies && array.some(c => c.code === 'I2') && !masterclassApplied) {
+    if (anyApply([ 'MASTERCLASS', 'SSMASTERCLASS' ]) && array.some(c => c.code === 'I2') && !masterclassApplied) {
       masterclassApplied = true;
       // subtract all the discounts we have so far (use `shipping` instead of `shippingDiscount`) from the cost to determine the lowest possible price we might display (before payment-plan discounts)
       const minimumPrice = parseFloat(Big(courseResult.cost).minus(courseResult.shipping).minus(courseResult.multiCourseDiscount).minus(courseResult.promoDiscount).toFixed(2));
@@ -187,7 +169,7 @@ export const applyPromoCodeDiscounts = (courseResults: CoursePrice[], now: Date,
       };
     }
 
-    if (masterclass150Applies && array.some(c => c.code === 'I2') && !masterclass150Applied) {
+    if (applies('MASTERCLASS150') && array.some(c => c.code === 'I2') && !masterclass150Applied) {
       masterclass150Applied = true;
       // subtract all the discounts we have so far (use `shipping` instead of `shippingDiscount`) from the cost to determine the lowest possible price we might display (before payment-plan discounts)
       const minimumPrice = parseFloat(Big(courseResult.cost).minus(courseResult.shipping).minus(courseResult.multiCourseDiscount).minus(courseResult.promoDiscount).toFixed(2));
@@ -236,7 +218,7 @@ export const applyPromoCodeDiscounts = (courseResults: CoursePrice[], now: Date,
       };
     }
 
-    if (mz100Applies && array.some(c => c.code === 'MZ') && !mz100Applied) {
+    if (applies('MZ100') && array.some(c => c.code === 'MZ') && !mz100Applied) {
       mz100Applied = true;
       // subtract all the discounts we have so far (use `shipping` instead of `shippingDiscount`) from the cost to determine the lowest possible price we might display (before payment-plan discounts)
       const minimumPrice = parseFloat(Big(courseResult.cost).minus(courseResult.shipping).minus(courseResult.multiCourseDiscount).minus(courseResult.promoDiscount).toFixed(2));
@@ -253,7 +235,7 @@ export const applyPromoCodeDiscounts = (courseResults: CoursePrice[], now: Date,
       };
     }
 
-    if (studentSupport50Applies) {
+    if (PromoCodes.studentSupport50Codes.some(code => applies(code))) {
       // subtract all the discounts we have so far (use `shipping` instead of `shippingDiscount`) from the cost to determine the lowest possible price we might display (before payment-plan discounts)
       const minimumPrice = parseFloat(Big(courseResult.cost).minus(courseResult.shipping).minus(courseResult.multiCourseDiscount).minus(courseResult.promoDiscount).toFixed(2));
       const extraDiscount = Math.min(minimumPrice, 50);
@@ -269,7 +251,7 @@ export const applyPromoCodeDiscounts = (courseResults: CoursePrice[], now: Date,
       };
     }
 
-    if (studentSupport100Applies) {
+    if (PromoCodes.studentSupport100Codes.some(code => applies(code))) {
       // subtract all the discounts we have so far (use `shipping` instead of `shippingDiscount`) from the cost to determine the lowest possible price we might display (before payment-plan discounts)
       const minimumPrice = parseFloat(Big(courseResult.cost).minus(courseResult.shipping).minus(courseResult.multiCourseDiscount).minus(courseResult.promoDiscount).toFixed(2));
       const extraDiscount = Math.min(minimumPrice, 100);
@@ -285,7 +267,7 @@ export const applyPromoCodeDiscounts = (courseResults: CoursePrice[], now: Date,
       };
     }
 
-    if (studentSupport150Applies) {
+    if (PromoCodes.studentSupport150Codes.some(code => applies(code))) {
       // subtract all the discounts we have so far (use `shipping` instead of `shippingDiscount`) from the cost to determine the lowest possible price we might display (before payment-plan discounts)
       const minimumPrice = parseFloat(Big(courseResult.cost).minus(courseResult.shipping).minus(courseResult.multiCourseDiscount).minus(courseResult.promoDiscount).toFixed(2));
       const extraDiscount = Math.min(minimumPrice, 150);
@@ -301,7 +283,7 @@ export const applyPromoCodeDiscounts = (courseResults: CoursePrice[], now: Date,
       };
     }
 
-    if (fc25Applies && courseResult.code === 'FC') {
+    if (applies('FC25PERCENT') && courseResult.code === 'FC') {
       const discount = parseFloat(Big(courseResult.cost).mul(0.25).toFixed(2));
       // subtract all the discounts we have so far (use `shipping` instead of `shippingDiscount`) from the cost to determine the lowest possible price we might display (before payment-plan discounts)
       const minimumPrice = parseFloat(Big(courseResult.cost).minus(courseResult.shipping).minus(courseResult.multiCourseDiscount).minus(courseResult.promoDiscount).toFixed(2));
@@ -318,7 +300,7 @@ export const applyPromoCodeDiscounts = (courseResults: CoursePrice[], now: Date,
       };
     }
 
-    if (skincare100Applies && courseResult.code === 'MZ') {
+    if (applies('SKINCARE100') && courseResult.code === 'MZ') {
       const discount = 100;
       // subtract all the discounts we have so far (use `shipping` instead of `shippingDiscount`) from the cost to determine the lowest possible price we might display (before payment-plan discounts)
       const minimumPrice = parseFloat(Big(courseResult.cost).minus(courseResult.shipping).minus(courseResult.multiCourseDiscount).minus(courseResult.promoDiscount).toFixed(2));
@@ -335,7 +317,7 @@ export const applyPromoCodeDiscounts = (courseResults: CoursePrice[], now: Date,
       };
     }
 
-    if ((skincare300Applies || master300Applies) && courseResult.code === 'MZ') {
+    if (anyApply([ 'SKINCARE300', 'MASTER300' ]) && courseResult.code === 'MZ') {
       const discount = 300;
       // subtract all the discounts we have so far (use `shipping` instead of `shippingDiscount`) from the cost to determine the lowest possible price we might display (before payment-plan discounts)
       const minimumPrice = parseFloat(Big(courseResult.cost).minus(courseResult.shipping).minus(courseResult.multiCourseDiscount).minus(courseResult.promoDiscount).toFixed(2));

@@ -1,16 +1,10 @@
+import type { PromoCodes } from './PromoCodes';
 import type { CoursePrice } from '../domain/price';
-import type { PriceOptions } from '../domain/priceQuery';
-import type { PromoCodeSpec } from '../promoCodes';
-import { promoCodeSpecs, specApplies } from '../promoCodes';
 
 type SortFunction<T> = (a: T, b: T) => number;
 
-export const getDefaultCourseSort = (now: Date, options?: PriceOptions): SortFunction<CoursePrice> => {
-  const applies = (spec?: PromoCodeSpec): boolean => typeof spec !== 'undefined' && specApplies(spec, now, options?.discountAll, options?.promoCode, options?.school);
-
-  const masterclassApplies = applies(promoCodeSpecs.find(v => v.code === 'MASTERCLASS'));
-
-  if (masterclassApplies) {
+export const getDefaultCourseSort = (promoCodes: PromoCodes): SortFunction<CoursePrice> => {
+  if (promoCodes.applies('MASTERCLASS')) {
     return (a, b) => {
       if (a.free === b.free) {
         if (a.cost === b.cost) {

@@ -1,7 +1,7 @@
 import { lookupPriceByCountryAndProvince } from './lookupPriceByCountryAndProvince';
 import type { RawPrice } from '@/domain/rawPrice';
+import { ClientError } from '@/lib/errors';
 import { audCountry, gbpCountry, nzdCountry } from '@/lib/helper-functions';
-import * as HttpStatus from '@/lib/http-status';
 
 export const lookupPrice = async (courseCode: string, countryCode: string, provinceCode?: string): Promise<RawPrice> => {
   let result: (RawPrice | undefined)[];
@@ -48,5 +48,5 @@ export const lookupPrice = async (courseCode: string, countryCode: string, provi
     return defaultPrice;
   }
 
-  throw new HttpStatus.BadRequest(`No pricing information found for course ${courseCode}`);
+  throw new ClientError(`No pricing information found for course ${courseCode}`);
 };

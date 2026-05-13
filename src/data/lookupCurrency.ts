@@ -2,7 +2,7 @@ import type { RowDataPacket } from 'mysql2';
 
 import type { Currency } from '@/domain/currency';
 import type { CurrencyCode } from '@/domain/currencyCode';
-import * as HttpStatus from '@/lib/http-status';
+import { ServerError } from '@/lib/errors';
 import { pool } from '@/pool';
 
 interface CurrencyRow extends RowDataPacket, Currency {}
@@ -15,7 +15,7 @@ export const lookupCurrency = async (currencyCode: CurrencyCode): Promise<Curren
   const [ rows ] = await connection.query<CurrencyRow[]>(sql, [ currencyCode ]);
   const result = rows[0];
   if (!result) {
-    throw new HttpStatus.InternalServerError('Unable to find currency');
+    throw new ServerError('Unable to find currency');
   }
   return result;
 };

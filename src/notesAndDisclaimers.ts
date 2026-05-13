@@ -1,8 +1,6 @@
 import { isEventFoundationCourse, isEventSpecialtyCourse } from './courses';
 import type { NoShipping } from './domain/noShipping';
-import type { PriceOptions } from './domain/priceQuery';
-import type { PromoCodeSpec } from './promoCodes';
-import { promoCodeSpecs, specApplies } from './promoCodes';
+import type { PromoCodes } from './pricing/PromoCodes';
 
 /**
  * Returns a tuple of string arrays [ notes, disclaimers, promoWarnings ]
@@ -14,12 +12,13 @@ import { promoCodeSpecs, specApplies } from './promoCodes';
  * @param courses the courses
  * @param countryCode the country code
  */
-export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: string, noShipping: NoShipping, options?: PriceOptions): [string[], string[], string[]] => {
+export const notesAndDisclaimers = (promoCodes: PromoCodes, courses: string[], countryCode: string, noShipping: NoShipping): [string[], string[], string[]] => {
   const notes: string[] = [];
   const disclaimers: string[] = [];
   const promoWarnings: string[] = [];
 
-  const applies = (spec?: PromoCodeSpec): boolean => typeof spec !== 'undefined' && specApplies(spec, now, options?.discountAll, options?.promoCode, options?.school);
+  const { now, options } = promoCodes;
+  const applies = (code: string): boolean => promoCodes.applies(code);
 
   // studentDiscount option
   if (options?.studentDiscount) {
@@ -27,7 +26,7 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
   }
 
   // ELITE promo code
-  if (applies(promoCodeSpecs.find(p => p.code === 'ELITE'))) {
+  if (applies('ELITE')) {
     if (noShipping === 'APPLIED') {
       promoWarnings.push('You entered the <strong>ELITE</strong> promo code, but have chosen to not have any materials shipped. You will not receive any makeup kits.');
     } else if (noShipping === 'REQUIRED') {
@@ -40,7 +39,7 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
   }
 
   // FREEPRO promo code
-  if (applies(promoCodeSpecs.find(p => p.code === 'FREEPRO'))) {
+  if (applies('FREEPRO')) {
     if (!courses.includes('MZ') && !courses.includes('MW')) {
       promoWarnings.push('You have entered the <strong>FREEPRO</strong> promo code but have not selected the <strong>Master Makeup Artistry</strong> and <strong>Pro Makeup Workshop</strong> courses.');
     } else if (!courses.includes('MZ')) {
@@ -51,14 +50,14 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
   }
 
   // SAVE50 promo code
-  if (applies(promoCodeSpecs.find(p => p.code === 'SAVE50'))) {
+  if (applies('SAVE50')) {
     if (courses.length < 2) {
       promoWarnings.push('You have entered the <strong>SAVE50</strong> promo code but have not selected more than one course. Select additional courses above to take advantage of this promotion.');
     }
   }
 
   // EXPERT promo code
-  if (applies(promoCodeSpecs.find(v => v.code === 'EXPERT'))) {
+  if (applies('EXPERT')) {
     if (!courses.some(c => isEventFoundationCourse(c))) {
       promoWarnings.push('You have entered the <strong>EXPERT</strong> promo code but have not selected a Foundation course.');
     } else if (!courses.some(c => isEventSpecialtyCourse(c))) {
@@ -67,7 +66,7 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
   }
 
   // QCLASHES promo code
-  if (applies(promoCodeSpecs.find(v => v.code === 'QCLASHES')) || applies(promoCodeSpecs.find(v => v.code === 'QCLASHES60'))) {
+  if (applies('QCLASHES') || applies('QCLASHES60')) {
     if (courses.some(c => [ 'MZ', 'SK', 'AB', 'SF', 'HS', 'GB' ].includes(c))) {
       disclaimers.push('You\'ll receive bonus lashes in your makeup kit');
       notes.push('bonus lashes');
@@ -78,7 +77,7 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
   }
 
   // BOGO promo code
-  if (applies(promoCodeSpecs.find(v => v.code === 'BOGO'))) {
+  if (applies('BOGO')) {
     if (courses.length === 0) {
       promoWarnings.push('You have entered the <strong>BOGO</strong> promo code, but you haven\'t selected any courses.');
     } else if (courses.length < 2) {
@@ -87,7 +86,7 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
   }
 
   // SKINCARE
-  if (applies(promoCodeSpecs.find(v => v.code === 'SKINCARE'))) {
+  if (applies('SKINCARE')) {
     if (!courses.includes('MZ')) {
       promoWarnings.push('You have entered the <strong>SKINCARE</strong> promo code, but you haven\'t selected the <strong>Master Makeup Artistry</strong> course');
     } else {
@@ -98,7 +97,7 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
   }
 
   // EVENTFREECOURSE promo code
-  if (applies(promoCodeSpecs.find(v => v.code === 'EVENTFREECOURSE'))) {
+  if (applies('EVENTFREECOURSE')) {
     if (!courses.some(c => isEventFoundationCourse(c))) {
       promoWarnings.push('You have entered the <strong>EVENTFREECOURSE</strong> promo code, but you haven\'t selected a <strong>foundation</strong> course');
     } else {
@@ -109,7 +108,7 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
   }
 
   // SPECIALTY promo code
-  if (applies(promoCodeSpecs.find(v => v.code === 'SPECIALTY'))) {
+  if (applies('SPECIALTY')) {
     if (!courses.some(c => isEventFoundationCourse(c))) {
       promoWarnings.push('You have entered the <strong>SPECIALTY</strong> promo code, but you haven\'t selected a <strong>Foundation</strong> course');
     } else {
@@ -122,7 +121,7 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
 
   // 2SPECIALTY and MCSPECIALTY promo codes
   [ '2SPECIALTY', 'MCSPECIALTY', 'SSMCSPECIALTY', '2SPECIALTY100' ].forEach(code => {
-    if (applies(promoCodeSpecs.find(v => v.code === code))) {
+    if (applies(code)) {
       if (!courses.some(c => isEventFoundationCourse(c))) {
         promoWarnings.push(`You have entered the <strong>${code}</strong> promo code, but you haven't selected a <strong>Foundation</strong> course`);
       } else {
@@ -137,7 +136,7 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
   });
 
   // FREELUXURY promo code
-  if (applies(promoCodeSpecs.find(v => v.code === 'FREELUXURY'))) {
+  if (applies('FREELUXURY')) {
     if (!courses.some(c => isEventFoundationCourse(c))) {
       promoWarnings.push('You have entered the <strong>FREELUXURY</strong> promo code, but you haven\'t selected a <strong>Foundation</strong> course');
     } else if (!courses.includes('LW')) {
@@ -146,7 +145,7 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
   }
 
   // PROLUMINOUS promo code
-  if (applies(promoCodeSpecs.find(v => v.code === 'PROLUMINOUS'))) {
+  if (applies('PROLUMINOUS')) {
     if (!courses.includes('MZ')) {
       promoWarnings.push('You have entered the <strong>PROLUMINOUS</strong> promo code, but you haven\'t selected the <strong>Master Makeup Artistry</strong> course.');
       disclaimers.push('You\'ll get the Luminous Makeup Collection');
@@ -158,7 +157,7 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
   }
 
   // FREEGLOBAL promo code
-  if (applies(promoCodeSpecs.find(v => v.code === 'FREEGLOBAL'))) {
+  if (applies('FREEGLOBAL')) {
     if (!courses.includes('MZ')) {
       promoWarnings.push('You have entered the <strong>FREEGLOBAL</strong> promo code, but you haven\'t selected the <strong>Master Makeup Artistry</strong> course.');
     } else {
@@ -170,7 +169,7 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
   }
 
   // PORTFOLIO50 promo code
-  if (applies(promoCodeSpecs.find(v => v.code === 'PORTFOLIO')) || applies(promoCodeSpecs.find(v => v.code === 'PORTFOLIO50')) || applies(promoCodeSpecs.find(v => v.code === 'PORTFOLIO60'))) {
+  if (applies('PORTFOLIO') || applies('PORTFOLIO50') || applies('PORTFOLIO60')) {
     if (courses.length > 0) {
       disclaimers.push('You\'ll get the free leather portfolio');
       notes.push('portfolio');
@@ -178,7 +177,7 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
   }
 
   // FANDECK promo code
-  if (applies(promoCodeSpecs.find(v => v.code === 'FANDECK50'))) {
+  if (applies('FANDECK50')) {
     if (courses.length > 0) {
       disclaimers.push('You\'ll get the free color fan deck');
       notes.push('color fan deck');
@@ -186,7 +185,7 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
   }
 
   // BRUSHSET50 promo code
-  if (applies(promoCodeSpecs.find(v => v.code === 'BRUSHSET50'))) {
+  if (applies('BRUSHSET50')) {
     if (courses.length > 0) {
       disclaimers.push('You\'ll get the free bonus brush set');
       notes.push('brush set');
@@ -247,27 +246,27 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
     }
   }
 
-  if (applies(promoCodeSpecs.find(v => v.code === 'DG150')) || applies(promoCodeSpecs.find(v => v.code === 'DG200')) || applies(promoCodeSpecs.find(v => v.code === 'DG300'))) {
+  if (applies('DG150') || applies('DG200') || applies('DG300')) {
     if (!courses.includes('DG')) {
       promoWarnings.push('You have entered a discount promo code for <strong>Dog Grooming</strong>, but you haven\'t selected the course');
     }
   }
 
-  if (applies(promoCodeSpecs.find(v => v.code === 'DT150')) || applies(promoCodeSpecs.find(v => v.code === 'DT200')) || applies(promoCodeSpecs.find(v => v.code === 'DT300'))) {
+  if (applies('DT150') || applies('DT200') || applies('DT300')) {
     if (!courses.includes('DT')) {
       promoWarnings.push('You have entered a discount promo code for <strong>Dog Training</strong>, but you haven\'t selected the course');
     }
   }
 
   [ 'MASTERCLASS', 'SSMASTERCLASS' ].forEach(code => {
-    if (applies(promoCodeSpecs.find(v => v.code === code))) {
+    if (applies(code)) {
       if (!courses.includes('I2')) {
         promoWarnings.push(`You have entered the <strong>${code}</strong> promo code, but you haven't selected the <strong>Interior Decorating</strong> course`);
       }
     }
   });
 
-  if (applies(promoCodeSpecs.find(v => v.code === 'LUXURYWEDDING'))) {
+  if (applies('LUXURYWEDDING')) {
     if (!courses.includes('EP')) {
       promoWarnings.push('You have entered the <strong>LUXURYWEDDING</strong> promo code, but you haven\'t selected the <strong>Event & Wedding Planning</strong> course');
     } else {
@@ -280,13 +279,13 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
     }
   }
 
-  if (applies(promoCodeSpecs.find(v => v.code === 'KIT200OFF'))) {
+  if (applies('KIT200OFF')) {
     if (!courses.includes('MZ')) {
       promoWarnings.push('You have entered the <strong>KIT200OFF</strong> promo code, but you haven\'t selected the <strong>Master Makeup Artistry</strong> course');
     }
   }
 
-  if (applies(promoCodeSpecs.find(v => v.code === 'WOOFGANG'))) {
+  if (applies('WOOFGANG')) {
     disclaimers.push('This promotion is only available to Woof Gang Bakery employees, managers and store owners.');
   }
 
@@ -302,12 +301,12 @@ export const notesAndDisclaimers = (now: Date, courses: string[], countryCode: s
     notes.push('No tools');
   }
 
-  if (applies(promoCodeSpecs.find(v => v.code === 'BOGOCATALYST')) || applies(promoCodeSpecs.find(v => v.code === 'BOGOCATALYST100'))) {
+  if (applies('BOGOCATALYST') || applies('BOGOCATALYST100')) {
     disclaimers.push('You\'ll get the Career Catalyst Toolkit');
     notes.push('Career Catalyst Toolkit');
   }
 
-  if (applies(promoCodeSpecs.find(v => v.code === 'COLORWHEEL')) || applies(promoCodeSpecs.find(v => v.code === 'COLORWHEEL60'))) {
+  if (applies('COLORWHEEL') || applies('COLORWHEEL60')) {
     disclaimers.push('You\'ll get a free color wheel');
     notes.push('color wheel');
   }

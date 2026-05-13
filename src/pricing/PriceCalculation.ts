@@ -1,29 +1,28 @@
 import Big from 'big.js';
 
-import { createCoursePrices } from './createCoursePrices';
 import { applyPromoCodeDiscounts } from './promoCodeDiscounts';
 import { applyPromoCodeFreeCourses } from './promoCodeFreeCourses';
-import { shouldGetMultiCourseDiscount } from './shouldGetMultiCourseDiscount';
+import { PromoCodes } from './PromoCodes';
 import { courseSort, getDefaultCourseSort } from './sortCourses';
 import { studentDiscountAmount } from './studentDiscountAmount';
 import { validateDiscounts } from './validateDiscounts';
 import { calculatePlans } from '../calculatePlans';
-import { collateResults } from '../collateResults';
 import { lookupCurrency } from '../data/lookupCurrency';
 import { lookupPrice } from '../data/lookupPrice';
 import { defaultCurrencyCode } from '../defaultCurrencyCode';
+import type { Currency } from '../domain/currency';
 import type { CurrencyCode } from '../domain/currencyCode';
 import type { NoShipping } from '../domain/noShipping';
 import type { CoursePrice, Price } from '../domain/price';
 import type { PriceOptions } from '../domain/priceQuery';
 import type { RawPrice } from '../domain/rawPrice';
+import { ClientError, ServerError } from '../lib/errors';
 import { freeMap } from '../lib/freeMap';
 import { noShipCountry } from '../lib/helper-functions';
-import * as HttpStatus from '../lib/http-status';
+import { sumBigArray } from '../lib/sumBigArray';
 import { noShippingMessage } from '../noShippingMessage';
 import { notesAndDisclaimers } from '../notesAndDisclaimers';
-import type { PromoCodeSpec } from '../promoCodes';
-import { promoCodeRecognized, promoCodeSpecs, specApplies } from '../promoCodes';
+import { clamp } from './clamp';
 
 const byCostAscending = (a: CoursePrice, b: CoursePrice): number => (
   a.cost === b.cost ? b.order - a.order : a.cost - b.cost
@@ -44,18 +43,16 @@ export class PriceCalculation {
 
   private readonly now: Date;
 
+  private readonly promoCodes: PromoCodes;
+
   private somePartsMissing = false;
 
-  public constructor(
-    private readonly requestedCourses: string[],
-    private readonly countryCode: string,
-    private readonly provinceCode: string | undefined,
-    private readonly options: PriceOptions | undefined,
-  ) {
+  public constructor(private readonly requestedCourses: string[], private readonly countryCode: string, private readonly provinceCode: string | undefined, private readonly options: PriceOptions | undefined) {
     this.noShipping = noShipCountry(countryCode) ? 'REQUIRED' : options?.noShipping ? 'APPLIED' : 'ALLOWED' as NoShipping;
     this.now = process.env.NODE_ENV !== 'production'
       ? options?.dateOverride ?? new Date()
       : new Date();
+    this.promoCodes = new PromoCodes(this.now, options);
     this.currencyCode = defaultCurrencyCode(countryCode);
   }
 
@@ -63,27 +60,33 @@ export class PriceCalculation {
     const rawPrices = await this.lookupRawPrices();
     this.currencyCode = this.getCurrencyCode(rawPrices);
     this.somePartsMissing = rawPrices.some(p => p.installments === 0);
-    this.courseResults = createCoursePrices(rawPrices, this.options?.discountAll);
 
-    this.applyPricingRules();
+    this.courseResults = rawPrices.map(r => this.createCoursePrice(r));
 
-    const [ notes, disclaimers, promoWarnings ] = notesAndDisclaimers(this.now, this.requestedCourses, this.countryCode, this.noShipping, this.options);
+    this.courseResults.sort(byCostAscending);
 
-    const recognized = promoCodeRecognized(this.now, this.options);
+    this.applyDefaultFreeCourses();
 
-    return collateResults(
-      this.countryCode,
-      this.provinceCode ?? null,
-      await lookupCurrency(this.currencyCode),
-      this.courseResults,
-      disclaimers,
-      notes,
-      promoWarnings,
-      this.noShipping,
-      noShippingMessage(this.noShipping, this.requestedCourses, this.countryCode),
-      recognized,
-      recognized ? this.options?.promoCode : undefined,
-    );
+    this.courseResults.sort(getDefaultCourseSort(this.promoCodes));
+
+    this.applyPromoCodeFreeCourses();
+
+    this.courseResults.sort(byFreeThenCostDescending);
+
+    this.markPrimaryCourses();
+    this.applyShippingDiscounts();
+    this.applyMultiCourseDiscounts();
+    this.applyStudentDiscounts();
+    this.applyExtraDiscounts();
+    this.applyPromoCodeDiscounts();
+    this.applyToolsDiscounts();
+    this.applyOverrides();
+
+    this.courseResults.sort(courseSort);
+
+    const [ notes, disclaimers, promoWarnings ] = notesAndDisclaimers(this.promoCodes, this.requestedCourses, this.countryCode, this.noShipping);
+
+    return this.collateResults(await lookupCurrency(this.currencyCode), notes, disclaimers, promoWarnings);
   }
 
   private async lookupRawPrices(): Promise<RawPrice[]> {
@@ -101,96 +104,91 @@ export class PriceCalculation {
 
     // only accept certain currencies
     if (currencyCode !== 'CAD' && currencyCode !== 'USD' && currencyCode !== 'GBP' && currencyCode !== 'AUD' && currencyCode !== 'NZD') {
-      throw Error(`Invalid currency code: ${currencyCode}`);
+      throw new ServerError(`Invalid currency code: ${currencyCode}`);
     }
 
     // make sure each price row uses the same currency
     if (rawPrices.some(p => p.currencyCode !== currencyCode)) {
-      throw new HttpStatus.InternalServerError(`Currency mismatch: ${this.requestedCourses.toString()} ${this.countryCode} ${this.provinceCode}`);
+      throw new ServerError(`Currency mismatch: ${this.requestedCourses.toString()} ${this.countryCode} ${this.provinceCode}`);
     }
 
     return currencyCode;
   }
 
-  private applyPricingRules(): void {
-    this.courseResults.sort(byCostAscending);
+  private collateResults(currency: Currency, notes: string[], disclaimers: string[], promoWarnings: string[]): Price {
+    const firstResult = this.courseResults[0];
+    if (!firstResult) {
+      throw new ServerError('No results');
+    }
 
-    this.applyDefaultFreeCourses();
-    this.courseResults.sort(getDefaultCourseSort(this.now, this.options));
-
-    this.applyPromoCodeFreeCourses();
-    this.courseResults.sort(byFreeThenCostDescending);
-
-    this.markPrimaryCourses();
-    this.applyShippingDiscounts();
-    this.applyMultiCourseDiscounts();
-    this.applyStudentDiscounts();
-    this.applyExtraDiscounts();
-    this.applyPromoCodeDiscounts();
-    this.applyToolsDiscounts();
-    this.applyOverrides();
-    this.courseResults.sort(courseSort);
+    const partPlanAvailable = this.courseResults.every(c => typeof c.plans.part !== 'undefined');
+    return {
+      countryCode: this.countryCode,
+      provinceCode: this.provinceCode,
+      currency,
+      cost: this.sum(c => c.cost),
+      multiCourseDiscount: this.sum(c => c.multiCourseDiscount),
+      promoDiscount: this.sum(c => c.promoDiscount),
+      shippingDiscount: this.sum(c => c.shippingDiscount),
+      discountedCost: this.sum(c => c.discountedCost),
+      plans: {
+        full: {
+          discount: this.sum(c => c.plans.full.discount),
+          deposit: this.sum(c => c.plans.full.deposit),
+          installmentSize: this.sum(c => c.plans.full.installmentSize),
+          installments: 0,
+          remainder: this.sum(c => c.plans.full.remainder),
+          total: this.sum(c => c.plans.full.total),
+          originalDeposit: this.sum(c => c.plans.full.originalDeposit),
+          originalInstallments: 0,
+        },
+        part: partPlanAvailable
+          ? {
+            discount: this.sum(c => c.plans.part?.discount ?? 0),
+            deposit: this.sum(c => c.plans.part?.deposit ?? 0),
+            installmentSize: this.sum(c => c.plans.part?.installmentSize ?? 0),
+            installments: firstResult.plans.part?.installments ?? 1,
+            remainder: this.sum(c => c.plans.part?.remainder ?? 0),
+            total: this.sum(c => c.plans.part?.total ?? 0),
+            originalDeposit: this.sum(c => c.plans.part?.originalDeposit ?? 0),
+            originalInstallments: firstResult.plans.part?.originalInstallments ?? 1,
+          }
+          : undefined,
+      },
+      shipping: this.sum(c => c.shipping),
+      disclaimers,
+      notes,
+      promoWarnings,
+      noShipping: this.noShipping,
+      noShippingMessage: noShippingMessage(this.noShipping, this.requestedCourses, this.countryCode),
+      promoCodeRecognized: this.promoCodes.recognized,
+      promoCode: this.promoCodes.recognized ? this.options?.promoCode : undefined,
+      courses: this.courseResults,
+    };
   }
 
+  private sum(value: (course: CoursePrice) => number): number {
+    return parseFloat(this.courseResults.map(course => Big(value(course))).reduce(sumBigArray, Big(0)).toFixed(2));
+  }
+
+  /** Sets courses that should always be free */
   private applyDefaultFreeCourses(): void {
     for (const [ index, courseResult ] of this.courseResults.entries()) {
-      if (
-        this.options?.school === 'QC Design School' &&
-        this.options.discountAll === true &&
-        this.now.getTime() < Date.UTC(2023, 2, 18, 4) &&
-        courseResult.code === 'VD' &&
-        this.courseResults.length > 1
-      ) {
+      // FA is free if taking DG
+      if (this.options?.discountAll !== true && courseResult.code === 'FA' && this.courseResults.some(c => c.code === 'DG')) {
         this.courseResults[index] = freeMap(courseResult);
         continue;
       }
 
-      if (
-        this.options?.school === 'QC Event School' &&
-        this.options.discountAll === true &&
-        this.now.getTime() < Date.UTC(2023, 2, 18, 4) &&
-        courseResult.code === 'VE' &&
-        this.courseResults.length > 1
-      ) {
-        this.courseResults[index] = freeMap(courseResult);
-        continue;
-      }
-
-      if (
-        this.options?.school === 'QC Event School' &&
-        this.options.discountAll !== true &&
-        this.now.getTime() < Date.UTC(2021, 5, 9, 13) &&
-        (courseResult.code === 'LW' || courseResult.code === 'DW') &&
-        this.courseResults.some(c => c.code === 'EP')
-      ) {
-        this.courseResults[index] = freeMap(courseResult);
-        continue;
-      }
-
-      if (
-        this.options?.school === 'QC Pet Studies' &&
-        this.options.discountAll !== true &&
-        courseResult.code === 'FA' &&
-        this.courseResults.some(c => c.code === 'DG')
-      ) {
-        this.courseResults[index] = freeMap(courseResult);
-        continue;
-      }
-
-      if (
-        this.options?.school === 'QC Makeup Academy' &&
-        this.options.discountAll === true &&
-        this.now.getTime() < Date.UTC(2023, 2, 18, 4) &&
-        courseResult.code === 'VM' &&
-        this.courseResults.length > 1
-      ) {
+      // VD and DB are free if taking I2
+      if ((courseResult.code === 'VD' || courseResult.code === 'DB') && this.courseResults.some(c => c.code === 'I2')) {
         this.courseResults[index] = freeMap(courseResult);
       }
     }
   }
 
   private applyPromoCodeFreeCourses(): void {
-    applyPromoCodeFreeCourses(this.courseResults, this.now, this.options);
+    applyPromoCodeFreeCourses(this.courseResults, this.promoCodes);
   }
 
   private markPrimaryCourses(): void {
@@ -212,11 +210,11 @@ export class PriceCalculation {
 
       const first = this.courseResults[0];
       if (typeof first === 'undefined') {
-        throw Error('No element found');
+        throw new ServerError('No element found');
       }
 
       if (typeof first.plans.part === 'undefined') {
-        throw Error('Part plan undefined');
+        throw new ServerError('Part plan undefined');
       }
 
       const partInstallments = first.plans.part.installments;
@@ -263,53 +261,28 @@ export class PriceCalculation {
   }
 
   private applyMultiCourseDiscounts(): void {
-    const applies = (spec?: PromoCodeSpec): boolean => typeof spec !== 'undefined' && specApplies(spec, this.now, this.options?.discountAll, this.options?.promoCode, this.options?.school);
-
-    const skincare60Applies = applies(promoCodeSpecs.find(v => v.code === 'SKINCARE60'));
-    const nathansDayApplies = applies(promoCodeSpecs.find(v => v.code === 'NATHANSDAY'));
-    const wedding21MakeupApplies = applies(promoCodeSpecs.find(v => v.code === 'WEDDING21' && v.schools?.includes('QC Makeup Academy')));
-    const sfx50Applies = applies(promoCodeSpecs.find(v => v.code === 'SFX50'));
-    const save60Applies = [ 'SAVE60', 'PORTFOLIO60', 'QCLASHES60', 'COLORWHEEL60' ].some(promoCode => applies(promoCodeSpecs.find(v => v.code === promoCode)));
-    const organizing60Applies = applies(promoCodeSpecs.find(v => v.code === 'ORGANIZING60'));
-    const styling60Applies = applies(promoCodeSpecs.find(v => v.code === 'STYLING60'));
-    const portdev60Applies = applies(promoCodeSpecs.find(v => v.code === 'PORTDEV60'));
-    const corporate60Applies = applies(promoCodeSpecs.find(v => v.code === 'CORPORATE60'));
-    const daycare60Applies = applies(promoCodeSpecs.find(v => v.code === 'DAYCARE60'));
-    const liveEvent60Applies = applies(promoCodeSpecs.find(v => v.code === 'LIVEEVENT60'));
-
-    const sfx60Applies = applies(promoCodeSpecs.find(v => v.code === 'SFX60'));
-    const business60Applies = applies(promoCodeSpecs.find(v => v.code === 'BUSINESS60'));
-    const training60Applies = applies(promoCodeSpecs.find(v => v.code === 'TRAINING60'));
-
     for (const [ index, courseResult ] of this.courseResults.entries()) {
       if (courseResult.free) {
         continue;
       }
 
-      if (
-        !shouldGetMultiCourseDiscount(this.now, index, this.options) &&
-        !(nathansDayApplies && index > 0) &&
-        !(liveEvent60Applies && index > 0) &&
-        !(skincare60Applies && courseResult.code === 'SK' && this.courseResults.find(c => c.code === 'MZ')) &&
-        !(wedding21MakeupApplies && courseResult.code === 'HS' && this.courseResults.find(c => c.code === 'MZ')) &&
-        !(sfx50Applies && courseResult.code === 'SF' && this.courseResults.find(c => c.code === 'MZ'))
-      ) {
+      if (!this.shouldGetMultiCourseDiscount(index)) {
         continue;
       }
 
       const minimumPrice = parseFloat(Big(courseResult.cost).minus(courseResult.shipping).minus(courseResult.multiCourseDiscount).minus(courseResult.promoDiscount).toFixed(2));
       const desiredMultiCourseDiscount = (
-        skincare60Applies && courseResult.code === 'SK' && this.courseResults.find(c => c.code === 'MZ')) ||
-        save60Applies ||
-        liveEvent60Applies ||
-        (organizing60Applies && courseResult.code === 'PO') ||
-        (corporate60Applies && courseResult.code === 'CP') ||
-        (styling60Applies && courseResult.code === 'PF') ||
-        (portdev60Applies && courseResult.code === 'PW') ||
-        (daycare60Applies && courseResult.code === 'DD') ||
-        (sfx60Applies && courseResult.code === 'SF') ||
-        (business60Applies && (courseResult.code === 'EB' || courseResult.code === 'DB')) ||
-        (training60Applies && (courseResult.code === 'DT' || courseResult.code === 'DC'))
+        this.promoCodes.applies('SKINCARE60') && courseResult.code === 'SK' && this.courseResults.find(c => c.code === 'MZ')) ||
+        [ 'SAVE60', 'PORTFOLIO60', 'QCLASHES60', 'COLORWHEEL60' ].some(code => this.promoCodes.applies(code)) ||
+        this.promoCodes.applies('LIVEEVENT60') ||
+        (this.promoCodes.applies('ORGANIZING60') && courseResult.code === 'PO') ||
+        (this.promoCodes.applies('CORPORATE60') && courseResult.code === 'CP') ||
+        (this.promoCodes.applies('STYLING60') && courseResult.code === 'PF') ||
+        (this.promoCodes.applies('PORTDEV60') && courseResult.code === 'PW') ||
+        (this.promoCodes.applies('DAYCARE60') && courseResult.code === 'DD') ||
+        (this.promoCodes.applies('SFX60') && courseResult.code === 'SF') ||
+        (this.promoCodes.applies('BUSINESS60') && (courseResult.code === 'EB' || courseResult.code === 'DB')) ||
+        (this.promoCodes.applies('TRAINING60') && (courseResult.code === 'DT' || courseResult.code === 'DC'))
         ? parseFloat(Big(courseResult.cost).times(0.6).toFixed(2))
         : parseFloat(Big(courseResult.cost).times(courseResult.multiCourseDiscountRate).toFixed(2));
 
@@ -356,7 +329,7 @@ export class PriceCalculation {
 
   private applyExtraDiscounts(): void {
     if (!validateDiscounts(this.options)) {
-      throw new HttpStatus.BadRequest('invalid discount signature');
+      throw new ClientError('invalid discount signature');
     }
 
     let remainingExtraDiscount = this.options?.discount ? this.options.discount[this.currencyCode] ?? this.options.discount.default : 0;
@@ -384,7 +357,7 @@ export class PriceCalculation {
   }
 
   private applyPromoCodeDiscounts(): void {
-    applyPromoCodeDiscounts(this.courseResults, this.now, this.currencyCode, this.options);
+    applyPromoCodeDiscounts(this.courseResults, this.promoCodes, this.currencyCode);
   }
 
   private applyToolsDiscounts(): void {
@@ -425,22 +398,22 @@ export class PriceCalculation {
     if (typeof depositOverrides !== 'undefined') {
       for (const course of this.requestedCourses) {
         if (typeof depositOverrides[course] === 'undefined') {
-          throw new HttpStatus.BadRequest(`invalid depositOverride: no key for ${course}`);
+          throw new ClientError(`invalid depositOverride: no key for ${course}`);
         }
       }
 
       if (Object.keys(depositOverrides).length !== this.requestedCourses.length) {
-        throw new HttpStatus.BadRequest(`invalid depositOverride: expected ${this.requestedCourses.length} keys`);
+        throw new ClientError(`invalid depositOverride: expected ${this.requestedCourses.length} keys`);
       }
     }
 
     if (typeof installmentsOverride !== 'undefined') {
       if (installmentsOverride < 1) {
-        throw new HttpStatus.BadRequest('Invalid installmentsOverride: must be greater than or equal to 1');
+        throw new ClientError('Invalid installmentsOverride: must be greater than or equal to 1');
       }
 
       if (installmentsOverride > 24) {
-        throw new HttpStatus.BadRequest('Invalid installmentsOverride: must be less than 24');
+        throw new ClientError('Invalid installmentsOverride: must be less than 24');
       }
     }
 
@@ -450,7 +423,7 @@ export class PriceCalculation {
       }
 
       if (typeof courseResult.plans.part === 'undefined') {
-        throw Error('Part plan undefined');
+        throw new ServerError('Part plan undefined');
       }
 
       const deposit = depositOverrides[courseResult.code] ?? 0;
@@ -472,5 +445,82 @@ export class PriceCalculation {
         },
       };
     }
+  }
+
+  private shouldGetMultiCourseDiscount(index: number): boolean {
+    // when discountAll is true all courses get the multi-course discount
+    if (this.options?.discountAll) {
+      return true;
+    }
+
+    // the first course should not get the discount
+    return index > 0;
+  };
+
+  private createCoursePrice(p: RawPrice): CoursePrice {
+    const cost = parseFloat(Math.max(0, p.cost).toFixed(2)); // the cost can't be negative
+
+    const shipping = clamp(parseFloat(p.shipping.toFixed(2)), 0, cost); // potential shipping savings can't be negative and can't be greater than cost
+
+    const minimumPrice = parseFloat(Big(cost).minus(shipping).toFixed(2));
+
+    const multiCourseDiscountRate = clamp(parseFloat(p.multiCourseDiscountRate.toFixed(2)), 0, 1); // two decimal places, must be between 0 and 1, inclusive
+
+    const fullDiscount = clamp(parseFloat(p.discount.toFixed(2)), 0, minimumPrice); // the discount can't be greater than the minimum price and can't be negative
+
+    const fullTotal = parseFloat(Big(cost).minus(fullDiscount).toFixed(2));
+
+    const partDiscount = clamp(parseFloat(p.partDiscount.toFixed(2)), 0, minimumPrice);
+
+    const partTotal = parseFloat(Big(cost).minus(partDiscount).toFixed(2));
+
+    const partDeposit = clamp(parseFloat(p.deposit.toFixed(2)), 0, partTotal); // the deposit can't be greater than the cost and can't be negative
+
+    const partInstallments = p.installments ? Math.round(this.options?.discountAll ? p.installments / 2 : p.installments) : 1; // the number of installments must be at least 1 and must be a whole number
+
+    const partInstallmentSize = p.installments ? parseFloat(Big(partTotal).minus(partDeposit).div(partInstallments).round(2, 0).toFixed(2)) : 0; // always round down so that the actual price will never be more than the quoted price
+
+    const partRemainder = p.installments ? parseFloat(Big(partTotal).minus(partDeposit).minus(Big(partInstallmentSize).times(partInstallments)).toFixed(2)) : undefined;
+
+    return {
+      code: p.courseCode,
+      name: p.courseName,
+      primary: false,
+      cost,
+      multiCourseDiscountRate,
+      multiCourseDiscount: 0,
+      promoDiscount: 0,
+      shippingDiscount: 0,
+      discountedCost: cost,
+      order: p.order,
+      plans: {
+        full: {
+          discount: fullDiscount,
+          deposit: fullTotal,
+          installmentSize: 0,
+          installments: 0,
+          remainder: 0,
+          total: fullTotal,
+          originalDeposit: fullTotal,
+          originalInstallments: 0,
+        },
+        part: partInstallments
+          ? {
+            discount: partDiscount,
+            deposit: partDeposit,
+            installmentSize: partInstallmentSize,
+            installments: partInstallments,
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            remainder: partRemainder!,
+            total: partTotal,
+            originalDeposit: partDeposit,
+            originalInstallments: partInstallments,
+          }
+          : undefined,
+      },
+      shipping,
+      free: false,
+      discountMessage: null,
+    };
   }
 }
