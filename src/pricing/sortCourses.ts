@@ -1,9 +1,9 @@
+import type { CoursePricingState } from './CoursePricingState';
 import type { PromoCodes } from './PromoCodes';
-import type { CoursePrice } from '../domain/price';
 
 type SortFunction<T> = (a: T, b: T) => number;
 
-export const getDefaultCourseSort = (promoCodes: PromoCodes): SortFunction<CoursePrice> => {
+export const getDefaultCourseSort = (promoCodes: PromoCodes): SortFunction<CoursePricingState> => {
   if (promoCodes.code === 'MASTERCLASS') {
     return (a, b) => {
       if (a.free === b.free) {
@@ -31,7 +31,7 @@ export const getDefaultCourseSort = (promoCodes: PromoCodes): SortFunction<Cours
  * @param a the first course result
  * @param b the second course result
  */
-export const courseSort = (a: CoursePrice, b: CoursePrice): number => {
+export const courseSort = (a: CoursePricingState, b: CoursePricingState): number => {
   if (a.primary === b.primary) {
     if (a.free === b.free) {
       if (a.cost === b.cost) {
@@ -47,11 +47,11 @@ export const courseSort = (a: CoursePrice, b: CoursePrice): number => {
   return a.primary ? -1 : 1;
 };
 
-export const byCostAscending = (a: CoursePrice, b: CoursePrice): number => (
+export const byCostAscending = (a: CoursePricingState, b: CoursePricingState): number => (
   a.cost === b.cost ? b.order - a.order : a.cost - b.cost
 );
 
-export const byFreeThenCostDescending = (a: CoursePrice, b: CoursePrice): number => (
+export const byFreeThenCostDescending = (a: CoursePricingState, b: CoursePricingState): number => (
   a.free === b.free
     ? (a.cost === b.cost ? a.order - b.order : b.cost - a.cost)
     : a.free ? 1 : -1
