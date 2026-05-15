@@ -1,6 +1,7 @@
 import Big from 'big.js';
 
 import { CoursePrice } from './coursePrice';
+import { byCostAscending, byFreeThenCostAscending, byFreeThenCostDescending, finalSort } from './coursePriceSort';
 import { Currency } from './currency';
 import { DiscountApplicator } from './discountApplicator';
 import { FreeCourseApplicator } from './freeCourseApplicator';
@@ -59,13 +60,13 @@ export class PriceCalculator {
 
     const freeCourseApplicator = new FreeCourseApplicator(this.coursePrices, this.promoCodes, this.options);
 
-    this.coursePrices.sort((a, b) => this.byCostAscending(a, b));
+    this.coursePrices.sort(byCostAscending);
     freeCourseApplicator.applyDefaultFreeCourses();
 
-    this.coursePrices.sort((a, b) => this.byFreeThenCostAscending(a, b));
+    this.coursePrices.sort(byFreeThenCostAscending);
     freeCourseApplicator.applyPromoCodeFreeCourses();
 
-    this.coursePrices.sort((a, b) => this.byFreeThenCostDescending(a, b));
+    this.coursePrices.sort(byFreeThenCostDescending);
     this.markPrimaryCourse();
 
     const discountCalculator = new DiscountApplicator(this.coursePrices, this.promoCodes, this.currency, this.options);
@@ -78,7 +79,7 @@ export class PriceCalculator {
     this.applyOverrides();
     this.notesAndDisclaimers();
 
-    this.coursePrices.sort((a, b) => this.finalSort(a, b));
+    this.coursePrices.sort(finalSort);
 
     return new PriceSummary(this.coursePrices, this.currency, this.countryCode, this.provinceCode, this.noShipping, this.promoCodes, this.options, this.notes, this.disclaimers, this.promoWarnings).toDTO();
   }
@@ -496,51 +497,4 @@ export class PriceCalculator {
     }
   };
 
-  private byCostAscending(a: CoursePrice, b: CoursePrice): number {
-    return a.cost.eq(b.cost) ? b.order - a.order : a.cost.minus(b.cost).toNumber();
-  }
-
-  private byFreeThenCostAscending(a: CoursePrice, b: CoursePrice): number {
-    if (a.free === b.free) {
-      if (a.cost.eq(b.cost)) {
-        if (a.code === 'I2') {
-          return 1;
-        }
-        if (b.code === 'I2') {
-          return -1;
-        }
-      }
-      return a.cost.eq(b.cost) ? b.order - a.order : a.cost.minus(b.cost).toNumber();
-    }
-    return a.free ? 1 : -1;
-  }
-
-  private byFreeThenCostDescending(a: CoursePrice, b: CoursePrice): number {
-    return a.free === b.free
-      ? (a.cost === b.cost ? a.order - b.order : b.cost.minus(a.cost).toNumber())
-      : a.free ? 1 : -1;
-  }
-
-  /**
-   * Sort function for CourseResults
-   *
-   * Sorts by primary descending, then free ascending, then cost descending, then discounted cost descending
-   * @param a the first course result
-   * @param b the second course result
-   */
-  private finalSort(a: CoursePrice, b: CoursePrice): number {
-    if (a.primary === b.primary) {
-      if (a.free === b.free) {
-        if (a.cost === b.cost) {
-          if (a.discountedCost === b.discountedCost) {
-            return b.order - a.order;
-          }
-          return b.discountedCost.minus(a.discountedCost).toNumber();
-        }
-        return b.cost.minus(a.cost).toNumber();
-      }
-      return a.free ? 1 : -1;
-    }
-    return a.primary ? -1 : 1;
-  }
 }
