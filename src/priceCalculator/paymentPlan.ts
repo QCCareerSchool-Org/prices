@@ -96,6 +96,6 @@ export class InstallmentPaymentPlan extends PaymentPlan {
       this.installmentSize = installmentPortion.div(installments).round(2, Big.roundDown);
     }
 
-    this.remainder = this.total.minus(this.installmentSize.times(installments));
+    this.remainder = this.total.minus(deposit).minus(this.installmentSize.times(installments));
   }
 }
