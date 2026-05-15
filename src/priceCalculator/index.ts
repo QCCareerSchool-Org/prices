@@ -20,17 +20,11 @@ import { noShipCountry } from '../lib/helper-functions';
 
 export class PriceCalculator {
   private readonly courseCodes: string[];
-
   private coursePrices: CoursePrice[] = [];
-
   private currency?: Currency;
-
   private readonly noShipping: boolean;
-
   private readonly now: Date;
-
   private readonly promoCodes: PromoCodeCalculator;
-
   private somePartsMissing = false;
 
   public constructor(courseCodes: string[], private readonly countryCode: string, private readonly provinceCode: string | undefined, private readonly options: PriceOptions) {
@@ -49,7 +43,7 @@ export class PriceCalculator {
     const currencyCode = this.getCurrencyCode(rawPrices);
     const rawCurrency = await lookupCurrency(currencyCode);
     this.currency = new Currency(rawCurrency);
-    this.somePartsMissing = rawPrices.some(p => p.installments === 0);
+    this.somePartsMissing = rawPrices.some(p => !p.installments);
     this.coursePrices = rawPrices.map(r => new CoursePrice(r));
 
     const freeCourseApplicator = new FreeCourseApplicator(this.coursePrices, this.promoCodes.code, this.options);

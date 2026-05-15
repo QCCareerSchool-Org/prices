@@ -48,6 +48,12 @@ if (process.env.DB_SSL === 'true') {
   }
 }
 const rawPool = createPool(options);
-attachDatabasePool(rawPool);
+if (process.env.NODE_ENV !== 'production') {
+  attachDatabasePool(rawPool);
+}
 
 export const pool = rawPool.promise();
+
+export async function closePool(): Promise<void> {
+  await rawPool.promise().end();
+};

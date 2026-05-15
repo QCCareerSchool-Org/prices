@@ -49,5 +49,14 @@
       "@/*": [ "./src/*" ]
     }
   },
-  "include": [ "src", "*.ts", "*.js", "*.mts", "*.mjs" ]
+  "include": [
+    "src",
+    "__test__",
+    "*.ts",
+    "*.js",
+    "*.mts",
+    "*.mjs",
+    "jest.config.ts",
+    "jest.env.ts"
+  ]
 }
