@@ -1,5 +1,5 @@
 import type { CoursePrice } from './coursePrice';
-import { PromoCodeCalculator } from './promoCodeCalculator';
+import { ppaFreeCourseCodes } from './promoCodeCalculator';
 import { isDesignCourse, isEventFoundationCourse, isEventSpecialtyCourse } from '../courses';
 import type { PriceOptions } from '@/domain/priceQuery';
 
@@ -11,7 +11,7 @@ export class FreeCourseApplicator {
 
   public constructor(
     private readonly coursePrices: CoursePrice[],
-    private readonly promoCodes: PromoCodeCalculator,
+    private readonly promoCode: string | undefined,
     private readonly options: PriceOptions,
   ) { /* empty */ }
 
@@ -51,14 +51,14 @@ export class FreeCourseApplicator {
         throw Error('Course price not found');
       }
 
-      if (this.promoCodes.code === 'FREEPRO') {
+      if (this.promoCode === 'FREEPRO') {
         if (coursePrice.code === 'MW' && this.coursePrices.some(c => c.code === 'MZ')) {
           coursePrice.makeFree();
           continue;
         }
       }
 
-      if (this.promoCodes.code === 'EXPERT' && !applied) {
+      if (this.promoCode === 'EXPERT' && !applied) {
         if (isEventSpecialtyCourse(coursePrice.code) && this.coursePrices.some(c => isEventFoundationCourse(c.code))) {
           applied = true;
           coursePrice.makeFree();
@@ -66,7 +66,7 @@ export class FreeCourseApplicator {
         }
       }
 
-      if ([ 'BOGO', 'BOGOCATALYST', 'BOGOCATALYST100' ].includes(this.promoCodes.code ?? '') && !applied) {
+      if ([ 'BOGO', 'BOGOCATALYST', 'BOGOCATALYST100' ].includes(this.promoCode ?? '') && !applied) {
         if (this.coursePrices.length >= 2) {
           applied = true;
           coursePrice.makeFree();
@@ -74,7 +74,7 @@ export class FreeCourseApplicator {
         }
       }
 
-      if (this.promoCodes.code === 'BOGO2ANY' && count < 2) {
+      if (this.promoCode === 'BOGO2ANY' && count < 2) {
         if ((this.coursePrices.length >= 2 && count < 1) || this.coursePrices.length >= 3) {
           count++;
           coursePrice.makeFree();
@@ -82,7 +82,7 @@ export class FreeCourseApplicator {
         }
       }
 
-      if ([ 'BOGOMZ', 'BOGOMZ300' ].includes(this.promoCodes.code ?? '') && !applied) {
+      if ([ 'BOGOMZ', 'BOGOMZ300' ].includes(this.promoCode ?? '') && !applied) {
         if (coursePrice.code !== 'MZ' && this.coursePrices.some(c => c.code === 'MZ')) {
           applied = true;
           coursePrice.makeFree();
@@ -90,21 +90,21 @@ export class FreeCourseApplicator {
         }
       }
 
-      if ([ 'SKINCARE', 'SKINCARE100', 'SKINCARE300' ].includes(this.promoCodes.code ?? '')) {
+      if ([ 'SKINCARE', 'SKINCARE100', 'SKINCARE300' ].includes(this.promoCode ?? '')) {
         if (coursePrice.code === 'SK' && this.coursePrices.some(c => c.code === 'MZ')) {
           coursePrice.makeFree();
           continue;
         }
       }
 
-      if (this.promoCodes.code === 'FREESTYLE') {
+      if (this.promoCode === 'FREESTYLE') {
         if (coursePrice.code === 'PF' && this.coursePrices.some(c => c.code === 'MZ')) {
           coursePrice.makeFree();
           continue;
         }
       }
 
-      if (this.promoCodes.code === 'EVENTFREECOURSE' && !applied) {
+      if (this.promoCode === 'EVENTFREECOURSE' && !applied) {
         if (this.coursePrices.length >= 2 && index < this.coursePrices.length - 1 && this.coursePrices.some(c => isEventFoundationCourse(c.code))) {
           applied = true;
           coursePrice.makeFree();
@@ -112,7 +112,7 @@ export class FreeCourseApplicator {
         }
       }
 
-      if ([ 'SPECIALTY', 'SPECIALTY100' ].includes(this.promoCodes.code ?? '') && !applied) {
+      if ([ 'SPECIALTY', 'SPECIALTY100' ].includes(this.promoCode ?? '') && !applied) {
         if (this.coursePrices.some(c => isEventFoundationCourse(c.code) && isEventSpecialtyCourse(coursePrice.code))) {
           applied = true;
           coursePrice.makeFree();
@@ -120,7 +120,7 @@ export class FreeCourseApplicator {
         }
       }
 
-      if ([ '2SPECIALTY', 'MCSPECIALTY', 'SSMCSPECIALTY', '2SPECIALTY100' ].includes(this.promoCodes.code ?? '') && count < 2) {
+      if ([ '2SPECIALTY', 'MCSPECIALTY', 'SSMCSPECIALTY', '2SPECIALTY100' ].includes(this.promoCode ?? '') && count < 2) {
         if (this.coursePrices.some(c => isEventFoundationCourse(c.code) && isEventSpecialtyCourse(coursePrice.code))) {
           count++;
           coursePrice.makeFree();
@@ -128,7 +128,7 @@ export class FreeCourseApplicator {
         }
       }
 
-      if (this.promoCodes.code === '2SPECIALTYED' && count < 2) {
+      if (this.promoCode === '2SPECIALTYED' && count < 2) {
         if (this.coursePrices.some(c => isEventFoundationCourse(c.code) && c.code !== 'ED') && (isEventSpecialtyCourse(coursePrice.code) || coursePrice.code === 'ED')) {
           count++;
           coursePrice.makeFree();
@@ -137,7 +137,7 @@ export class FreeCourseApplicator {
       }
 
       // two free specialty courses, but ED is considered a specialty course
-      if (this.promoCodes.code === 'PROFITPIVOT' && count < 2) {
+      if (this.promoCode === 'PROFITPIVOT' && count < 2) {
         if (this.coursePrices.some(c => isEventFoundationCourse(c.code) && c.code !== 'ED') && (isEventSpecialtyCourse(coursePrice.code) || coursePrice.code === 'ED')) {
           count++;
           coursePrice.makeFree();
@@ -145,14 +145,14 @@ export class FreeCourseApplicator {
         }
       }
 
-      if (this.promoCodes.code === 'FREELUXURY') {
+      if (this.promoCode === 'FREELUXURY') {
         if (coursePrice.code === 'LW' && this.coursePrices.some(c => isEventFoundationCourse(c.code))) {
           coursePrice.makeFree();
           continue;
         }
       }
 
-      if ([ 'MASTERCLASS', 'SSMASTERCLASS' ].includes(this.promoCodes.code ?? '') && !applied) {
+      if ([ 'MASTERCLASS', 'SSMASTERCLASS' ].includes(this.promoCode ?? '') && !applied) {
         if (isDesignCourse(coursePrice.code) && coursePrice.code !== 'I2' && this.coursePrices.some(c => c.code === 'I2')) {
           applied = true;
           coursePrice.makeFree();
@@ -160,7 +160,7 @@ export class FreeCourseApplicator {
         }
       }
 
-      if (this.promoCodes.code === 'MASTERCLASS150' && !applied) {
+      if (this.promoCode === 'MASTERCLASS150' && !applied) {
         if (isDesignCourse(coursePrice.code) && coursePrice.code !== 'I2' && this.coursePrices.some(c => c.code === 'I2')) {
           applied = true;
           coursePrice.makeFree();
@@ -168,28 +168,28 @@ export class FreeCourseApplicator {
         }
       }
 
-      if (this.promoCodes.code === 'LUXURYDESTINATION') {
+      if (this.promoCode === 'LUXURYDESTINATION') {
         if ((coursePrice.code === 'LW' || coursePrice.code === 'DW') && this.coursePrices.some(c => c.code === 'EP')) {
           coursePrice.makeFree();
           continue;
         }
       }
 
-      if (this.promoCodes.code === 'PROLUMINOUS') {
+      if (this.promoCode === 'PROLUMINOUS') {
         if (coursePrice.code === 'MW' && this.coursePrices.some(c => c.code === 'MZ')) {
           coursePrice.makeFree();
           continue;
         }
       }
 
-      if (this.promoCodes.code === 'FREEGLOBAL') {
+      if (this.promoCode === 'FREEGLOBAL') {
         if (coursePrice.code === 'GB' && this.coursePrices.some(c => c.code === 'MZ')) {
           coursePrice.makeFree();
           continue;
         }
       }
 
-      if (this.promoCodes.code === 'BOGO100' && !applied) {
+      if (this.promoCode === 'BOGO100' && !applied) {
         if (this.options.school === 'QC Event School') {
           if (this.coursePrices.length >= 2 && this.coursePrices.some(c => isEventFoundationCourse(c.code))) {
             applied = true;
@@ -205,7 +205,7 @@ export class FreeCourseApplicator {
         }
       }
 
-      if (this.promoCodes.code === 'BOGO200' && !applied) {
+      if (this.promoCode === 'BOGO200' && !applied) {
         if (this.coursePrices.length >= 2) {
           applied = true;
           coursePrice.makeFree();
@@ -213,7 +213,7 @@ export class FreeCourseApplicator {
         }
       }
 
-      if (this.promoCodes.code === 'DAYCARE300' && !applied) {
+      if (this.promoCode === 'DAYCARE300' && !applied) {
         if (this.coursePrices.length >= 2 && coursePrice.code === 'DD') {
           applied = true;
           coursePrice.makeFree();
@@ -222,7 +222,7 @@ export class FreeCourseApplicator {
       }
 
       // discount either VD or VE, but not both, as long as one other (non VD, VE) course is selected
-      if (this.promoCodes.code === 'FREEVIRTUAL') {
+      if (this.promoCode === 'FREEVIRTUAL') {
         if (!applied && (coursePrice.code === 'VD' || coursePrice.code === 'VE') && this.coursePrices.filter(c => c.code !== 'VD' && c.code !== 'VE').length >= 1) {
           applied = true;
           coursePrice.makeFree();
@@ -231,21 +231,21 @@ export class FreeCourseApplicator {
       }
 
       // make CC free as long as some other course of equal or greater value is also selected
-      if (this.promoCodes.code === 'FREECOLOR') {
+      if (this.promoCode === 'FREECOLOR') {
         if (coursePrice.code === 'CC' && this.coursePrices.some(c => c.code !== 'CC' && c.cost >= coursePrice.cost)) {
           coursePrice.makeFree();
           continue;
         }
       }
 
-      if (this.promoCodes.code === 'HALLOWEENSFX') {
+      if (this.promoCode === 'HALLOWEENSFX') {
         if (coursePrice.code === 'SF' && this.coursePrices.some(c => c.code === 'MZ')) {
           coursePrice.makeFree();
           continue;
         }
       }
 
-      if (this.promoCodes.code === 'FREEPW') {
+      if (this.promoCode === 'FREEPW') {
         if (coursePrice.code === 'PW' && this.coursePrices.some(c => c.code === 'MZ')) {
           coursePrice.makeFree();
           continue;
@@ -253,7 +253,7 @@ export class FreeCourseApplicator {
       }
 
       // I'm sure this could be better
-      if (this.promoCodes.code === 'BOGOVIRTUAL') {
+      if (this.promoCode === 'BOGOVIRTUAL') {
         const virtualSelected = this.coursePrices.some(c => (this.options.school === 'QC Design School' && c.code === 'VD') || (this.options.school === 'QC Event School' && c.code === 'VE'));
 
         const isVirtual = (this.options.school === 'QC Design School' && coursePrice.code === 'VD') || (this.options.school === 'QC Event School' && coursePrice.code === 'VE');
@@ -278,7 +278,7 @@ export class FreeCourseApplicator {
         }
       }
 
-      if (PromoCodeCalculator.ppaFreeCourseCodes.includes(this.promoCodes.code ?? '') && index === 0) {
+      if (ppaFreeCourseCodes.includes(this.promoCode ?? '') && index === 0) {
         coursePrice.makeFree();
       }
     }
