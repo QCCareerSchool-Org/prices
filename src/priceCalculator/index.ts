@@ -67,7 +67,7 @@ export class PriceCalculator {
     freeCourseApplicator.applyPromoCodeFreeCourses();
 
     this.coursePrices.sort(byFreeThenCostDescending);
-    this.markPrimaryCourse();
+    this.markSecondaryCourses();
 
     const discountCalculator = new DiscountApplicator(this.coursePrices, this.promoCodes, this.currency, this.options);
     discountCalculator.applyMultiCourseDiscounts();
@@ -102,7 +102,7 @@ export class PriceCalculator {
     return currencyCode;
   }
 
-  private markPrimaryCourse(): void {
+  private markSecondaryCourses(): void {
     if (this.coursePrices.length === 0) {
       return;
     }
