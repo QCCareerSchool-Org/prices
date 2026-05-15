@@ -2,7 +2,7 @@ import Big from 'big.js';
 
 import { CoursePricingState as CoursePrice } from './coursePrice';
 import { Currency } from './currency';
-import { DiscountCalculator } from './discountCalculator';
+import { DiscountApplicator } from './discountApplicator';
 import { PromoCodeCalculator } from './promoCodeCalculator';
 import { applyPromoCodeFreeCourses } from './promoCodeFreeCourses';
 import { lookupCurrency } from '../data/lookupCurrency';
@@ -70,7 +70,7 @@ export class PriceCalculator {
     this.courseResults.sort((a, b) => this.byFreeThenCostDescending(a, b));
     this.markPrimaryCourse();
 
-    const discountCalculator = new DiscountCalculator(this.courseResults, this.promoCodes, this.currency, this.options);
+    const discountCalculator = new DiscountApplicator(this.courseResults, this.promoCodes, this.currency, this.options);
     discountCalculator.applyMultiCourseDiscounts();
     discountCalculator.applyStudentDiscounts();
     discountCalculator.applyExtraDiscounts();

@@ -1,21 +1,25 @@
 import Big from 'big.js';
+import crypto from 'crypto';
+import fs from 'fs';
+import path from 'path';
 
 import type { CoursePricingState } from './coursePrice';
 import type { Currency } from './currency';
 import { PromoCodeCalculator } from './promoCodeCalculator';
-import { validateDiscounts } from './validateDiscounts';
 import { isEventFoundationCourse, isMakeupFoundationCourse, isPetCourse } from '@/courses';
 import type { PriceOptions } from '@/domain/priceQuery';
 import { bigMin } from '@/lib/bigMin';
 import { ClientError, ServerError } from '@/lib/errors';
 
-export class DiscountCalculator {
+const publicKey = fs.readFileSync(path.join(__dirname, '../../public.pem'), 'utf8');
+
+export class DiscountApplicator {
   public constructor(
     private readonly courseResults: CoursePricingState[],
     private readonly promoCodes: PromoCodeCalculator,
     private readonly currency: Currency,
     private readonly options: PriceOptions,
-  ) { }
+  ) { /* empty */ }
 
   public applyMultiCourseDiscounts(): void {
     for (let index = 0; index < this.courseResults.length; index++) {
@@ -56,7 +60,7 @@ export class DiscountCalculator {
       return;
     }
 
-    if (!validateDiscounts(this.options)) {
+    if (!this.validateDiscounts()) {
       throw new ClientError('invalid discount signature');
     }
 
@@ -380,5 +384,19 @@ export class DiscountCalculator {
     if ([ 'PORTFOLIO50', 'FANDECK50', 'BRUSHSET50' ].includes(this.promoCodes.code ?? '')) {
       return Big(50);
     }
+  }
+
+  /**
+   * Determines if the discount options are valid
+   * @param options the options
+  */
+  private validateDiscounts(): boolean {
+    if (!this.options.discount || !this.options.discountSignature) {
+      return true;
+    }
+
+    const verify = crypto.createVerify('SHA256');
+    verify.update(JSON.stringify(this.options.discount));
+    return verify.verify(publicKey, Buffer.from(this.options.discountSignature, 'base64'));
   }
 }
