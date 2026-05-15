@@ -1,10 +1,9 @@
 import Big from 'big.js';
 
-import { CoursePricingState as CoursePrice } from './coursePrice';
+import { CoursePrice } from './coursePrice';
 import { Currency } from './currency';
 import { DiscountApplicator } from './discountApplicator';
 import { PromoCodeCalculator } from './promoCodeCalculator';
-import { applyPromoCodeFreeCourses } from './promoCodeFreeCourses';
 import { lookupCurrency } from '../data/lookupCurrency';
 import { lookupPrice } from '../data/lookupPrice';
 import { audCountry, gbpCountry, nzdCountry } from '../domain/currency';
@@ -24,7 +23,7 @@ export class PriceCalculator {
 
   private readonly courseCodes: string[];
 
-  private courseResults: CoursePrice[] = [];
+  private coursePrices: CoursePrice[] = [];
 
   private currency?: Currency;
 
@@ -59,18 +58,18 @@ export class PriceCalculator {
     const rawCurrency = await lookupCurrency(currencyCode);
     this.currency = new Currency(rawCurrency);
     this.somePartsMissing = rawPrices.some(p => p.installments === 0);
-    this.courseResults = rawPrices.map(r => new CoursePrice(r));
+    this.coursePrices = rawPrices.map(r => new CoursePrice(r));
 
-    this.courseResults.sort((a, b) => this.byCostAscending(a, b));
+    this.coursePrices.sort((a, b) => this.byCostAscending(a, b));
     this.applyDefaultFreeCourses();
 
-    this.courseResults.sort((a, b) => this.byFreeThenCostAscending(a, b));
-    applyPromoCodeFreeCourses(this.courseResults, this.promoCodes, this.options);
+    this.coursePrices.sort((a, b) => this.byFreeThenCostAscending(a, b));
+    this.applyPromoCodeFreeCourses();
 
-    this.courseResults.sort((a, b) => this.byFreeThenCostDescending(a, b));
+    this.coursePrices.sort((a, b) => this.byFreeThenCostDescending(a, b));
     this.markPrimaryCourse();
 
-    const discountCalculator = new DiscountApplicator(this.courseResults, this.promoCodes, this.currency, this.options);
+    const discountCalculator = new DiscountApplicator(this.coursePrices, this.promoCodes, this.currency, this.options);
     discountCalculator.applyMultiCourseDiscounts();
     discountCalculator.applyStudentDiscounts();
     discountCalculator.applyExtraDiscounts();
@@ -80,7 +79,7 @@ export class PriceCalculator {
     this.applyOverrides();
     this.notesAndDisclaimers();
 
-    this.courseResults.sort((a, b) => this.finalSort(a, b));
+    this.coursePrices.sort((a, b) => this.finalSort(a, b));
 
     return this.toDTO();
   }
@@ -129,7 +128,7 @@ export class PriceCalculator {
       courses: [],
     };
 
-    const firstCourseResult = this.courseResults[0];
+    const firstCourseResult = this.coursePrices[0];
     if (!firstCourseResult) {
       return price;
     }
@@ -151,23 +150,23 @@ export class PriceCalculator {
     let partTotal = Big(0);
     let partOriginalDeposit = Big(0);
 
-    for (const courseResult of this.courseResults) {
-      cost = cost.plus(courseResult.cost);
-      multiCourseDiscount = multiCourseDiscount.plus(courseResult.multiCourseDiscount);
-      promoDiscount = promoDiscount.plus(courseResult.promoDiscount);
-      discountedCost = discountedCost.plus(courseResult.discountedCost);
-      fullDiscount = fullDiscount.plus(courseResult.plans.full.discount);
-      fullDeposit = fullDeposit.plus(courseResult.plans.full.deposit);
-      fullInstallmentSize = fullInstallmentSize.plus(courseResult.plans.full.installmentSize);
-      fullRemainder = fullRemainder.plus(courseResult.plans.full.remainder);
-      fullTotal = fullTotal.plus(courseResult.plans.full.total);
-      fullOriginalDeposit = fullOriginalDeposit.plus(courseResult.plans.full.originalDeposit);
-      partDiscount = partDiscount.plus(courseResult.plans.part.discount);
-      partDeposit = partDeposit.plus(courseResult.plans.part.deposit);
-      partInstallmentSize = partInstallmentSize.plus(courseResult.plans.part.installmentSize);
-      partRemainder = partRemainder.plus(courseResult.plans.part.remainder);
-      partTotal = partTotal.plus(courseResult.plans.part.total);
-      partOriginalDeposit = partOriginalDeposit.plus(courseResult.plans.part.originalDeposit);
+    for (const coursePrice of this.coursePrices) {
+      cost = cost.plus(coursePrice.cost);
+      multiCourseDiscount = multiCourseDiscount.plus(coursePrice.multiCourseDiscount);
+      promoDiscount = promoDiscount.plus(coursePrice.promoDiscount);
+      discountedCost = discountedCost.plus(coursePrice.discountedCost);
+      fullDiscount = fullDiscount.plus(coursePrice.plans.full.discount);
+      fullDeposit = fullDeposit.plus(coursePrice.plans.full.deposit);
+      fullInstallmentSize = fullInstallmentSize.plus(coursePrice.plans.full.installmentSize);
+      fullRemainder = fullRemainder.plus(coursePrice.plans.full.remainder);
+      fullTotal = fullTotal.plus(coursePrice.plans.full.total);
+      fullOriginalDeposit = fullOriginalDeposit.plus(coursePrice.plans.full.originalDeposit);
+      partDiscount = partDiscount.plus(coursePrice.plans.part.discount);
+      partDeposit = partDeposit.plus(coursePrice.plans.part.deposit);
+      partInstallmentSize = partInstallmentSize.plus(coursePrice.plans.part.installmentSize);
+      partRemainder = partRemainder.plus(coursePrice.plans.part.remainder);
+      partTotal = partTotal.plus(coursePrice.plans.part.total);
+      partOriginalDeposit = partOriginalDeposit.plus(coursePrice.plans.part.originalDeposit);
     }
 
     price.cost = cost.toNumber();
@@ -193,56 +192,299 @@ export class PriceCalculator {
     price.plans.part.originalDeposit = partOriginalDeposit.toNumber();
     price.plans.part.originalInstallments = firstCourseResult.plans.part.originalInstallments.toNumber();
 
-    price.courses = this.courseResults.map(c => c.toDTO());
+    price.courses = this.coursePrices.map(c => c.toDTO());
 
     return price;
   }
 
   /** Sets courses that should always be free */
   private applyDefaultFreeCourses(): void {
-    for (const courseResult of this.courseResults) {
+    for (const coursePrice of this.coursePrices) {
       // FA is free if taking DG
-      if (this.options.discountAll !== true && courseResult.code === 'FA' && this.courseResults.some(c => c.code === 'DG')) {
-        courseResult.makeFree();
+      if (this.options.discountAll !== true && coursePrice.code === 'FA' && this.coursePrices.some(c => c.code === 'DG')) {
+        coursePrice.makeFree();
         continue;
       }
 
       // VD and DB are free if taking I2
-      if (this.options.discountAll !== true && (courseResult.code === 'VD' || courseResult.code === 'DB') && this.courseResults.some(c => c.code === 'I2')) {
-        courseResult.makeFree();
+      if (this.options.discountAll !== true && (coursePrice.code === 'VD' || coursePrice.code === 'DB') && this.coursePrices.some(c => c.code === 'I2')) {
+        coursePrice.makeFree();
       }
     }
 
     // apply free all-access program courses
     for (const [ paidCourse, freeCourses ] of Object.entries(PriceCalculator.allAccessFreeCourses)) {
-      if (this.courseResults.some(c => c.code === paidCourse && !c.free)) {
-        for (const courseResult of this.courseResults) {
-          if (freeCourses.includes(courseResult.code)) {
-            courseResult.makeFree();
+      if (this.coursePrices.some(c => c.code === paidCourse && !c.free)) {
+        for (const coursePrice of this.coursePrices) {
+          if (freeCourses.includes(coursePrice.code)) {
+            coursePrice.makeFree();
           }
         }
       }
     }
   }
 
+  private applyPromoCodeFreeCourses(): void {
+    let applied = false;
+    let count = 0;
+
+    for (let index = 0; index < this.coursePrices.length; index++) {
+      const coursePrice = this.coursePrices[index];
+      if (!coursePrice) {
+        throw Error('Course price not found');
+      }
+
+      if (this.promoCodes.code === 'FREEPRO') {
+        if (coursePrice.code === 'MW' && this.coursePrices.some(c => c.code === 'MZ')) {
+          coursePrice.makeFree();
+          continue;
+        }
+      }
+
+      if (this.promoCodes.code === 'EXPERT' && !applied) {
+        if (isEventSpecialtyCourse(coursePrice.code) && this.coursePrices.some(c => isEventFoundationCourse(c.code))) {
+          applied = true;
+          coursePrice.makeFree();
+          continue;
+        }
+      }
+
+      if ([ 'BOGO', 'BOGOCATALYST', 'BOGOCATALYST100' ].includes(this.promoCodes.code ?? '') && !applied) {
+        if (this.coursePrices.length >= 2) {
+          applied = true;
+          coursePrice.makeFree();
+          continue;
+        }
+      }
+
+      if (this.promoCodes.code === 'BOGO2ANY' && count < 2) {
+        if ((this.coursePrices.length >= 2 && count < 1) || this.coursePrices.length >= 3) {
+          count++;
+          coursePrice.makeFree();
+          continue;
+        }
+      }
+
+      if ([ 'BOGOMZ', 'BOGOMZ300' ].includes(this.promoCodes.code ?? '') && !applied) {
+        if (coursePrice.code !== 'MZ' && this.coursePrices.some(c => c.code === 'MZ')) {
+          applied = true;
+          coursePrice.makeFree();
+          continue;
+        }
+      }
+
+      if ([ 'SKINCARE', 'SKINCARE100', 'SKINCARE300' ].includes(this.promoCodes.code ?? '')) {
+        if (coursePrice.code === 'SK' && this.coursePrices.some(c => c.code === 'MZ')) {
+          coursePrice.makeFree();
+          continue;
+        }
+      }
+
+      if (this.promoCodes.code === 'FREESTYLE') {
+        if (coursePrice.code === 'PF' && this.coursePrices.some(c => c.code === 'MZ')) {
+          coursePrice.makeFree();
+          continue;
+        }
+      }
+
+      if (this.promoCodes.code === 'EVENTFREECOURSE' && !applied) {
+        if (this.coursePrices.length >= 2 && index < this.coursePrices.length - 1 && this.coursePrices.some(c => isEventFoundationCourse(c.code))) {
+          applied = true;
+          coursePrice.makeFree();
+          continue;
+        }
+      }
+
+      if ([ 'SPECIALTY', 'SPECIALTY100' ].includes(this.promoCodes.code ?? '') && !applied) {
+        if (this.coursePrices.some(c => isEventFoundationCourse(c.code) && isEventSpecialtyCourse(coursePrice.code))) {
+          applied = true;
+          coursePrice.makeFree();
+          continue;
+        }
+      }
+
+      if ([ '2SPECIALTY', 'MCSPECIALTY', 'SSMCSPECIALTY', '2SPECIALTY100' ].includes(this.promoCodes.code ?? '') && count < 2) {
+        if (this.coursePrices.some(c => isEventFoundationCourse(c.code) && isEventSpecialtyCourse(coursePrice.code))) {
+          count++;
+          coursePrice.makeFree();
+          continue;
+        }
+      }
+
+      if (this.promoCodes.code === '2SPECIALTYED' && count < 2) {
+        if (this.coursePrices.some(c => isEventFoundationCourse(c.code) && c.code !== 'ED') && (isEventSpecialtyCourse(coursePrice.code) || coursePrice.code === 'ED')) {
+          count++;
+          coursePrice.makeFree();
+          continue;
+        }
+      }
+
+      // two free specialty courses, but ED is considered a specialty course
+      if (this.promoCodes.code === 'PROFITPIVOT' && count < 2) {
+        if (this.coursePrices.some(c => isEventFoundationCourse(c.code) && c.code !== 'ED') && (isEventSpecialtyCourse(coursePrice.code) || coursePrice.code === 'ED')) {
+          count++;
+          coursePrice.makeFree();
+          continue;
+        }
+      }
+
+      if (this.promoCodes.code === 'FREELUXURY') {
+        if (coursePrice.code === 'LW' && this.coursePrices.some(c => isEventFoundationCourse(c.code))) {
+          coursePrice.makeFree();
+          continue;
+        }
+      }
+
+      if ([ 'MASTERCLASS', 'SSMASTERCLASS' ].includes(this.promoCodes.code ?? '') && !applied) {
+        if (isDesignCourse(coursePrice.code) && coursePrice.code !== 'I2' && this.coursePrices.some(c => c.code === 'I2')) {
+          applied = true;
+          coursePrice.makeFree();
+          continue;
+        }
+      }
+
+      if (this.promoCodes.code === 'MASTERCLASS150' && !applied) {
+        if (isDesignCourse(coursePrice.code) && coursePrice.code !== 'I2' && this.coursePrices.some(c => c.code === 'I2')) {
+          applied = true;
+          coursePrice.makeFree();
+          continue;
+        }
+      }
+
+      if (this.promoCodes.code === 'LUXURYDESTINATION') {
+        if ((coursePrice.code === 'LW' || coursePrice.code === 'DW') && this.coursePrices.some(c => c.code === 'EP')) {
+          coursePrice.makeFree();
+          continue;
+        }
+      }
+
+      if (this.promoCodes.code === 'PROLUMINOUS') {
+        if (coursePrice.code === 'MW' && this.coursePrices.some(c => c.code === 'MZ')) {
+          coursePrice.makeFree();
+          continue;
+        }
+      }
+
+      if (this.promoCodes.code === 'FREEGLOBAL') {
+        if (coursePrice.code === 'GB' && this.coursePrices.some(c => c.code === 'MZ')) {
+          coursePrice.makeFree();
+          continue;
+        }
+      }
+
+      if (this.promoCodes.code === 'BOGO100' && !applied) {
+        if (this.options.school === 'QC Event School') {
+          if (this.coursePrices.length >= 2 && this.coursePrices.some(c => isEventFoundationCourse(c.code))) {
+            applied = true;
+            coursePrice.makeFree();
+            continue;
+          }
+        } else {
+          if (this.coursePrices.length >= 2) {
+            applied = true;
+            coursePrice.makeFree();
+            continue;
+          }
+        }
+      }
+
+      if (this.promoCodes.code === 'BOGO200' && !applied) {
+        if (this.coursePrices.length >= 2) {
+          applied = true;
+          coursePrice.makeFree();
+          continue;
+        }
+      }
+
+      if (this.promoCodes.code === 'DAYCARE300' && !applied) {
+        if (this.coursePrices.length >= 2 && coursePrice.code === 'DD') {
+          applied = true;
+          coursePrice.makeFree();
+          continue;
+        }
+      }
+
+      // discount either VD or VE, but not both, as long as one other (non VD, VE) course is selected
+      if (this.promoCodes.code === 'FREEVIRTUAL') {
+        if (!applied && (coursePrice.code === 'VD' || coursePrice.code === 'VE') && this.coursePrices.filter(c => c.code !== 'VD' && c.code !== 'VE').length >= 1) {
+          applied = true;
+          coursePrice.makeFree();
+          continue;
+        }
+      }
+
+      // make CC free as long as some other course of equal or greater value is also selected
+      if (this.promoCodes.code === 'FREECOLOR') {
+        if (coursePrice.code === 'CC' && this.coursePrices.some(c => c.code !== 'CC' && c.cost >= coursePrice.cost)) {
+          coursePrice.makeFree();
+          continue;
+        }
+      }
+
+      if (this.promoCodes.code === 'HALLOWEENSFX') {
+        if (coursePrice.code === 'SF' && this.coursePrices.some(c => c.code === 'MZ')) {
+          coursePrice.makeFree();
+          continue;
+        }
+      }
+
+      if (this.promoCodes.code === 'FREEPW') {
+        if (coursePrice.code === 'PW' && this.coursePrices.some(c => c.code === 'MZ')) {
+          coursePrice.makeFree();
+          continue;
+        }
+      }
+
+      // I'm sure this could be better
+      if (this.promoCodes.code === 'BOGOVIRTUAL') {
+        const virtualSelected = this.coursePrices.some(c => (this.options.school === 'QC Design School' && c.code === 'VD') || (this.options.school === 'QC Event School' && c.code === 'VE'));
+
+        const isVirtual = (this.options.school === 'QC Design School' && coursePrice.code === 'VD') || (this.options.school === 'QC Event School' && coursePrice.code === 'VE');
+
+        if (this.coursePrices.length >= 2) {
+          if (virtualSelected) {
+            if (isVirtual) {
+              coursePrice.makeFree();
+              continue;
+            }
+          }
+        }
+
+        if ((this.coursePrices.length >= 2 && !virtualSelected) || (this.coursePrices.length >= 3 && virtualSelected)) {
+          if (!isVirtual) {
+            if (count === 0) {
+              count++;
+              coursePrice.makeFree();
+              continue;
+            }
+          }
+        }
+      }
+
+      if (PromoCodeCalculator.ppaFreeCourseCodes.includes(this.promoCodes.code ?? '') && index === 0) {
+        coursePrice.makeFree();
+      }
+    }
+  }
+
   private markPrimaryCourse(): void {
-    if (this.courseResults.length === 0) {
+    if (this.coursePrices.length === 0) {
       return;
     }
 
-    const firstCourseResult = this.courseResults[0];
+    const firstCourseResult = this.coursePrices[0];
     if (!firstCourseResult) {
-      throw Error('courseResult is undefined');
+      throw Error('coursePrice is undefined');
     }
 
-    for (let i = 1; i < this.courseResults.length; i++) {
-      const courseResult = this.courseResults[i];
-      if (!courseResult) {
-        throw Error('courseResult is undefined');
+    for (let i = 1; i < this.coursePrices.length; i++) {
+      const coursePrice = this.coursePrices[i];
+      if (!coursePrice) {
+        throw Error('coursePrice is undefined');
       }
 
-      courseResult.markSecondary();
-      courseResult.setPartInstallments(firstCourseResult.partInstallments);
+      coursePrice.markSecondary();
+      coursePrice.setPartInstallments(firstCourseResult.partInstallments);
     }
   }
 
@@ -254,15 +496,15 @@ export class PriceCalculator {
     // if there's a deposit-override object, make sure we have all the overrides
     if (typeof this.options.depositOverrides !== 'undefined') {
       // check for a deposit for each course
-      for (const courseResult of this.courseResults) {
-        if (typeof this.options.depositOverrides[courseResult.code] === 'undefined') {
-          throw new ClientError(`invalid depositOverride: no key for ${courseResult.code}`);
+      for (const coursePrice of this.coursePrices) {
+        if (typeof this.options.depositOverrides[coursePrice.code] === 'undefined') {
+          throw new ClientError(`invalid depositOverride: no key for ${coursePrice.code}`);
         }
       }
 
       // check that there are no extra courses
-      if (Object.keys(this.options.depositOverrides).length !== this.courseResults.length) {
-        throw new ClientError(`invalid depositOverride: expected ${this.courseResults.length} keys`);
+      if (Object.keys(this.options.depositOverrides).length !== this.coursePrices.length) {
+        throw new ClientError(`invalid depositOverride: expected ${this.coursePrices.length} keys`);
       }
     }
 
@@ -281,15 +523,15 @@ export class PriceCalculator {
       }
     }
 
-    for (const courseResult of this.courseResults) {
-      const depositOverride = this.options.depositOverrides?.[courseResult.code];
+    for (const coursePrice of this.coursePrices) {
+      const depositOverride = this.options.depositOverrides?.[coursePrice.code];
 
       if (depositOverride) {
-        courseResult.overridePartDeposit(Big(depositOverride).round(2));
+        coursePrice.overridePartDeposit(Big(depositOverride).round(2));
       }
 
       if (installmentOverride) {
-        courseResult.overridePartInstallments(installmentOverride);
+        coursePrice.overridePartInstallments(installmentOverride);
       }
     }
   }
@@ -606,8 +848,7 @@ export class PriceCalculator {
       this.disclaimers.push('You\'ll get a free color wheel');
       this.notes.push('color wheel');
     }
-
-  };
+  }
 
   private noShippingMessage(): string | undefined {
     if (this.noShipping) {

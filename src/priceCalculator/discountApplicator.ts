@@ -3,7 +3,7 @@ import crypto from 'crypto';
 import fs from 'fs';
 import path from 'path';
 
-import type { CoursePricingState } from './coursePrice';
+import type { CoursePrice } from './coursePrice';
 import type { Currency } from './currency';
 import { PromoCodeCalculator } from './promoCodeCalculator';
 import { isEventFoundationCourse, isMakeupFoundationCourse, isPetCourse } from '@/courses';
@@ -15,20 +15,20 @@ const publicKey = fs.readFileSync(path.join(__dirname, '../../public.pem'), 'utf
 
 export class DiscountApplicator {
   public constructor(
-    private readonly courseResults: CoursePricingState[],
+    private readonly coursePrices: CoursePrice[],
     private readonly promoCodes: PromoCodeCalculator,
     private readonly currency: Currency,
     private readonly options: PriceOptions,
   ) { /* empty */ }
 
   public applyMultiCourseDiscounts(): void {
-    for (let index = 0; index < this.courseResults.length; index++) {
-      const courseResult = this.courseResults[index];
-      if (!courseResult) {
-        throw new ServerError('courseResult not defined');
+    for (let index = 0; index < this.coursePrices.length; index++) {
+      const coursePrice = this.coursePrices[index];
+      if (!coursePrice) {
+        throw new ServerError('coursePrice not defined');
       }
 
-      if (courseResult.free) {
+      if (coursePrice.free) {
         continue;
       }
 
@@ -36,8 +36,8 @@ export class DiscountApplicator {
         continue;
       }
 
-      const overrideRate = this.getMultiCourseDiscountRateOverride(courseResult);
-      courseResult.applyMultiCourseDiscount(overrideRate);
+      const overrideRate = this.getMultiCourseDiscountRateOverride(coursePrice);
+      coursePrice.applyMultiCourseDiscount(overrideRate);
     }
   }
 
@@ -46,12 +46,12 @@ export class DiscountApplicator {
       return;
     }
 
-    for (const courseResult of this.courseResults) {
-      if (courseResult.free) {
+    for (const coursePrice of this.coursePrices) {
+      if (coursePrice.free) {
         continue;
       }
 
-      courseResult.addPromoDiscount(this.studentDiscountAmount());
+      coursePrice.addPromoDiscount(this.studentDiscountAmount());
     }
   }
 
@@ -66,14 +66,14 @@ export class DiscountApplicator {
 
     let remainingExtraDiscount = Big(this.options.discount[this.currency.code] ?? this.options.discount.default);
 
-    for (const courseResult of this.courseResults) {
-      if (courseResult.free || remainingExtraDiscount.lte(0)) {
+    for (const coursePrice of this.coursePrices) {
+      if (coursePrice.free || remainingExtraDiscount.lte(0)) {
         continue;
       }
 
-      const reduction = remainingExtraDiscount.gt(courseResult.discountedCost) ? remainingExtraDiscount : courseResult.discountedCost;
+      const reduction = remainingExtraDiscount.gt(coursePrice.discountedCost) ? remainingExtraDiscount : coursePrice.discountedCost;
       remainingExtraDiscount = remainingExtraDiscount.minus(reduction);
-      courseResult.addPromoDiscount(reduction);
+      coursePrice.addPromoDiscount(reduction);
     }
   }
 
@@ -83,138 +83,142 @@ export class DiscountApplicator {
     let petDiscount = this.getPetDiscount();
     let remainingExtraDiscount = this.getExtraPromoDiscount();
 
-    const doPetDiscount = (courseResult: CoursePricingState) => {
+    const doPetDiscount = (coursePrice: CoursePrice) => {
       if (!petDiscount || petDiscount.lte(0)) {
         return;
       }
 
-      if (!isPetCourse(courseResult.code)) {
+      if (!isPetCourse(coursePrice.code)) {
         return;
       }
 
-      const extraDiscount = bigMin(courseResult.discountedCost, petDiscount);
-      this.safeApply(courseResult, extraDiscount);
+      const extraDiscount = bigMin(coursePrice.discountedCost, petDiscount);
+      this.safeApply(coursePrice, extraDiscount);
       petDiscount = petDiscount.minus(extraDiscount);
     };
 
     let applied = false;
 
-    const doOneTimeDiscount = (courseResult: CoursePricingState) => {
+    /**
+     * Apply any discounts that can only be applied once
+     * @param coursePrice the courseResults
+     */
+    const doOneTimeDiscount = (coursePrice: CoursePrice): void => {
       if (applied) {
         return;
       }
 
-      if (this.promoCodes.code === 'FOUNDATION200' && isEventFoundationCourse(courseResult.code)) {
-        this.safeApply(courseResult, Big(200));
+      if (this.promoCodes.code === 'FOUNDATION200' && isEventFoundationCourse(coursePrice.code)) {
+        this.safeApply(coursePrice, Big(200));
         applied = true;
         return;
       }
 
       // take a flat amount off
-      if (this.promoCodes.code === 'KIT200OFF' && isMakeupFoundationCourse(courseResult.code)) {
-        this.safeApply(courseResult, Big(this.currency.code === 'GBP' ? 100 : 200));
+      if (this.promoCodes.code === 'KIT200OFF' && isMakeupFoundationCourse(coursePrice.code)) {
+        this.safeApply(coursePrice, Big(this.currency.code === 'GBP' ? 100 : 200));
         applied = true;
         return;
       }
 
-      if ([ 'MASTERCLASS', 'SSMASTERCLASS' ].includes(this.promoCodes.code ?? '') && this.courseResults.some(c => c.code === 'I2')) {
-        this.safeApply(courseResult, Big(200));
+      if ([ 'MASTERCLASS', 'SSMASTERCLASS' ].includes(this.promoCodes.code ?? '') && this.coursePrices.some(c => c.code === 'I2')) {
+        this.safeApply(coursePrice, Big(200));
         applied = true;
         return;
       }
 
-      if (this.promoCodes.code === 'MASTERCLASS150' && this.courseResults.some(c => c.code === 'I2')) {
-        this.safeApply(courseResult, Big(150));
+      if (this.promoCodes.code === 'MASTERCLASS150' && this.coursePrices.some(c => c.code === 'I2')) {
+        this.safeApply(coursePrice, Big(150));
         applied = true;
         return;
       }
 
-      if (this.promoCodes.code === 'MZ100' && this.courseResults.some(c => c.code === 'MZ')) {
-        this.safeApply(courseResult, Big(100));
+      if (this.promoCodes.code === 'MZ100' && this.coursePrices.some(c => c.code === 'MZ')) {
+        this.safeApply(coursePrice, Big(100));
         applied = true;
         return;
       };
     };
 
-    const doGeneralDiscount = (courseResult: CoursePricingState) => {
+    const doGeneralDiscount = (coursePrice: CoursePrice) => {
       if (!remainingExtraDiscount || remainingExtraDiscount.lte(0)) {
         return;
       }
 
-      const extraDiscount = bigMin(courseResult.discountedCost, remainingExtraDiscount);
-      courseResult.setPromoDiscount(extraDiscount);
+      const extraDiscount = bigMin(coursePrice.discountedCost, remainingExtraDiscount);
+      coursePrice.setPromoDiscount(extraDiscount);
       remainingExtraDiscount = remainingExtraDiscount.minus(extraDiscount);
     };
 
-    for (const courseResult of this.courseResults) {
+    for (const coursePrice of this.coursePrices) {
       // skip free courses
-      if (courseResult.free) {
+      if (coursePrice.free) {
         continue;
       }
 
       // take a flat amount off DG
-      if (dogGroomingDiscount && courseResult.code === 'DG') {
-        this.safeApply(courseResult, dogGroomingDiscount);
+      if (dogGroomingDiscount && coursePrice.code === 'DG') {
+        this.safeApply(coursePrice, dogGroomingDiscount);
         continue;
       }
 
       // take a flat amount off DT
-      if (dogTrainingDiscount && courseResult.code === 'DT') {
-        this.safeApply(courseResult, dogTrainingDiscount);
+      if (dogTrainingDiscount && coursePrice.code === 'DT') {
+        this.safeApply(coursePrice, dogTrainingDiscount);
         continue;
       }
 
       // take 25% off every discounted price (before payment-plan discounts)
-      if (this.promoCodes.code === 'QCGROUP' && courseResult.primary) {
-        this.safeApply(courseResult, courseResult.discountedCost.times(0.25).round(2));
+      if (this.promoCodes.code === 'QCGROUP' && coursePrice.primary) {
+        this.safeApply(coursePrice, coursePrice.discountedCost.times(0.25).round(2));
         continue;
       }
 
       // take 25% off every discounted price (before payment-plan discounts)
       if (this.promoCodes.code === '10PERCENT') {
-        this.safeApply(courseResult, courseResult.discountedCost.times(0.1).round(2));
+        this.safeApply(coursePrice, coursePrice.discountedCost.times(0.1).round(2));
         continue;
       }
 
       // take 25% of FC
-      if (this.promoCodes.code === 'FC25PERCENT' && courseResult.code === 'FC') {
-        const discount = courseResult.cost.times(0.25).round(2);
-        this.safeApply(courseResult, discount);
+      if (this.promoCodes.code === 'FC25PERCENT' && coursePrice.code === 'FC') {
+        const discount = coursePrice.cost.times(0.25).round(2);
+        this.safeApply(coursePrice, discount);
         continue;
       }
 
       // take a flat amount off MZ
-      if (this.promoCodes.code === 'SKINCARE100' && courseResult.code === 'MZ') {
-        this.safeApply(courseResult, Big(100));
+      if (this.promoCodes.code === 'SKINCARE100' && coursePrice.code === 'MZ') {
+        this.safeApply(coursePrice, Big(100));
         continue;
       }
 
       // take a flat amount off MZ
-      if ([ 'SKINCARE300', 'MASTER300' ].includes(this.promoCodes.code ?? '') && courseResult.code === 'MZ') {
-        this.safeApply(courseResult, Big(300));
+      if ([ 'SKINCARE300', 'MASTER300' ].includes(this.promoCodes.code ?? '') && coursePrice.code === 'MZ') {
+        this.safeApply(coursePrice, Big(300));
         continue;
       }
 
       if (PromoCodeCalculator.studentSupport50Codes.includes(this.promoCodes.code ?? '')) {
-        this.safeApply(courseResult, Big(50));
+        this.safeApply(coursePrice, Big(50));
         continue;
       }
 
       if (PromoCodeCalculator.studentSupport100Codes.includes(this.promoCodes.code ?? '')) {
-        this.safeApply(courseResult, Big(100));
+        this.safeApply(coursePrice, Big(100));
         continue;
       }
 
       if (PromoCodeCalculator.studentSupport150Codes.includes(this.promoCodes.code ?? '')) {
-        this.safeApply(courseResult, Big(150));
+        this.safeApply(coursePrice, Big(150));
         continue;
       }
 
-      doOneTimeDiscount(courseResult);
+      doOneTimeDiscount(coursePrice);
 
-      doGeneralDiscount(courseResult);
+      doGeneralDiscount(coursePrice);
 
-      doPetDiscount(courseResult);
+      doPetDiscount(coursePrice);
     }
   }
 
@@ -225,18 +229,18 @@ export class DiscountApplicator {
 
     const dgDiscountAmount = Big(this.currency.code === 'GBP' ? 150 : 200);
 
-    for (const courseResult of this.courseResults) {
-      if (courseResult.free || courseResult.code !== 'DG') {
+    for (const coursePrice of this.coursePrices) {
+      if (coursePrice.free || coursePrice.code !== 'DG') {
         continue;
       }
 
-      const reduction = dgDiscountAmount.gt(courseResult.discountedCost) ? courseResult.discountedCost : dgDiscountAmount;
-      courseResult.addPromoDiscount(reduction);
+      const reduction = dgDiscountAmount.gt(coursePrice.discountedCost) ? coursePrice.discountedCost : dgDiscountAmount;
+      coursePrice.addPromoDiscount(reduction);
     }
   }
 
-  private safeApply(courseResult: CoursePricingState, discount: Big): void {
-    courseResult.addPromoDiscount(bigMin(courseResult.discountedCost, discount));
+  private safeApply(coursePrice: CoursePrice, discount: Big): void {
+    coursePrice.addPromoDiscount(bigMin(coursePrice.discountedCost, discount));
   };
 
   private shouldGetMultiCourseDiscount(index: number): boolean {
@@ -249,8 +253,8 @@ export class DiscountApplicator {
     return index > 0;
   };
 
-  private getMultiCourseDiscountRateOverride(courseResult: CoursePricingState): Big | undefined {
-    if ((this.promoCodes.code === 'SKINCARE60' && courseResult.code === 'SK' && this.courseResults.find(c => c.code === 'MZ'))) {
+  private getMultiCourseDiscountRateOverride(coursePrice: CoursePrice): Big | undefined {
+    if ((this.promoCodes.code === 'SKINCARE60' && coursePrice.code === 'SK' && this.coursePrices.find(c => c.code === 'MZ'))) {
       return Big(0.6);
     }
 
@@ -262,35 +266,35 @@ export class DiscountApplicator {
       return Big(0.6);
     }
 
-    if (this.promoCodes.code === 'ORGANIZING60' && courseResult.code === 'PO') {
+    if (this.promoCodes.code === 'ORGANIZING60' && coursePrice.code === 'PO') {
       return Big(0.6);
     }
 
-    if (this.promoCodes.code === 'CORPORATE60' && courseResult.code === 'CP') {
+    if (this.promoCodes.code === 'CORPORATE60' && coursePrice.code === 'CP') {
       return Big(0.6);
     }
 
-    if (this.promoCodes.code === 'STYLING60' && courseResult.code === 'PF') {
+    if (this.promoCodes.code === 'STYLING60' && coursePrice.code === 'PF') {
       return Big(0.6);
     }
 
-    if (this.promoCodes.code === 'PORTDEV60' && courseResult.code === 'PW') {
+    if (this.promoCodes.code === 'PORTDEV60' && coursePrice.code === 'PW') {
       return Big(0.6);
     }
 
-    if (this.promoCodes.code === 'DAYCARE60' && courseResult.code === 'DD') {
+    if (this.promoCodes.code === 'DAYCARE60' && coursePrice.code === 'DD') {
       return Big(0.6);
     }
 
-    if (this.promoCodes.code === 'SFX60' && courseResult.code === 'SF') {
+    if (this.promoCodes.code === 'SFX60' && coursePrice.code === 'SF') {
       return Big(0.6);
     }
 
-    if (this.promoCodes.code === 'BUSINESS60' && (courseResult.code === 'EB' || courseResult.code === 'DB')) {
+    if (this.promoCodes.code === 'BUSINESS60' && (coursePrice.code === 'EB' || coursePrice.code === 'DB')) {
       return Big(0.6);
     }
 
-    if (this.promoCodes.code === 'TRAINING60' && (courseResult.code === 'DT' || courseResult.code === 'DC')) {
+    if (this.promoCodes.code === 'TRAINING60' && (coursePrice.code === 'DT' || coursePrice.code === 'DC')) {
       return Big(0.6);
     }
   }

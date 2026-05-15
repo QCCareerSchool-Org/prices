@@ -1,10 +1,11 @@
 import Big from 'big.js';
 
-import { FullPaymentPlan, InstallmentPaymentPlan, type IPaymentPlan } from './paymentPlan';
+import type { IPaymentPlan } from './paymentPlan';
+import { FullPaymentPlan, InstallmentPaymentPlan } from './paymentPlan';
 import type { CoursePriceDTO } from '../domain/price';
 import type { RawPrice } from '../domain/rawPrice';
 
-export class CoursePricingState {
+export class CoursePrice {
   public code: string;
   public name: string;
 
