@@ -1,7 +1,5 @@
 import type { Currency } from './currency';
 import { isCurrency } from './currency';
-import type { NoShipping } from './noShipping';
-import { isNoShipping } from './noShipping';
 
 export type Price = {
   countryCode: string;
@@ -10,8 +8,7 @@ export type Price = {
   disclaimers: string[];
   notes: string[];
   promoWarnings: string[];
-  noShipping: NoShipping;
-  noShippingMessage?: string | undefined;
+  noShipping: boolean;
   promoCodeRecognized?: boolean | undefined;
   promoCode?: string | undefined;
   courses: CoursePrice[];
@@ -44,13 +41,9 @@ export interface PriceDetails {
   /** additional promotional discount */
   promoDiscount: number;
   /** the discount for not shipping materials */
-  shippingDiscount: number;
-  /** the discounted price (before payment plan discount) */
   discountedCost: number;
   /** the payment plans */
-  plans: { full: Plan; part?: Plan | undefined };
-  /** what our cost for shipping would be if we shipped */
-  shipping: number;
+  plans: { full: Plan; part: Plan };
 }
 
 export type CoursePrice = {
@@ -73,8 +66,7 @@ export const isPrice = (obj: unknown): obj is Price => {
     'disclaimers' in obj && Array.isArray(obj.disclaimers) && obj.disclaimers.every(d => typeof d === 'string') &&
     'notes' in obj && Array.isArray(obj.notes) && obj.notes.every(d => typeof d === 'string') &&
     'promoWarnings' in obj && Array.isArray(obj.promoWarnings) && obj.promoWarnings.every(d => typeof d === 'string') &&
-    'noShipping' in obj && isNoShipping(obj.noShipping) &&
-    (('noShippingMessage' in obj && (typeof obj.noShippingMessage === 'string' || typeof obj.noShippingMessage === 'undefined')) || !('noShippingMessage' in obj)) &&
+    'noShipping' in obj && typeof obj.noShipping === 'boolean' &&
     (('promoCodeRecognized' in obj && (typeof obj.promoCodeRecognized === 'boolean' || typeof obj.promoCodeRecognized === 'undefined')) || !('promoCodeRecognized' in obj)) &&
     (('promoCode' in obj && (typeof obj.promoCode === 'string' || typeof obj.promoCode === 'undefined')) || !('promoCode' in obj)) &&
     'courses' in obj && Array.isArray(obj.courses) && obj.courses.every(isCoursePrice) &&
@@ -96,10 +88,8 @@ const isPriceDetails = (obj: unknown): obj is PriceDetails => {
     'cost' in obj && typeof obj.cost === 'number' &&
     'multiCourseDiscount' in obj && typeof obj.multiCourseDiscount === 'number' &&
     'promoDiscount' in obj && typeof obj.promoDiscount === 'number' &&
-    'shippingDiscount' in obj && typeof obj.shippingDiscount === 'number' &&
     'discountedCost' in obj && typeof obj.discountedCost === 'number' &&
-    'plans' in obj && isPlans(obj.plans) &&
-    'shipping' in obj && typeof obj.shipping === 'number';
+    'plans' in obj && isPlans(obj.plans);
 };
 
 const isPlans = (obj: unknown): obj is { full: Plan; part: Plan } => {

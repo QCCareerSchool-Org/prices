@@ -1,153 +1,150 @@
 import Big from 'big.js';
 
-import type { CoursePrice, Plan } from '../domain/price';
+import { FullPaymentPlanState, InstallmentPaymentPlanState, type IPaymentPlanState } from './PaymentPlanState';
+import type { CoursePrice } from '../domain/price';
 import type { RawPrice } from '../domain/rawPrice';
-import { clamp } from '../lib/clamp';
-
-class PaymentPlanState {
-  public constructor(
-    public discount: number,
-    public deposit: number,
-    public installmentSize: number,
-    public installments: number,
-    public remainder: number,
-    public total: number,
-    public originalDeposit: number,
-    public originalInstallments: number,
-  ) { /* empty */ }
-
-  public static full(discount: number, total: number): PaymentPlanState {
-    return new PaymentPlanState(discount, total, 0, 0, 0, total, total, 0);
-  }
-
-  public recalculate(discountedCost: number, removePlanDiscounts?: boolean): PaymentPlanState {
-    const discount = removePlanDiscounts ? 0 : Math.min(discountedCost, this.discount);
-    const total = parseFloat(Big(discountedCost).minus(discount).toFixed(2));
-    const deposit = Math.min(total, this.deposit);
-    const installmentSize = this.installments === 0 ? 0 : parseFloat(Big(total).minus(deposit).div(this.installments).round(2, 0).toFixed(2));
-    const remainder = this.installments === 0 ? 0 : parseFloat(Big(total).minus(deposit).minus(Big(installmentSize).times(this.installments)).toFixed(2));
-
-    return new PaymentPlanState(
-      discount,
-      deposit,
-      installmentSize,
-      this.installments,
-      remainder,
-      total,
-      deposit,
-      this.originalInstallments,
-    );
-  }
-
-  public toPlan(): Plan {
-    return {
-      discount: this.discount,
-      deposit: this.deposit,
-      installmentSize: this.installmentSize,
-      installments: this.installments,
-      remainder: this.remainder,
-      total: this.total,
-      originalDeposit: this.originalDeposit,
-      originalInstallments: this.originalInstallments,
-    };
-  }
-}
 
 export class CoursePricingState {
   public code: string;
-
-  public cost: number;
-
-  public discountedCost: number;
-
-  public discountMessage: string | null = null;
-
-  public free = false;
-
-  public multiCourseDiscount = 0;
-
-  public multiCourseDiscountRate: number;
-
   public name: string;
 
+  public cost: Big;
+  public discountedCost: Big;
+  public discountMessage: string | null = null;
+  public free = false;
+  public multiCourseDiscount: Big;
+  public multiCourseDiscountRate: Big;
   public order: number;
+  public plans: { full: IPaymentPlanState; part: IPaymentPlanState };
+  public primary = true;
+  public partInstallments: Big;
+  public promoDiscount: Big;
 
-  public plans: { full: PaymentPlanState; part: PaymentPlanState };
+  private fullDiscount: Big;
+  private partDiscount: Big;
+  private readonly partDeposit: Big;
+  private partDepositOverride: Big;
+  private partInstallmentsOverride: Big;
 
-  public primary = false;
+  public constructor(p: RawPrice, promoDiscount: Big = Big(0)) {
+    if (p.cost < 0) {
+      throw Error('Cost is less than 0');
+    }
+    if (p.multiCourseDiscountRate < 0 || p.multiCourseDiscountRate > 1) {
+      throw Error('Multi-course discount rate is invalid');
+    }
+    if (p.discount < 0 || p.discount > p.cost) {
+      throw Error('Full Discount is invalid');
+    }
+    if (p.partDiscount < 0 || p.partDiscount > p.cost) {
+      throw Error('Part discount is invalid');
+    }
+    if (promoDiscount.lt(0) || promoDiscount.gt(p.cost)) {
+      throw Error('Invalid discount amount');
+    }
 
-  public promoDiscount = 0;
-
-  public shipping: number;
-
-  public shippingDiscount = 0;
-
-  public constructor(p: RawPrice, discountAll: boolean) {
-    const cost = parseFloat(Math.max(0, p.cost).toFixed(2));
-    const shipping = clamp(parseFloat(p.shipping.toFixed(2)), 0, cost);
-    const minimumPrice = parseFloat(Big(cost).minus(shipping).toFixed(2));
-    const multiCourseDiscountRate = clamp(parseFloat(p.multiCourseDiscountRate.toFixed(2)), 0, 1);
-    const fullDiscount = clamp(parseFloat(p.discount.toFixed(2)), 0, minimumPrice);
-    const fullTotal = parseFloat(Big(cost).minus(fullDiscount).toFixed(2));
-    const partDiscount = clamp(parseFloat(p.partDiscount.toFixed(2)), 0, minimumPrice);
-    const partTotal = parseFloat(Big(cost).minus(partDiscount).toFixed(2));
-    const partDeposit = clamp(parseFloat(p.deposit.toFixed(2)), 0, partTotal);
-    const partInstallments = p.installments ? Math.round(discountAll ? p.installments / 2 : p.installments) : 1;
-    const partInstallmentSize = p.installments ? parseFloat(Big(partTotal).minus(partDeposit).div(partInstallments).round(2, 0).toFixed(2)) : 0;
-    const partRemainder = p.installments ? parseFloat(Big(partTotal).minus(partDeposit).minus(Big(partInstallmentSize).times(partInstallments)).toFixed(2)) : 0;
-
+    this.cost = Big(p.cost).round(2);
+    this.multiCourseDiscountRate = Big(p.multiCourseDiscountRate).round(2);
+    this.multiCourseDiscount = Big(0);
+    this.fullDiscount = Big(p.discount).round(2);
+    this.partDiscount = Big(p.partDiscount).round(2);
+    this.partDeposit = Big(p.deposit).round(2);
+    this.partDepositOverride = this.partDeposit;
+    this.partInstallments = Big(p.installments ?? 0);
+    this.partInstallmentsOverride = this.partInstallments;
+    this.promoDiscount = promoDiscount.round(2);
+    this.discountedCost = this.cost.minus(this.multiCourseDiscount).minus(this.promoDiscount);
     this.code = p.courseCode;
     this.name = p.courseName;
-    this.cost = cost;
-    this.discountedCost = cost;
-    this.multiCourseDiscountRate = multiCourseDiscountRate;
     this.order = p.order;
-    this.shipping = shipping;
     this.plans = {
-      full: PaymentPlanState.full(fullDiscount, fullTotal),
-      part: new PaymentPlanState(partDiscount, partDeposit, partInstallmentSize, partInstallments, partRemainder, partTotal, partDeposit, partInstallments),
+      full: this.getFullPlan(),
+      part: this.getPartPlan(),
     };
   }
 
-  public addPromoDiscount(discount: number): void {
-    this.promoDiscount = parseFloat(Big(this.promoDiscount).plus(discount).toFixed(2));
-    this.refreshPricing();
+  public setPromoDiscount(discount: Big): void {
+    if (discount.lt(0) || discount.gt(this.cost)) {
+      throw Error('Invalid discount');
+    }
+
+    this.promoDiscount = discount.round(2);
+    this.discountedCost = this.cost.minus(this.multiCourseDiscount).minus(this.promoDiscount);
+    this.recalculateFullPlan();
+    this.recalculatePartPlan();
   }
 
-  public applyMultiCourseDiscount(desiredMultiCourseDiscount: number): void {
-    const multiCourseDiscount = Math.min(this.minimumPrice(), desiredMultiCourseDiscount);
-    this.multiCourseDiscountRate = parseFloat(Big(multiCourseDiscount).div(this.cost).toFixed(2));
-    this.multiCourseDiscount = multiCourseDiscount;
-    this.discountMessage = multiCourseDiscount === desiredMultiCourseDiscount ? null : `${Math.round(multiCourseDiscount / this.cost * 100)}% Discount`;
-    this.refreshPricing(true);
+  public addPromoDiscount(discount: Big): void {
+    if (discount.lt(0)) {
+      throw Error('Invalid discount');
+    }
+
+    const additionalDiscount = discount.gt(this.discountedCost) ? this.discountedCost : discount.round(2);
+    this.promoDiscount = this.promoDiscount.plus(additionalDiscount);
+    this.discountedCost = this.cost.minus(this.multiCourseDiscount).minus(this.promoDiscount);
+    this.recalculateFullPlan();
+    this.recalculatePartPlan();
   }
 
-  public applyShippingDiscount(): void {
-    this.shippingDiscount = this.shipping;
-    this.refreshPricing();
+  public applyMultiCourseDiscount(overrideRate: Big | undefined): void {
+    if (overrideRate) {
+      if (overrideRate.lt(0) || overrideRate.gt(1)) {
+        throw Error('Invalid override rate');
+      }
+
+      this.multiCourseDiscountRate = overrideRate;
+    }
+
+    this.multiCourseDiscount = this.cost.times(this.multiCourseDiscountRate).round(2);
+    this.discountedCost = this.cost.minus(this.multiCourseDiscount).minus(this.promoDiscount);
+    this.discountMessage = `${this.multiCourseDiscountRate.times(100).round(0).toNumber()}% Discount`;
+    this.recalculateFullPlan();
+    this.recalculatePartPlan();
   }
 
   public makeFree(): void {
     this.free = true;
-    this.multiCourseDiscountRate = 0;
+    this.multiCourseDiscountRate = Big(1);
     this.multiCourseDiscount = this.cost;
-    this.promoDiscount = 0;
-    this.shippingDiscount = 0;
-    this.discountedCost = 0;
-    this.shipping = 0;
-    this.plans = {
-      full: PaymentPlanState.full(0, 0),
-      part: new PaymentPlanState(0, 0, 0, 1, 0, 0, 0, 0),
-    };
+    this.discountedCost = this.cost.minus(this.multiCourseDiscount).minus(this.promoDiscount);
+    this.recalculateFullPlan();
+    this.recalculatePartPlan();
   }
 
-  public minimumPrice(): number {
-    return parseFloat(Big(this.cost).minus(this.shipping).minus(this.multiCourseDiscount).minus(this.promoDiscount).toFixed(2));
+  public markSecondary() {
+    this.primary = false;
+    this.fullDiscount = Big(0);
+    this.partDiscount = Big(0);
+    this.recalculateFullPlan();
+    this.recalculatePartPlan();
   }
 
-  public refreshPricing(removePlanDiscounts = false): void {
-    this.discountedCost = parseFloat(Big(this.cost).minus(this.shippingDiscount).minus(this.multiCourseDiscount).minus(this.promoDiscount).toFixed(2));
-    this.recalculatePlans(removePlanDiscounts);
+  public setPartInstallments(installments: Big) {
+    if (installments.lt(0) || installments.gt(24)) {
+      throw Error('Invalid installments value');
+    }
+
+    this.partInstallments = installments.round(0);
+    this.partInstallmentsOverride = this.partInstallments;
+    this.recalculatePartPlan();
+  }
+
+  public overridePartDeposit(depositOverride: Big) {
+    if (depositOverride.lt(0) || depositOverride.gte(this.discountedCost)) {
+      throw Error('Invalid deposit override');
+    }
+
+    this.partDepositOverride = depositOverride.round(2);
+    this.recalculatePartPlan();
+  }
+
+  public overridePartInstallments(installmentsOverride: Big) {
+    if (installmentsOverride.lt(0) || installmentsOverride.gt(24)) {
+      throw Error('Invalid installments value');
+    }
+
+    this.partInstallmentsOverride = installmentsOverride.round(0);
+    this.recalculatePartPlan();
   }
 
   public toCoursePrice(): CoursePrice {
@@ -155,27 +152,34 @@ export class CoursePricingState {
       code: this.code,
       name: this.name,
       primary: this.primary,
-      cost: this.cost,
-      multiCourseDiscountRate: this.multiCourseDiscountRate,
-      multiCourseDiscount: this.multiCourseDiscount,
-      promoDiscount: this.promoDiscount,
-      shippingDiscount: this.shippingDiscount,
-      discountedCost: this.discountedCost,
+      cost: this.cost.toNumber(),
+      multiCourseDiscountRate: this.multiCourseDiscountRate.toNumber(),
+      multiCourseDiscount: this.multiCourseDiscount.toNumber(),
+      promoDiscount: this.promoDiscount.toNumber(),
+      discountedCost: this.discountedCost.toNumber(),
       order: this.order,
       plans: {
         full: this.plans.full.toPlan(),
         part: this.plans.part.toPlan(),
       },
-      shipping: this.shipping,
       free: this.free,
       discountMessage: this.discountMessage,
     };
   }
 
-  private recalculatePlans(removePlanDiscounts = false): void {
-    this.plans = {
-      full: this.plans.full.recalculate(this.discountedCost, removePlanDiscounts),
-      part: this.plans.part.recalculate(this.discountedCost, removePlanDiscounts),
-    };
+  private recalculateFullPlan() {
+    this.plans.full = this.getFullPlan();
+  }
+
+  private recalculatePartPlan() {
+    this.plans.part = this.getPartPlan();
+  }
+
+  private getFullPlan(): FullPaymentPlanState {
+    return new FullPaymentPlanState(this.discountedCost, this.fullDiscount);
+  }
+
+  private getPartPlan(): InstallmentPaymentPlanState {
+    return new InstallmentPaymentPlanState(this.discountedCost, this.partDiscount, this.partDepositOverride, this.partInstallmentsOverride, this.partDeposit, this.partInstallments);
   }
 }

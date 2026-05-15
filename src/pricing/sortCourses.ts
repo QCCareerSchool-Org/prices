@@ -7,7 +7,7 @@ export const getDefaultCourseSort = (promoCodes: PromoCodes): SortFunction<Cours
   if (promoCodes.code === 'MASTERCLASS') {
     return (a, b) => {
       if (a.free === b.free) {
-        if (a.cost === b.cost) {
+        if (a.cost.eq(b.cost)) {
           if (a.code === 'I2') {
             return 1;
           }
@@ -15,13 +15,13 @@ export const getDefaultCourseSort = (promoCodes: PromoCodes): SortFunction<Cours
             return -1;
           }
         }
-        return a.cost - b.cost;
+        return a.cost.minus(b.cost).toNumber();
       }
       return a.free ? 1 : -1;
     };
   }
 
-  return (a, b) => (a.free === b.free ? a.cost - b.cost : a.free ? 1 : -1);
+  return (a, b) => (a.free === b.free ? a.cost.minus(b.cost).toNumber() : a.free ? 1 : -1);
 };
 
 /**
@@ -38,9 +38,9 @@ export const courseSort = (a: CoursePricingState, b: CoursePricingState): number
         if (a.discountedCost === b.discountedCost) {
           return b.order - a.order;
         }
-        return b.discountedCost - a.discountedCost;
+        return b.discountedCost.minus(a.discountedCost).toNumber();
       }
-      return b.cost - a.cost;
+      return b.cost.minus(a.cost).toNumber();
     }
     return a.free ? 1 : -1;
   }
@@ -48,11 +48,11 @@ export const courseSort = (a: CoursePricingState, b: CoursePricingState): number
 };
 
 export const byCostAscending = (a: CoursePricingState, b: CoursePricingState): number => (
-  a.cost === b.cost ? b.order - a.order : a.cost - b.cost
+  a.cost === b.cost ? b.order - a.order : a.cost.minus(b.cost).toNumber()
 );
 
 export const byFreeThenCostDescending = (a: CoursePricingState, b: CoursePricingState): number => (
   a.free === b.free
-    ? (a.cost === b.cost ? a.order - b.order : b.cost - a.cost)
+    ? (a.cost === b.cost ? a.order - b.order : b.cost.minus(a.cost).toNumber())
     : a.free ? 1 : -1
 );
