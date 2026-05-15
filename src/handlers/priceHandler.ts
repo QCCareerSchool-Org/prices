@@ -7,7 +7,7 @@ import * as yup from 'yup';
 import type { PriceQuery } from '@/domain/priceQuery';
 import type { School } from '@/domain/school';
 import { objectMap } from '@/lib/objectMap';
-import { PriceCalculation } from '@/pricing/PriceCalculation';
+import { PriceCalculator } from '@/priceCalculator';
 
 export const priceHandler: Handler = async (req, res) => {
   res.setHeader('Cache-Control', 'public, max-age=300'); // five minutes
@@ -20,7 +20,7 @@ export const priceHandler: Handler = async (req, res) => {
 
   const priceQuery = validationResult.value;
 
-  const priceCalculation = new PriceCalculation(priceQuery.courses ?? [], priceQuery.countryCode, priceQuery.provinceCode, priceQuery.options ?? {});
+  const priceCalculation = new PriceCalculator(priceQuery.courses ?? [], priceQuery.countryCode, priceQuery.provinceCode, priceQuery.options ?? {});
 
   res.send(await priceCalculation.calculate());
 };

@@ -1,7 +1,7 @@
 import type { CurrencyCode } from './currencyCode';
 import { isCurrencyCode } from './currencyCode';
 
-export interface Currency {
+export interface CurrencyDTO {
   code: CurrencyCode;
   symbol: string;
   name: string;
@@ -12,7 +12,7 @@ const gbpCountries = new Set([ 'GB', 'IM', 'GG', 'JE', 'GS' ]);
 const audCountries = new Set([ 'AU', 'CX', 'CC', 'NR', 'NF', 'HM' ]);
 const nzdCountries = new Set([ 'NZ', 'TK', 'NU', 'PN' ]);
 
-export const isCurrency = (obj: unknown): obj is Currency => {
+export const isCurrency = (obj: unknown): obj is CurrencyDTO => {
   return obj !== null && typeof obj === 'object' &&
     'code' in obj && isCurrencyCode(obj.code) &&
     'symbol' in obj && typeof obj.symbol === 'string' &&

@@ -1,23 +1,22 @@
 import Big from 'big.js';
 
-import { CoursePricingState } from './CoursePricingState';
-import { applyPromoCodeDiscounts } from './promoCodeDiscounts';
+import { CoursePricingState as CoursePrice } from './coursePrice';
+import { Currency } from './currency';
+import { DiscountCalculator } from './discountCalculator';
+import { PromoCodeCalculator } from './promoCodeCalculator';
 import { applyPromoCodeFreeCourses } from './promoCodeFreeCourses';
-import { PromoCodes } from './PromoCodes';
-import { byFreeThenCostDescending, courseSort } from './sortCourses';
-import { validateDiscounts } from './validateDiscounts';
 import { lookupCurrency } from '../data/lookupCurrency';
 import { lookupPrice } from '../data/lookupPrice';
-import { audCountry, type Currency, gbpCountry, nzdCountry } from '../domain/currency';
+import { audCountry, gbpCountry, nzdCountry } from '../domain/currency';
 import type { CurrencyCode } from '../domain/currencyCode';
-import type { Price } from '../domain/price';
+import type { PriceDTO } from '../domain/price';
 import type { PriceOptions } from '../domain/priceQuery';
 import type { RawPrice } from '../domain/rawPrice';
 import { ClientError, ServerError } from '../lib/errors';
 import { noShipCountry, telephoneNumber } from '../lib/helper-functions';
 import { isDesignCourse, isEventFoundationCourse, isEventSpecialtyCourse, isMakeupCourse } from '@/courses';
 
-export class PriceCalculation {
+export class PriceCalculator {
   private static readonly allAccessFreeCourses: Record<string, string[]> = {
     AA: [ 'EP', 'CP', 'ED', 'DW', 'LW', 'PE', 'FL', 'EB', 'VE' ],
     AM: [ 'MZ', 'MA', 'SK', 'SF', 'MW', 'HS', 'AB', 'PW', 'PF' ],
@@ -25,9 +24,9 @@ export class PriceCalculation {
 
   private readonly courseCodes: string[];
 
-  private courseResults: CoursePricingState[] = [];
+  private courseResults: CoursePrice[] = [];
 
-  private currency!: Currency;
+  private currency?: Currency;
 
   private disclaimers: string[] = [];
 
@@ -37,7 +36,7 @@ export class PriceCalculation {
 
   private readonly now: Date;
 
-  private readonly promoCodes: PromoCodes;
+  private readonly promoCodes: PromoCodeCalculator;
 
   private promoWarnings: string[] = [];
 
@@ -51,46 +50,39 @@ export class PriceCalculation {
 
     this.noShipping = noShipCountry(countryCode);
     this.now = process.env.NODE_ENV === 'production' ? new Date() : options.dateOverride ?? new Date();
-    this.promoCodes = new PromoCodes(this.now, options);
+    this.promoCodes = new PromoCodeCalculator(this.now, options);
   }
 
-  public async calculate(): Promise<Price> {
+  public async calculate(): Promise<PriceDTO> {
     const rawPrices = await Promise.all(this.courseCodes.map(async c => lookupPrice(c, this.countryCode, this.provinceCode)));
     const currencyCode = this.getCurrencyCode(rawPrices);
-    this.currency = await lookupCurrency(currencyCode);
+    const rawCurrency = await lookupCurrency(currencyCode);
+    this.currency = new Currency(rawCurrency);
     this.somePartsMissing = rawPrices.some(p => p.installments === 0);
-
-    this.courseResults = rawPrices.map(r => new CoursePricingState(r));
+    this.courseResults = rawPrices.map(r => new CoursePrice(r));
 
     this.courseResults.sort((a, b) => this.byCostAscending(a, b));
-
     this.applyDefaultFreeCourses();
 
     this.courseResults.sort((a, b) => this.byFreeThenCostAscending(a, b));
-
     applyPromoCodeFreeCourses(this.courseResults, this.promoCodes, this.options);
 
-    this.courseResults.sort(byFreeThenCostDescending);
-
+    this.courseResults.sort((a, b) => this.byFreeThenCostDescending(a, b));
     this.markPrimaryCourse();
 
-    this.applyMultiCourseDiscounts();
-
-    this.applyStudentDiscounts();
-
-    this.applyExtraDiscounts();
-
-    applyPromoCodeDiscounts(this.courseResults, this.promoCodes, this.currency.code);
-
-    this.applyToolsDiscounts();
+    const discountCalculator = new DiscountCalculator(this.courseResults, this.promoCodes, this.currency, this.options);
+    discountCalculator.applyMultiCourseDiscounts();
+    discountCalculator.applyStudentDiscounts();
+    discountCalculator.applyExtraDiscounts();
+    discountCalculator.applyPromoCodeDiscounts();
+    discountCalculator.applyToolsDiscounts();
 
     this.applyOverrides();
-
-    this.courseResults.sort(courseSort);
-
     this.notesAndDisclaimers();
 
-    return this.collateResults();
+    this.courseResults.sort((a, b) => this.finalSort(a, b));
+
+    return this.toDTO();
   }
 
   /** determine the currency we'll be using  */
@@ -111,11 +103,15 @@ export class PriceCalculation {
     return currencyCode;
   }
 
-  private collateResults(): Price {
-    const price: Price = {
+  private toDTO(): PriceDTO {
+    if (!this.currency) {
+      throw new ServerError('Currency not defined');
+    }
+
+    const price: PriceDTO = {
       countryCode: this.countryCode,
       provinceCode: this.provinceCode,
-      currency: this.currency,
+      currency: this.currency.toDTO(),
       cost: 0,
       multiCourseDiscount: 0,
       promoDiscount: 0,
@@ -197,7 +193,7 @@ export class PriceCalculation {
     price.plans.part.originalDeposit = partOriginalDeposit.toNumber();
     price.plans.part.originalInstallments = firstCourseResult.plans.part.originalInstallments.toNumber();
 
-    price.courses = this.courseResults.map(c => c.toCoursePrice());
+    price.courses = this.courseResults.map(c => c.toDTO());
 
     return price;
   }
@@ -218,7 +214,7 @@ export class PriceCalculation {
     }
 
     // apply free all-access program courses
-    for (const [ paidCourse, freeCourses ] of Object.entries(PriceCalculation.allAccessFreeCourses)) {
+    for (const [ paidCourse, freeCourses ] of Object.entries(PriceCalculator.allAccessFreeCourses)) {
       if (this.courseResults.some(c => c.code === paidCourse && !c.free)) {
         for (const courseResult of this.courseResults) {
           if (freeCourses.includes(courseResult.code)) {
@@ -247,128 +243,6 @@ export class PriceCalculation {
 
       courseResult.markSecondary();
       courseResult.setPartInstallments(firstCourseResult.partInstallments);
-    }
-  }
-
-  private applyMultiCourseDiscounts(): void {
-    for (let index = 0; index < this.courseResults.length; index++) {
-      const courseResult = this.courseResults[index];
-      if (!courseResult) {
-        throw new ServerError('courseResult not defined');
-      }
-
-      if (courseResult.free) {
-        continue;
-      }
-
-      if (!this.shouldGetMultiCourseDiscount(index)) {
-        continue;
-      }
-
-      const overrideRate = this.getMultiCourseDiscountRateOverride(courseResult);
-      courseResult.applyMultiCourseDiscount(overrideRate);
-    }
-  }
-
-  private getMultiCourseDiscountRateOverride(courseResult: CoursePricingState): Big | undefined {
-    if ((this.promoCodes.code === 'SKINCARE60' && courseResult.code === 'SK' && this.courseResults.find(c => c.code === 'MZ'))) {
-      return Big(0.6);
-    }
-
-    if ([ 'SAVE60', 'PORTFOLIO60', 'QCLASHES60', 'COLORWHEEL60' ].includes(this.promoCodes.code ?? '')) {
-      return Big(0.6);
-    }
-
-    if (this.promoCodes.code === 'LIVEEVENT60') {
-      return Big(0.6);
-    }
-
-    if (this.promoCodes.code === 'ORGANIZING60' && courseResult.code === 'PO') {
-      return Big(0.6);
-    }
-
-    if (this.promoCodes.code === 'CORPORATE60' && courseResult.code === 'CP') {
-      return Big(0.6);
-    }
-
-    if (this.promoCodes.code === 'STYLING60' && courseResult.code === 'PF') {
-      return Big(0.6);
-    }
-
-    if (this.promoCodes.code === 'PORTDEV60' && courseResult.code === 'PW') {
-      return Big(0.6);
-    }
-
-    if (this.promoCodes.code === 'DAYCARE60' && courseResult.code === 'DD') {
-      return Big(0.6);
-    }
-
-    if (this.promoCodes.code === 'SFX60' && courseResult.code === 'SF') {
-      return Big(0.6);
-    }
-
-    if (this.promoCodes.code === 'BUSINESS60' && (courseResult.code === 'EB' || courseResult.code === 'DB')) {
-      return Big(0.6);
-    }
-
-    if (this.promoCodes.code === 'TRAINING60' && (courseResult.code === 'DT' || courseResult.code === 'DC')) {
-      return Big(0.6);
-    }
-  }
-
-  private applyStudentDiscounts(): void {
-    if (!this.options.studentDiscount) {
-      return;
-    }
-
-    for (const courseResult of this.courseResults) {
-      if (courseResult.free) {
-        continue;
-      }
-
-      courseResult.addPromoDiscount(this.studentDiscountAmount());
-    }
-  }
-
-  /**
-   * Apply the extra discount to the courses in order, never more than the remaining amount
-   */
-  private applyExtraDiscounts(): void {
-    if (!this.options.discount) {
-      return;
-    }
-
-    if (!validateDiscounts(this.options)) {
-      throw new ClientError('invalid discount signature');
-    }
-
-    let remainingExtraDiscount = Big(this.options.discount[this.currency.code] ?? this.options.discount.default);
-
-    for (const courseResult of this.courseResults) {
-      if (courseResult.free || remainingExtraDiscount.lte(0)) {
-        continue;
-      }
-
-      const reduction = remainingExtraDiscount.gt(courseResult.discountedCost) ? remainingExtraDiscount : courseResult.discountedCost;
-      remainingExtraDiscount = remainingExtraDiscount.minus(reduction);
-      courseResult.addPromoDiscount(reduction);
-    }
-  }
-
-  private applyToolsDiscounts(): void {
-    if (!this.options.withoutTools) {
-      return;
-    }
-
-    const dgDiscountAmount = Big(this.currency.code === 'GBP' ? 150 : 200);
-
-    for (const courseResult of this.courseResults) {
-      if (courseResult.free || courseResult.code !== 'DG') {
-        continue;
-      }
-
-      const reduction = dgDiscountAmount.gt(courseResult.discountedCost) ? courseResult.discountedCost : dgDiscountAmount;
-      courseResult.addPromoDiscount(reduction);
     }
   }
 
@@ -419,16 +293,6 @@ export class PriceCalculation {
       }
     }
   }
-
-  private shouldGetMultiCourseDiscount(index: number): boolean {
-    // when discountAll is true all courses get the multi-course discount
-    if (this.options.discountAll) {
-      return true;
-    }
-
-    // the first course should not get the discount
-    return index > 0;
-  };
 
   private defaultCurrencyCode(countryCode: string): CurrencyCode {
     if (countryCode === 'CA') {
@@ -757,11 +621,11 @@ export class PriceCalculation {
     }
   };
 
-  private byCostAscending(a: CoursePricingState, b: CoursePricingState): number {
+  private byCostAscending(a: CoursePrice, b: CoursePrice): number {
     return a.cost.eq(b.cost) ? b.order - a.order : a.cost.minus(b.cost).toNumber();
   }
 
-  private byFreeThenCostAscending(a: CoursePricingState, b: CoursePricingState): number {
+  private byFreeThenCostAscending(a: CoursePrice, b: CoursePrice): number {
     if (a.free === b.free) {
       if (a.cost.eq(b.cost)) {
         if (a.code === 'I2') {
@@ -776,8 +640,32 @@ export class PriceCalculation {
     return a.free ? 1 : -1;
   }
 
-  private studentDiscountAmount(): Big {
-    return this.currency.code === 'GBP' ? Big(25) : Big(50);
+  private byFreeThenCostDescending(a: CoursePrice, b: CoursePrice): number {
+    return a.free === b.free
+      ? (a.cost === b.cost ? a.order - b.order : b.cost.minus(a.cost).toNumber())
+      : a.free ? 1 : -1;
   }
 
+  /**
+   * Sort function for CourseResults
+   *
+   * Sorts by primary descending, then free ascending, then cost descending, then discounted cost descending
+   * @param a the first course result
+   * @param b the second course result
+   */
+  private finalSort(a: CoursePrice, b: CoursePrice): number {
+    if (a.primary === b.primary) {
+      if (a.free === b.free) {
+        if (a.cost === b.cost) {
+          if (a.discountedCost === b.discountedCost) {
+            return b.order - a.order;
+          }
+          return b.discountedCost.minus(a.discountedCost).toNumber();
+        }
+        return b.cost.minus(a.cost).toNumber();
+      }
+      return a.free ? 1 : -1;
+    }
+    return a.primary ? -1 : 1;
+  }
 }

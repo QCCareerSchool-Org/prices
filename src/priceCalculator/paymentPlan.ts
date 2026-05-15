@@ -2,7 +2,7 @@ import Big from 'big.js';
 
 import type { Plan } from '@/domain/price';
 
-export interface IPaymentPlanState {
+export interface IPaymentPlan {
   readonly discount: Big;
   readonly deposit: Big;
   readonly installments: Big;
@@ -14,7 +14,7 @@ export interface IPaymentPlanState {
   toPlan: () => Plan;
 }
 
-abstract class PaymentPlanState implements IPaymentPlanState {
+abstract class PaymentPlan implements IPaymentPlan {
   public readonly total: Big = Big(0);
   public readonly discount: Big = Big(0);
   public readonly deposit: Big = Big(0);
@@ -38,7 +38,7 @@ abstract class PaymentPlanState implements IPaymentPlanState {
   }
 }
 
-export class FullPaymentPlanState extends PaymentPlanState {
+export class FullPaymentPlan extends PaymentPlan {
   public readonly total: Big;
   public readonly discount: Big;
   public readonly deposit: Big;
@@ -63,7 +63,7 @@ export class FullPaymentPlanState extends PaymentPlanState {
   }
 }
 
-export class InstallmentPaymentPlanState extends PaymentPlanState {
+export class InstallmentPaymentPlan extends PaymentPlan {
   public readonly total: Big;
   public readonly discount: Big;
   public readonly deposit: Big;

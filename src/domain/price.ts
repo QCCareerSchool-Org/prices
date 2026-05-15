@@ -1,17 +1,17 @@
-import type { Currency } from './currency';
+import type { CurrencyDTO } from './currency';
 import { isCurrency } from './currency';
 
-export type Price = {
+export type PriceDTO = {
   countryCode: string;
   provinceCode?: string | undefined;
-  currency: Currency;
+  currency: CurrencyDTO;
   disclaimers: string[];
   notes: string[];
   promoWarnings: string[];
   noShipping: boolean;
   promoCodeRecognized?: boolean | undefined;
   promoCode?: string | undefined;
-  courses: CoursePrice[];
+  courses: CoursePriceDTO[];
 } & PriceDetails;
 
 export interface Plan {
@@ -46,7 +46,7 @@ export interface PriceDetails {
   plans: { full: Plan; part: Plan };
 }
 
-export type CoursePrice = {
+export type CoursePriceDTO = {
   code: string;
   name: string;
   primary: boolean;
@@ -58,7 +58,7 @@ export type CoursePrice = {
   order: number;
 } & PriceDetails;
 
-export const isPrice = (obj: unknown): obj is Price => {
+export const isPrice = (obj: unknown): obj is PriceDTO => {
   return obj !== null && typeof obj === 'object' &&
     'countryCode' in obj && typeof obj.countryCode === 'string' &&
     (('provinceCode' in obj && (typeof obj.provinceCode === 'string' || typeof obj.provinceCode === 'undefined')) || !('provinceCode' in obj)) &&
@@ -73,7 +73,7 @@ export const isPrice = (obj: unknown): obj is Price => {
     isPriceDetails(obj);
 };
 
-const isCoursePrice = (obj: unknown): obj is CoursePrice => {
+const isCoursePrice = (obj: unknown): obj is CoursePriceDTO => {
   return obj !== null && typeof obj === 'object' &&
     'code' in obj && typeof obj.code === 'string' &&
     'name' in obj && typeof obj.name === 'string' &&

@@ -11,40 +11,40 @@ export interface PromoCodeSpec {
   end?: Date;
 }
 
-export class PromoCodes {
+export class PromoCodeCalculator {
   private static readonly studentSupportNames = [ 'NATHAN', 'EMILY', 'SHANNON', 'ARNOLD' ];
 
   private static readonly groomCodes: readonly string[] = rawGroomCodes;
 
-  public static readonly ppaFreeCourseCodes: readonly string[] = PromoCodes.groomCodes.map(name => 'GROOM' + name);
+  public static readonly ppaFreeCourseCodes: readonly string[] = PromoCodeCalculator.groomCodes.map(name => 'GROOM' + name);
 
-  public static readonly studentSupport50Codes: readonly string[] = PromoCodes.studentSupportNames.map(name => name + '50');
+  public static readonly studentSupport50Codes: readonly string[] = PromoCodeCalculator.studentSupportNames.map(name => name + '50');
 
-  public static readonly studentSupport100Codes: readonly string[] = PromoCodes.studentSupportNames.map(name => name + '100');
+  public static readonly studentSupport100Codes: readonly string[] = PromoCodeCalculator.studentSupportNames.map(name => name + '100');
 
-  public static readonly studentSupport150Codes: readonly string[] = PromoCodes.studentSupportNames.map(name => name + '150');
+  public static readonly studentSupport150Codes: readonly string[] = PromoCodeCalculator.studentSupportNames.map(name => name + '150');
 
   private static readonly studentSupportSchools: School[] = [ 'QC Makeup Academy', 'QC Design School', 'QC Event School', 'QC Pet Studies', 'QC Wellness Studies' ];
 
-  private static readonly studentSupport50Specs: PromoCodeSpec[] = PromoCodes.studentSupport50Codes.map<PromoCodeSpec>(name => ({
+  private static readonly studentSupport50Specs: PromoCodeSpec[] = PromoCodeCalculator.studentSupport50Codes.map<PromoCodeSpec>(name => ({
     code: name,
     student: 'ALLOWED',
-    schools: PromoCodes.studentSupportSchools,
+    schools: PromoCodeCalculator.studentSupportSchools,
   }));
 
-  private static readonly studentSupport100Specs: PromoCodeSpec[] = PromoCodes.studentSupport100Codes.map<PromoCodeSpec>(name => ({
+  private static readonly studentSupport100Specs: PromoCodeSpec[] = PromoCodeCalculator.studentSupport100Codes.map<PromoCodeSpec>(name => ({
     code: name,
     student: 'ALLOWED',
-    schools: PromoCodes.studentSupportSchools,
+    schools: PromoCodeCalculator.studentSupportSchools,
   }));
 
-  private static readonly studentSupport150Specs: PromoCodeSpec[] = PromoCodes.studentSupport150Codes.map<PromoCodeSpec>(name => ({
+  private static readonly studentSupport150Specs: PromoCodeSpec[] = PromoCodeCalculator.studentSupport150Codes.map<PromoCodeSpec>(name => ({
     code: name,
     student: 'ALLOWED',
-    schools: PromoCodes.studentSupportSchools,
+    schools: PromoCodeCalculator.studentSupportSchools,
   }));
 
-  private static readonly ppaFreeCourseSpecs: PromoCodeSpec[] = PromoCodes.ppaFreeCourseCodes.map<PromoCodeSpec>(name => ({
+  private static readonly ppaFreeCourseSpecs: PromoCodeSpec[] = PromoCodeCalculator.ppaFreeCourseCodes.map<PromoCodeSpec>(name => ({
     code: name,
     student: 'DENIED',
     schools: [ 'Paw Parent Academy' ],
@@ -152,10 +152,10 @@ export class PromoCodes {
 
     { code: 'QCGROUP', student: 'DENIED' },
 
-    ...PromoCodes.studentSupport50Specs,
-    ...PromoCodes.studentSupport100Specs,
-    ...PromoCodes.studentSupport150Specs,
-    ...PromoCodes.ppaFreeCourseSpecs,
+    ...PromoCodeCalculator.studentSupport50Specs,
+    ...PromoCodeCalculator.studentSupport100Specs,
+    ...PromoCodeCalculator.studentSupport150Specs,
+    ...PromoCodeCalculator.ppaFreeCourseSpecs,
   ];
 
   public readonly code: string | undefined;
@@ -199,6 +199,6 @@ export class PromoCodes {
   }
 
   private findApplicableCode(): string | undefined {
-    return PromoCodes.specs.find(spec => this.specApplies(spec))?.code;
+    return PromoCodeCalculator.specs.find(spec => this.specApplies(spec))?.code;
   }
 }

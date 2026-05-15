@@ -1,9 +1,9 @@
-import type { CoursePricingState } from './CoursePricingState';
-import { PromoCodes } from './PromoCodes';
+import type { CoursePricingState } from './coursePrice';
+import { PromoCodeCalculator } from './promoCodeCalculator';
 import { isDesignCourse, isEventFoundationCourse, isEventSpecialtyCourse } from '../courses';
 import type { PriceOptions } from '@/domain/priceQuery';
 
-export const applyPromoCodeFreeCourses = (courseResults: CoursePricingState[], promoCodes: PromoCodes, options: PriceOptions | undefined): void => {
+export const applyPromoCodeFreeCourses = (courseResults: CoursePricingState[], promoCodes: PromoCodeCalculator, options: PriceOptions | undefined): void => {
   let applied = false;
   let count = 0;
 
@@ -236,7 +236,7 @@ export const applyPromoCodeFreeCourses = (courseResults: CoursePricingState[], p
       }
     }
 
-    if (PromoCodes.ppaFreeCourseCodes.includes(promoCodes.code ?? '') && index === 0) {
+    if (PromoCodeCalculator.ppaFreeCourseCodes.includes(promoCodes.code ?? '') && index === 0) {
       courseResult.makeFree();
     }
   };

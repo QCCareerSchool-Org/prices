@@ -1,7 +1,7 @@
 import Big from 'big.js';
 
-import { FullPaymentPlanState, InstallmentPaymentPlanState, type IPaymentPlanState } from './PaymentPlanState';
-import type { CoursePrice } from '../domain/price';
+import { FullPaymentPlan, InstallmentPaymentPlan, type IPaymentPlan } from './paymentPlan';
+import type { CoursePriceDTO } from '../domain/price';
 import type { RawPrice } from '../domain/rawPrice';
 
 export class CoursePricingState {
@@ -15,7 +15,7 @@ export class CoursePricingState {
   public multiCourseDiscount: Big;
   public multiCourseDiscountRate: Big;
   public order: number;
-  public plans: { full: IPaymentPlanState; part: IPaymentPlanState };
+  public plans: { full: IPaymentPlan; part: IPaymentPlan };
   public primary = true;
   public partInstallments: Big;
   public promoDiscount: Big;
@@ -147,7 +147,7 @@ export class CoursePricingState {
     this.recalculatePartPlan();
   }
 
-  public toCoursePrice(): CoursePrice {
+  public toDTO(): CoursePriceDTO {
     return {
       code: this.code,
       name: this.name,
@@ -175,11 +175,11 @@ export class CoursePricingState {
     this.plans.part = this.getPartPlan();
   }
 
-  private getFullPlan(): FullPaymentPlanState {
-    return new FullPaymentPlanState(this.discountedCost, this.fullDiscount);
+  private getFullPlan(): FullPaymentPlan {
+    return new FullPaymentPlan(this.discountedCost, this.fullDiscount);
   }
 
-  private getPartPlan(): InstallmentPaymentPlanState {
-    return new InstallmentPaymentPlanState(this.discountedCost, this.partDiscount, this.partDepositOverride, this.partInstallmentsOverride, this.partDeposit, this.partInstallments);
+  private getPartPlan(): InstallmentPaymentPlan {
+    return new InstallmentPaymentPlan(this.discountedCost, this.partDiscount, this.partDepositOverride, this.partInstallmentsOverride, this.partDeposit, this.partInstallments);
   }
 }
