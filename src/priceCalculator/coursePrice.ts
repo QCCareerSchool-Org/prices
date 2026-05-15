@@ -20,10 +20,11 @@ export class CoursePrice {
   public primary = true;
   public partInstallments: Big;
   public promoDiscount: Big;
+  public multiCourseDiscountApplied = false;
 
   private fullDiscount: Big;
   private partDiscount: Big;
-  private readonly partDeposit: Big;
+  private partDeposit: Big;
   private partDepositOverride: Big;
   private partInstallmentsOverride: Big;
 
@@ -96,6 +97,8 @@ export class CoursePrice {
       this.multiCourseDiscountRate = overrideRate;
     }
 
+    this.multiCourseDiscountApplied = true;
+    this.promoDiscount = Big(0);
     this.multiCourseDiscount = this.cost.times(this.multiCourseDiscountRate).round(2);
     this.discountedCost = this.cost.minus(this.multiCourseDiscount).minus(this.promoDiscount);
     this.discountMessage = `${this.multiCourseDiscountRate.times(100).round(0).toNumber()}% Discount`;
@@ -105,8 +108,15 @@ export class CoursePrice {
 
   public makeFree(): void {
     this.free = true;
+    this.promoDiscount = Big(0);
     this.multiCourseDiscountRate = Big(1);
     this.multiCourseDiscount = this.cost;
+    this.fullDiscount = Big(0);
+    this.partDiscount = Big(0);
+    this.partDeposit = Big(0);
+    this.partDepositOverride = Big(0);
+    this.partInstallments = Big(0);
+    this.partInstallmentsOverride = Big(0);
     this.discountedCost = this.cost.minus(this.multiCourseDiscount).minus(this.promoDiscount);
     this.recalculateFullPlan();
     this.recalculatePartPlan();

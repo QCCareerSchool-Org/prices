@@ -89,7 +89,13 @@ export class InstallmentPaymentPlan extends PaymentPlan {
     this.originalInstallments = originalInstallments;
 
     const installmentPortion = this.total.minus(deposit);
-    this.installmentSize = installmentPortion.div(installments).round(2, Big.roundDown);
+
+    if (installments.eq(0)) {
+      this.installmentSize = Big(0);
+    } else {
+      this.installmentSize = installmentPortion.div(installments).round(2, Big.roundDown);
+    }
+
     this.remainder = this.total.minus(this.installmentSize.times(installments));
   }
 }

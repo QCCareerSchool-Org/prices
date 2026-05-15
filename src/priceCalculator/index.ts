@@ -3,6 +3,7 @@ import Big from 'big.js';
 import { CoursePrice } from './coursePrice';
 import { Currency } from './currency';
 import { DiscountApplicator } from './discountApplicator';
+import { FreeCourseApplicator } from './freeCourseApplicator';
 import { PromoCodeCalculator } from './promoCodeCalculator';
 import { lookupCurrency } from '../data/lookupCurrency';
 import { lookupPrice } from '../data/lookupPrice';
@@ -16,11 +17,6 @@ import { noShipCountry, telephoneNumber } from '../lib/helper-functions';
 import { isDesignCourse, isEventFoundationCourse, isEventSpecialtyCourse, isMakeupCourse } from '@/courses';
 
 export class PriceCalculator {
-  private static readonly allAccessFreeCourses: Record<string, string[]> = {
-    AA: [ 'EP', 'CP', 'ED', 'DW', 'LW', 'PE', 'FL', 'EB', 'VE' ],
-    AM: [ 'MZ', 'MA', 'SK', 'SF', 'MW', 'HS', 'AB', 'PW', 'PF' ],
-  };
-
   private readonly courseCodes: string[];
 
   private coursePrices: CoursePrice[] = [];
@@ -60,11 +56,13 @@ export class PriceCalculator {
     this.somePartsMissing = rawPrices.some(p => p.installments === 0);
     this.coursePrices = rawPrices.map(r => new CoursePrice(r));
 
+    const freeCourseApplicator = new FreeCourseApplicator(this.coursePrices, this.promoCodes, this.options);
+
     this.coursePrices.sort((a, b) => this.byCostAscending(a, b));
-    this.applyDefaultFreeCourses();
+    freeCourseApplicator.applyDefaultFreeCourses();
 
     this.coursePrices.sort((a, b) => this.byFreeThenCostAscending(a, b));
-    this.applyPromoCodeFreeCourses();
+    freeCourseApplicator.applyPromoCodeFreeCourses();
 
     this.coursePrices.sort((a, b) => this.byFreeThenCostDescending(a, b));
     this.markPrimaryCourse();
@@ -195,276 +193,6 @@ export class PriceCalculator {
     price.courses = this.coursePrices.map(c => c.toDTO());
 
     return price;
-  }
-
-  /** Sets courses that should always be free */
-  private applyDefaultFreeCourses(): void {
-    for (const coursePrice of this.coursePrices) {
-      // FA is free if taking DG
-      if (this.options.discountAll !== true && coursePrice.code === 'FA' && this.coursePrices.some(c => c.code === 'DG')) {
-        coursePrice.makeFree();
-        continue;
-      }
-
-      // VD and DB are free if taking I2
-      if (this.options.discountAll !== true && (coursePrice.code === 'VD' || coursePrice.code === 'DB') && this.coursePrices.some(c => c.code === 'I2')) {
-        coursePrice.makeFree();
-      }
-    }
-
-    // apply free all-access program courses
-    for (const [ paidCourse, freeCourses ] of Object.entries(PriceCalculator.allAccessFreeCourses)) {
-      if (this.coursePrices.some(c => c.code === paidCourse && !c.free)) {
-        for (const coursePrice of this.coursePrices) {
-          if (freeCourses.includes(coursePrice.code)) {
-            coursePrice.makeFree();
-          }
-        }
-      }
-    }
-  }
-
-  private applyPromoCodeFreeCourses(): void {
-    let applied = false;
-    let count = 0;
-
-    for (let index = 0; index < this.coursePrices.length; index++) {
-      const coursePrice = this.coursePrices[index];
-      if (!coursePrice) {
-        throw Error('Course price not found');
-      }
-
-      if (this.promoCodes.code === 'FREEPRO') {
-        if (coursePrice.code === 'MW' && this.coursePrices.some(c => c.code === 'MZ')) {
-          coursePrice.makeFree();
-          continue;
-        }
-      }
-
-      if (this.promoCodes.code === 'EXPERT' && !applied) {
-        if (isEventSpecialtyCourse(coursePrice.code) && this.coursePrices.some(c => isEventFoundationCourse(c.code))) {
-          applied = true;
-          coursePrice.makeFree();
-          continue;
-        }
-      }
-
-      if ([ 'BOGO', 'BOGOCATALYST', 'BOGOCATALYST100' ].includes(this.promoCodes.code ?? '') && !applied) {
-        if (this.coursePrices.length >= 2) {
-          applied = true;
-          coursePrice.makeFree();
-          continue;
-        }
-      }
-
-      if (this.promoCodes.code === 'BOGO2ANY' && count < 2) {
-        if ((this.coursePrices.length >= 2 && count < 1) || this.coursePrices.length >= 3) {
-          count++;
-          coursePrice.makeFree();
-          continue;
-        }
-      }
-
-      if ([ 'BOGOMZ', 'BOGOMZ300' ].includes(this.promoCodes.code ?? '') && !applied) {
-        if (coursePrice.code !== 'MZ' && this.coursePrices.some(c => c.code === 'MZ')) {
-          applied = true;
-          coursePrice.makeFree();
-          continue;
-        }
-      }
-
-      if ([ 'SKINCARE', 'SKINCARE100', 'SKINCARE300' ].includes(this.promoCodes.code ?? '')) {
-        if (coursePrice.code === 'SK' && this.coursePrices.some(c => c.code === 'MZ')) {
-          coursePrice.makeFree();
-          continue;
-        }
-      }
-
-      if (this.promoCodes.code === 'FREESTYLE') {
-        if (coursePrice.code === 'PF' && this.coursePrices.some(c => c.code === 'MZ')) {
-          coursePrice.makeFree();
-          continue;
-        }
-      }
-
-      if (this.promoCodes.code === 'EVENTFREECOURSE' && !applied) {
-        if (this.coursePrices.length >= 2 && index < this.coursePrices.length - 1 && this.coursePrices.some(c => isEventFoundationCourse(c.code))) {
-          applied = true;
-          coursePrice.makeFree();
-          continue;
-        }
-      }
-
-      if ([ 'SPECIALTY', 'SPECIALTY100' ].includes(this.promoCodes.code ?? '') && !applied) {
-        if (this.coursePrices.some(c => isEventFoundationCourse(c.code) && isEventSpecialtyCourse(coursePrice.code))) {
-          applied = true;
-          coursePrice.makeFree();
-          continue;
-        }
-      }
-
-      if ([ '2SPECIALTY', 'MCSPECIALTY', 'SSMCSPECIALTY', '2SPECIALTY100' ].includes(this.promoCodes.code ?? '') && count < 2) {
-        if (this.coursePrices.some(c => isEventFoundationCourse(c.code) && isEventSpecialtyCourse(coursePrice.code))) {
-          count++;
-          coursePrice.makeFree();
-          continue;
-        }
-      }
-
-      if (this.promoCodes.code === '2SPECIALTYED' && count < 2) {
-        if (this.coursePrices.some(c => isEventFoundationCourse(c.code) && c.code !== 'ED') && (isEventSpecialtyCourse(coursePrice.code) || coursePrice.code === 'ED')) {
-          count++;
-          coursePrice.makeFree();
-          continue;
-        }
-      }
-
-      // two free specialty courses, but ED is considered a specialty course
-      if (this.promoCodes.code === 'PROFITPIVOT' && count < 2) {
-        if (this.coursePrices.some(c => isEventFoundationCourse(c.code) && c.code !== 'ED') && (isEventSpecialtyCourse(coursePrice.code) || coursePrice.code === 'ED')) {
-          count++;
-          coursePrice.makeFree();
-          continue;
-        }
-      }
-
-      if (this.promoCodes.code === 'FREELUXURY') {
-        if (coursePrice.code === 'LW' && this.coursePrices.some(c => isEventFoundationCourse(c.code))) {
-          coursePrice.makeFree();
-          continue;
-        }
-      }
-
-      if ([ 'MASTERCLASS', 'SSMASTERCLASS' ].includes(this.promoCodes.code ?? '') && !applied) {
-        if (isDesignCourse(coursePrice.code) && coursePrice.code !== 'I2' && this.coursePrices.some(c => c.code === 'I2')) {
-          applied = true;
-          coursePrice.makeFree();
-          continue;
-        }
-      }
-
-      if (this.promoCodes.code === 'MASTERCLASS150' && !applied) {
-        if (isDesignCourse(coursePrice.code) && coursePrice.code !== 'I2' && this.coursePrices.some(c => c.code === 'I2')) {
-          applied = true;
-          coursePrice.makeFree();
-          continue;
-        }
-      }
-
-      if (this.promoCodes.code === 'LUXURYDESTINATION') {
-        if ((coursePrice.code === 'LW' || coursePrice.code === 'DW') && this.coursePrices.some(c => c.code === 'EP')) {
-          coursePrice.makeFree();
-          continue;
-        }
-      }
-
-      if (this.promoCodes.code === 'PROLUMINOUS') {
-        if (coursePrice.code === 'MW' && this.coursePrices.some(c => c.code === 'MZ')) {
-          coursePrice.makeFree();
-          continue;
-        }
-      }
-
-      if (this.promoCodes.code === 'FREEGLOBAL') {
-        if (coursePrice.code === 'GB' && this.coursePrices.some(c => c.code === 'MZ')) {
-          coursePrice.makeFree();
-          continue;
-        }
-      }
-
-      if (this.promoCodes.code === 'BOGO100' && !applied) {
-        if (this.options.school === 'QC Event School') {
-          if (this.coursePrices.length >= 2 && this.coursePrices.some(c => isEventFoundationCourse(c.code))) {
-            applied = true;
-            coursePrice.makeFree();
-            continue;
-          }
-        } else {
-          if (this.coursePrices.length >= 2) {
-            applied = true;
-            coursePrice.makeFree();
-            continue;
-          }
-        }
-      }
-
-      if (this.promoCodes.code === 'BOGO200' && !applied) {
-        if (this.coursePrices.length >= 2) {
-          applied = true;
-          coursePrice.makeFree();
-          continue;
-        }
-      }
-
-      if (this.promoCodes.code === 'DAYCARE300' && !applied) {
-        if (this.coursePrices.length >= 2 && coursePrice.code === 'DD') {
-          applied = true;
-          coursePrice.makeFree();
-          continue;
-        }
-      }
-
-      // discount either VD or VE, but not both, as long as one other (non VD, VE) course is selected
-      if (this.promoCodes.code === 'FREEVIRTUAL') {
-        if (!applied && (coursePrice.code === 'VD' || coursePrice.code === 'VE') && this.coursePrices.filter(c => c.code !== 'VD' && c.code !== 'VE').length >= 1) {
-          applied = true;
-          coursePrice.makeFree();
-          continue;
-        }
-      }
-
-      // make CC free as long as some other course of equal or greater value is also selected
-      if (this.promoCodes.code === 'FREECOLOR') {
-        if (coursePrice.code === 'CC' && this.coursePrices.some(c => c.code !== 'CC' && c.cost >= coursePrice.cost)) {
-          coursePrice.makeFree();
-          continue;
-        }
-      }
-
-      if (this.promoCodes.code === 'HALLOWEENSFX') {
-        if (coursePrice.code === 'SF' && this.coursePrices.some(c => c.code === 'MZ')) {
-          coursePrice.makeFree();
-          continue;
-        }
-      }
-
-      if (this.promoCodes.code === 'FREEPW') {
-        if (coursePrice.code === 'PW' && this.coursePrices.some(c => c.code === 'MZ')) {
-          coursePrice.makeFree();
-          continue;
-        }
-      }
-
-      // I'm sure this could be better
-      if (this.promoCodes.code === 'BOGOVIRTUAL') {
-        const virtualSelected = this.coursePrices.some(c => (this.options.school === 'QC Design School' && c.code === 'VD') || (this.options.school === 'QC Event School' && c.code === 'VE'));
-
-        const isVirtual = (this.options.school === 'QC Design School' && coursePrice.code === 'VD') || (this.options.school === 'QC Event School' && coursePrice.code === 'VE');
-
-        if (this.coursePrices.length >= 2) {
-          if (virtualSelected) {
-            if (isVirtual) {
-              coursePrice.makeFree();
-              continue;
-            }
-          }
-        }
-
-        if ((this.coursePrices.length >= 2 && !virtualSelected) || (this.coursePrices.length >= 3 && virtualSelected)) {
-          if (!isVirtual) {
-            if (count === 0) {
-              count++;
-              coursePrice.makeFree();
-              continue;
-            }
-          }
-        }
-      }
-
-      if (PromoCodeCalculator.ppaFreeCourseCodes.includes(this.promoCodes.code ?? '') && index === 0) {
-        coursePrice.makeFree();
-      }
-    }
   }
 
   private markPrimaryCourse(): void {

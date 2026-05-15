@@ -67,7 +67,7 @@ export class DiscountApplicator {
     let remainingExtraDiscount = Big(this.options.discount[this.currency.code] ?? this.options.discount.default);
 
     for (const coursePrice of this.coursePrices) {
-      if (coursePrice.free || remainingExtraDiscount.lte(0)) {
+      if (coursePrice.free || coursePrice.multiCourseDiscountApplied || remainingExtraDiscount.lte(0)) {
         continue;
       }
 
@@ -88,6 +88,10 @@ export class DiscountApplicator {
         return;
       }
 
+      if (coursePrice.multiCourseDiscountApplied) {
+        return;
+      }
+
       if (!isPetCourse(coursePrice.code)) {
         return;
       }
@@ -105,6 +109,10 @@ export class DiscountApplicator {
      */
     const doOneTimeDiscount = (coursePrice: CoursePrice): void => {
       if (applied) {
+        return;
+      }
+
+      if (coursePrice.multiCourseDiscountApplied) {
         return;
       }
 
@@ -145,14 +153,18 @@ export class DiscountApplicator {
         return;
       }
 
+      if (coursePrice.multiCourseDiscountApplied) {
+        return;
+      }
+
       const extraDiscount = bigMin(coursePrice.discountedCost, remainingExtraDiscount);
       coursePrice.setPromoDiscount(extraDiscount);
       remainingExtraDiscount = remainingExtraDiscount.minus(extraDiscount);
     };
 
     for (const coursePrice of this.coursePrices) {
-      // skip free courses
-      if (coursePrice.free) {
+      // skip free courses and ones with a multicourseDiscount already applied
+      if (coursePrice.free || coursePrice.multiCourseDiscountApplied) {
         continue;
       }
 
