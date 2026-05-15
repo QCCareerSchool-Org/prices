@@ -6,22 +6,20 @@ import type { CoursePriceDTO } from '../domain/price';
 import type { RawPrice } from '../domain/rawPrice';
 
 export class CoursePrice {
-  public code: string;
-  public name: string;
-
-  public cost: Big;
-  public discountedCost: Big;
-  public discountMessage: string | null = null;
-  public free = false;
-  public multiCourseDiscount: Big;
-  public multiCourseDiscountRate: Big;
-  public order: number;
-  public plans: { full: IPaymentPlan; part: IPaymentPlan };
-  public primary = true;
-  public partInstallments: Big;
-  public promoDiscount: Big;
-  public multiCourseDiscountApplied = false;
-
+  private readonly _code: string;
+  private readonly _name: string;
+  private readonly _cost: Big;
+  private _discountedCost: Big;
+  private _discountMessage: string | null = null;
+  private _free = false;
+  private _multiCourseDiscount: Big;
+  private _multiCourseDiscountRate: Big;
+  private readonly _order: number;
+  private _partInstallments: Big;
+  private readonly _plans: { full: IPaymentPlan; part: IPaymentPlan };
+  private _primary = true;
+  private _promoDiscount: Big;
+  private _multiCourseDiscountApplied = false;
   private fullDiscount: Big;
   private partDiscount: Big;
   private partDeposit: Big;
@@ -45,24 +43,80 @@ export class CoursePrice {
       throw Error('Invalid discount amount');
     }
 
-    this.cost = Big(p.cost).round(2);
-    this.multiCourseDiscountRate = Big(p.multiCourseDiscountRate).round(2);
-    this.multiCourseDiscount = Big(0);
+    this._cost = Big(p.cost).round(2);
+    this._multiCourseDiscountRate = Big(p.multiCourseDiscountRate).round(2);
+    this._multiCourseDiscount = Big(0);
     this.fullDiscount = Big(p.discount).round(2);
     this.partDiscount = Big(p.partDiscount).round(2);
     this.partDeposit = Big(p.deposit).round(2);
     this.partDepositOverride = this.partDeposit;
-    this.partInstallments = Big(p.installments ?? 0);
-    this.partInstallmentsOverride = this.partInstallments;
-    this.promoDiscount = promoDiscount.round(2);
-    this.discountedCost = this.cost.minus(this.multiCourseDiscount).minus(this.promoDiscount);
-    this.code = p.courseCode;
-    this.name = p.courseName;
-    this.order = p.order;
-    this.plans = {
+    this._partInstallments = Big(p.installments ?? 0);
+    this.partInstallmentsOverride = this._partInstallments;
+    this._promoDiscount = promoDiscount.round(2);
+    this._discountedCost = this._cost.minus(this._multiCourseDiscount).minus(this._promoDiscount);
+    this._code = p.courseCode;
+    this._name = p.courseName;
+    this._order = p.order;
+    this._plans = {
       full: this.getFullPlan(),
       part: this.getPartPlan(),
     };
+  }
+
+  public get code(): string {
+    return this._code;
+  }
+
+  public get name(): string {
+    return this._name;
+  }
+
+  public get cost(): Big {
+    return this._cost;
+  }
+
+  public get discountedCost(): Big {
+    return this._discountedCost;
+  }
+
+  public get discountMessage(): string | null {
+    return this._discountMessage;
+  }
+
+  public get free(): boolean {
+    return this._free;
+  }
+
+  public get multiCourseDiscount(): Big {
+    return this._multiCourseDiscount;
+  }
+
+  public get multiCourseDiscountRate(): Big {
+    return this._multiCourseDiscountRate;
+  }
+
+  public get order(): number {
+    return this._order;
+  }
+
+  public get plans(): { readonly full: IPaymentPlan; readonly part: IPaymentPlan } {
+    return this._plans;
+  }
+
+  public get primary(): boolean {
+    return this._primary;
+  }
+
+  public get partInstallments(): Big {
+    return this._partInstallments;
+  }
+
+  public get promoDiscount(): Big {
+    return this._promoDiscount;
+  }
+
+  public get multiCourseDiscountApplied(): boolean {
+    return this._multiCourseDiscountApplied;
   }
 
   public setPromoDiscount(discount: Big): void {
@@ -70,8 +124,8 @@ export class CoursePrice {
       throw Error('Invalid discount');
     }
 
-    this.promoDiscount = discount.round(2);
-    this.discountedCost = this.cost.minus(this.multiCourseDiscount).minus(this.promoDiscount);
+    this._promoDiscount = discount.round(2);
+    this._discountedCost = this.cost.minus(this.multiCourseDiscount).minus(this.promoDiscount);
     this.recalculateFullPlan();
     this.recalculatePartPlan();
   }
@@ -82,8 +136,8 @@ export class CoursePrice {
     }
 
     const additionalDiscount = discount.gt(this.discountedCost) ? this.discountedCost : discount.round(2);
-    this.promoDiscount = this.promoDiscount.plus(additionalDiscount);
-    this.discountedCost = this.cost.minus(this.multiCourseDiscount).minus(this.promoDiscount);
+    this._promoDiscount = this.promoDiscount.plus(additionalDiscount);
+    this._discountedCost = this.cost.minus(this.multiCourseDiscount).minus(this.promoDiscount);
     this.recalculateFullPlan();
     this.recalculatePartPlan();
   }
@@ -94,36 +148,36 @@ export class CoursePrice {
         throw Error('Invalid override rate');
       }
 
-      this.multiCourseDiscountRate = overrideRate;
+      this._multiCourseDiscountRate = overrideRate;
     }
 
-    this.multiCourseDiscountApplied = true;
-    this.promoDiscount = Big(0);
-    this.multiCourseDiscount = this.cost.times(this.multiCourseDiscountRate).round(2);
-    this.discountedCost = this.cost.minus(this.multiCourseDiscount).minus(this.promoDiscount);
-    this.discountMessage = `${this.multiCourseDiscountRate.times(100).round(0).toNumber()}% Discount`;
+    this._multiCourseDiscountApplied = true;
+    this._promoDiscount = Big(0);
+    this._multiCourseDiscount = this.cost.times(this.multiCourseDiscountRate).round(2);
+    this._discountedCost = this.cost.minus(this.multiCourseDiscount).minus(this.promoDiscount);
+    this._discountMessage = `${this.multiCourseDiscountRate.times(100).round(0).toNumber()}% Discount`;
     this.recalculateFullPlan();
     this.recalculatePartPlan();
   }
 
   public makeFree(): void {
-    this.free = true;
-    this.promoDiscount = Big(0);
-    this.multiCourseDiscountRate = Big(1);
-    this.multiCourseDiscount = this.cost;
+    this._free = true;
+    this._promoDiscount = Big(0);
+    this._multiCourseDiscountRate = Big(1);
+    this._multiCourseDiscount = this.cost;
     this.fullDiscount = Big(0);
     this.partDiscount = Big(0);
     this.partDeposit = Big(0);
     this.partDepositOverride = Big(0);
-    this.partInstallments = Big(0);
+    this._partInstallments = Big(0);
     this.partInstallmentsOverride = Big(0);
-    this.discountedCost = this.cost.minus(this.multiCourseDiscount).minus(this.promoDiscount);
+    this._discountedCost = this.cost.minus(this.multiCourseDiscount).minus(this.promoDiscount);
     this.recalculateFullPlan();
     this.recalculatePartPlan();
   }
 
   public markSecondary() {
-    this.primary = false;
+    this._primary = false;
     this.fullDiscount = Big(0);
     this.partDiscount = Big(0);
     this.recalculateFullPlan();
@@ -135,7 +189,7 @@ export class CoursePrice {
       throw Error('Invalid installments value');
     }
 
-    this.partInstallments = installments.round(0);
+    this._partInstallments = installments.round(0);
     this.partInstallmentsOverride = this.partInstallments;
     this.recalculatePartPlan();
   }
@@ -179,11 +233,11 @@ export class CoursePrice {
   }
 
   private recalculateFullPlan() {
-    this.plans.full = this.getFullPlan();
+    this._plans.full = this.getFullPlan();
   }
 
   private recalculatePartPlan() {
-    this.plans.part = this.getPartPlan();
+    this._plans.part = this.getPartPlan();
   }
 
   private getFullPlan(): FullPaymentPlan {
