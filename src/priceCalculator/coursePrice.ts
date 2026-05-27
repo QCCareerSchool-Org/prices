@@ -151,6 +151,8 @@ export class CoursePrice {
       this._multiCourseDiscountRate = overrideRate;
     }
 
+    this.fullDiscount = Big(0);
+    this.partDiscount = Big(0);
     this._multiCourseDiscountApplied = true;
     this._promoDiscount = Big(0);
     this._multiCourseDiscount = this.cost.times(this.multiCourseDiscountRate).round(2);
