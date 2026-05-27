@@ -6,3 +6,4 @@ private.pem
 server-ca.pem
 client-cert.pem
 client-key.pem
+coverage

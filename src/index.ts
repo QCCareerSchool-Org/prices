@@ -6,11 +6,8 @@ import helmet from 'helmet';
 import { botHandler } from './handlers/botHandler';
 import { errorHandler } from './handlers/errorHandler';
 import { httpErrorHandler } from './handlers/httpErrorHandler';
+import { priceHandler } from './handlers/priceHandler';
 import { versionMiddleware } from './handlers/versionMiddleware';
-import { logger } from './logger';
-import { router } from './router';
-
-const HTTP_PORT = 15004;
 
 const origin = [
   /(?:.*\.)?localhost(?::\d{1,5})?$/iu,
@@ -27,15 +24,20 @@ const origin = [
 ];
 
 const app = express();
+app.set('query parser', 'extended');
 app.use(cors({ origin }));
 app.use(helmet());
 app.use(compression());
 app.use(versionMiddleware);
 app.use(botHandler);
-app.use('/prices', router);
+
+app.use('/prices', priceHandler);
+
 app.use(httpErrorHandler);
 app.use(errorHandler);
 
-app.listen(HTTP_PORT, () => {
-  logger.info(`Server running on port ${HTTP_PORT}`);
-});
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(8080);
+}
+
+export default app;
