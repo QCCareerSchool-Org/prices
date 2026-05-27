@@ -4,14 +4,15 @@ import { failure, success } from 'generic-result-type';
 import type { ParsedQs } from 'qs';
 import * as yup from 'yup';
 
+import { browserCacheMs, cdnCacheMs, staleWhileRevalidateMs } from '@/config';
 import type { PriceQuery } from '@/domain/priceQuery';
 import type { School } from '@/domain/school';
 import { objectMap } from '@/lib/objectMap';
 import { PriceCalculator } from '@/priceCalculator';
 
 export const priceHandler: Handler = async (req, res) => {
-  res.setHeader('Cache-Control', 'public, max-age=300'); // five minutes
-
+  res.setHeader('Cache-Control', `public, max-age=${browserCacheMs}`);
+  res.setHeader('CDN-Cache-Control', `max-age=${cdnCacheMs}, stale-while-revalidate=${staleWhileRevalidateMs}`);
   const validationResult = await validate(req.query);
   if (!validationResult.success) {
     res.status(400).send(validationResult.error.message);
