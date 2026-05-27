@@ -278,6 +278,12 @@ export class FreeCourseApplicator {
         }
       }
 
+      if (this.promoCode === 'SKMWFREE') {
+        if (this.coursePrices.some(c => c.code === 'MZ') && (coursePrice.code === 'SK' || coursePrice.code === 'MW')) {
+          coursePrice.makeFree();
+        }
+      }
+
       if (ppaFreeCourseCodes.includes(this.promoCode ?? '') && index === 0) {
         coursePrice.makeFree();
       }
