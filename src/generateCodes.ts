@@ -20,7 +20,7 @@ function generateList(seed: string, count: number): string[] {
     let str = '';
     for (let i = 0; i < 6; i++) {
       const idx = Math.floor(rng() * chars.length);
-      str += chars[idx];
+      str += chars[idx] ?? '';
     }
     result.add(str);
   }
