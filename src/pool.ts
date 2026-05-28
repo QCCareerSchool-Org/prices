@@ -48,7 +48,7 @@ if (process.env.DB_SSL === 'true') {
   }
 }
 const rawPool = createPool(options);
-if (process.env.NODE_ENV !== 'production') {
+if (process.env.NODE_ENV === 'production') {
   attachDatabasePool(rawPool);
 }
 
