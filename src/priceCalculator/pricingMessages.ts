@@ -72,12 +72,9 @@ export class PricingMessages {
 
     // QCLASHES promo code
     if (this.promoCode === 'QCLASHES' || this.promoCode === 'QCLASHES60') {
-      if (this.courseCodes.some(c => [ 'MZ', 'SK', 'AB', 'SF', 'HS', 'GB' ].includes(c))) {
+      if (this.courseCodes.some(c => c === 'MZ')) {
         this.disclaimers.push('You\'ll receive bonus lashes in your makeup kit');
         this.notes.push('bonus lashes');
-      } else {
-        this.promoWarnings.push(`Unfortunately the <strong>QCLASHES</strong> code is not valid with the course${this.courseCodes.length === 1 ? '' : 's'} you have selected.`);
-        this.promoWarnings.push('Please chose at least one course from Master Makeup Artistry, Skincare, Airbrush Makeup Workshop, Special FX Makeup, Hair Styling Essentials, or Global Beauty.');
       }
     }
 
