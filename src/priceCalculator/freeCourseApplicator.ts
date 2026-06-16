@@ -7,6 +7,7 @@ export class FreeCourseApplicator {
   private static readonly allAccessFreeCourses: Record<string, string[]> = {
     AA: [ 'EP', 'CP', 'ED', 'DW', 'LW', 'PE', 'FL', 'EB', 'VE' ],
     AM: [ 'MZ', 'MA', 'SK', 'SF', 'MW', 'HS', 'AB', 'PW', 'PF' ],
+    AD: [ 'I2', 'ST', 'FS', 'LD', 'PO', 'CC', 'AP', 'DB', 'VD' ],
   };
 
   public constructor(

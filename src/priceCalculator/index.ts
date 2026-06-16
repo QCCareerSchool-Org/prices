@@ -1,7 +1,7 @@
 import Big from 'big.js';
 
 import { CoursePrice } from './coursePrice';
-import { byCostAscending, byFreeThenCostAscending, byFreeThenCostDescending, finalSort } from './coursePriceSort';
+import { byCostAscending, byFreeThenCostDescending, finalSort } from './coursePriceSort';
 import { Currency } from './currency';
 import { DiscountApplicator } from './discountApplicator';
 import { FreeCourseApplicator } from './freeCourseApplicator';
@@ -49,10 +49,8 @@ export class PriceCalculator {
     const freeCourseApplicator = new FreeCourseApplicator(this.coursePrices, this.promoCodes.code, this.options);
 
     this.coursePrices.sort(byCostAscending);
-    freeCourseApplicator.applyDefaultFreeCourses();
-
-    this.coursePrices.sort(byFreeThenCostAscending);
     freeCourseApplicator.applyPromoCodeFreeCourses();
+    freeCourseApplicator.applyDefaultFreeCourses();
 
     this.coursePrices.sort(byFreeThenCostDescending);
     this.markSecondaryCourses();
