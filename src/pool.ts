@@ -27,6 +27,8 @@ const options: PoolOptions = {
   password: process.env.DB_PASSWORD,
   user: process.env.DB_USERNAME,
   decimalNumbers: true,
+  idleTimeout: 5000, // five seconds as per https://vercel.com/kb/guide/connection-pooling-with-functions
+  maxIdle: 2,
 };
 
 if (typeof process.env.DB_SOCKET_PATH !== 'undefined') {
