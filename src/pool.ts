@@ -5,7 +5,7 @@ import { createPool } from 'mysql2';
 
 dotenv.config();
 
-const DEFAULT_CONNECTION_LIMIT = 100;
+const DEFAULT_CONNECTION_LIMIT = 10;
 
 if (!process.env.DB_USERNAME) {
   throw Error('DB_USERNAME not found');
