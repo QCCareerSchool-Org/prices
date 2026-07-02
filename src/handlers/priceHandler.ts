@@ -13,6 +13,7 @@ import { PriceCalculator } from '@/priceCalculator';
 export const priceHandler: Handler = async (req, res) => {
   res.setHeader('Cache-Control', `public, max-age=${browserCacheMs}`);
   res.setHeader('CDN-Cache-Control', `max-age=${cdnCacheMs}, stale-while-revalidate=${staleWhileRevalidateMs}`);
+  res.setHeader('No-Vary-Search', 'key-order params=("utm_source" "utm_medium" "utm_campaign" "utm_content" "utm_terms" "gclid" "msclkid")');
   const validationResult = await validate(req.query);
   if (!validationResult.success) {
     res.status(400).send(validationResult.error.message);
