@@ -14,7 +14,8 @@ const studentSupportNames = [ 'NATHAN', 'EMILY', 'SHANNON', 'ARNOLD' ];
 
 const groomCodes: readonly string[] = rawGroomCodes;
 
-export const ppaFreeCourseCodes: readonly string[] = groomCodes.map(name => 'GROOM' + name);
+export const ppaFreeCourseCodes: string[] = groomCodes.map(name => 'GROOM' + name);
+ppaFreeCourseCodes.push('PAWZNDOGZ');
 
 export const studentSupport50Codes: readonly string[] = studentSupportNames.map(name => name + '50');
 
