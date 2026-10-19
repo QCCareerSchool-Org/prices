@@ -285,6 +285,13 @@ export class FreeCourseApplicator {
         }
       }
 
+      if (this.promoCode === 'PROSFX') {
+        if ((coursePrice.code === 'MW' || coursePrice.code === 'SF') && this.coursePrices.some(c => c.code === 'MZ')) {
+          coursePrice.makeFree();
+          continue;
+        }
+      }
+
       if (ppaFreeCourseCodes.includes(this.promoCode ?? '') && index === 0) {
         coursePrice.makeFree();
       }
