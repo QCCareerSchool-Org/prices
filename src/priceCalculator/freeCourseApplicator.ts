@@ -285,10 +285,9 @@ export class FreeCourseApplicator {
         }
       }
 
-      if (this.promoCode === 'PROSFX') {
-        if ((coursePrice.code === 'MW' || coursePrice.code === 'SF') && this.coursePrices.some(c => c.code === 'MZ')) {
+      if (this.promoCode === 'SKSFFREE') {
+        if (this.coursePrices.some(c => c.code === 'MZ') && (coursePrice.code === 'SK' || coursePrice.code === 'SF')) {
           coursePrice.makeFree();
-          continue;
         }
       }
 
