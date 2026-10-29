@@ -67,7 +67,7 @@ export class FreeCourseApplicator {
         }
       }
 
-      if ([ 'BOGO', 'BOGOCATALYST', 'BOGOCATALYST100' ].includes(this.promoCode ?? '') && !applied) {
+      if (([ 'BOGO', 'BOGOCATALYST', 'BOGOCATALYST100' ].includes(this.promoCode ?? '') || (this.promoCode === 'HALLOWEEN26' && this.options.school === 'QC Design School')) && !applied) {
         if (this.coursePrices.length >= 2) {
           applied = true;
           coursePrice.makeFree();
@@ -121,7 +121,7 @@ export class FreeCourseApplicator {
         }
       }
 
-      if ([ '2SPECIALTY', 'MCSPECIALTY', 'SSMCSPECIALTY', '2SPECIALTY100' ].includes(this.promoCode ?? '') && count < 2) {
+      if (([ '2SPECIALTY', 'MCSPECIALTY', 'SSMCSPECIALTY', '2SPECIALTY100' ].includes(this.promoCode ?? '') || (this.promoCode === 'HALLOWEEN26' && this.options.school === 'QC Event School')) && count < 2) {
         if (this.coursePrices.some(c => isEventFoundationCourse(c.code) && isEventSpecialtyCourse(coursePrice.code))) {
           count++;
           coursePrice.makeFree();

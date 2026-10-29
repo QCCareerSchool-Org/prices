@@ -119,6 +119,7 @@ const promoCodeSpecs: PromoCodeSpec[] = [
   { code: 'BUSINESS60', student: 'ONLY', schools: [ 'QC Design School', 'QC Event School' ] },
   { code: 'PROFITPIVOT', student: 'DENIED', schools: [ 'QC Event School' ] },
   { code: 'VDDBFREE', student: 'DENIED', schools: [ 'QC Design School' ] },
+  { code: 'HALLOWEEN26', student: 'DENIED', schools: [ 'QC Design School', 'QC Event School', 'QC Pet Studies' ] },
 
   { code: 'WOOFGANG', student: 'DENIED', schools: [ 'QC Pet Studies' ] },
   { code: 'DG150', student: 'DENIED', schools: [ 'QC Pet Studies' ] },
