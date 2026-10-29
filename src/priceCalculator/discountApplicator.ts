@@ -327,6 +327,12 @@ export class DiscountApplicator {
         return Big(300);
       case 'PET400OFF':
         return Big(400);
+      case 'HALLOWEEN26': {
+        if (this.options.school === 'QC Pet Studies' && this.coursePrices.find(c => c.code === 'DG')) {
+          return Big(400);
+        }
+        break;
+      }
       case 'PET500OFF':
         return Big(500);
     }

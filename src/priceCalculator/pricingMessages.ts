@@ -312,5 +312,24 @@ export class PricingMessages {
       this.disclaimers.push('You\'ll get a free color wheel');
       this.notes.push('color wheel');
     }
+
+    if (this.promoCode === 'HALLOWEEN26') {
+      switch (this.options.school) {
+        case 'QC Design School':
+          this.disclaimers.push('You\'ll get a free color wheel and fan deck');
+          this.notes.push('color wheel', 'fan deck');
+          break;
+        case 'QC Event School':
+          this.disclaimers.push('You\'ll get the free leather portfolio');
+          this.notes.push('portfolio');
+          break;
+        case 'QC Pet Studies':
+          if (this.courseCodes.includes('DG')) {
+            this.disclaimers.push('Free first aid books included');
+            this.notes.push('first aid books');
+          }
+          break;
+      }
+    }
   }
 }
