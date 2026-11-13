@@ -1,4 +1,4 @@
-import rawGroomCodes from '../codes/GROOM.json';
+import { rawGroomCodes } from '../codes/GROOM';
 import type { PriceOptions } from '../domain/priceQuery';
 import type { School } from '../domain/school';
 
@@ -12,9 +12,7 @@ interface PromoCodeSpec {
 
 const studentSupportNames = [ 'NATHAN', 'EMILY', 'SHANNON', 'ARNOLD' ];
 
-const groomCodes: readonly string[] = rawGroomCodes;
-
-export const ppaFreeCourseCodes: string[] = groomCodes.map(name => 'GROOM' + name);
+export const ppaFreeCourseCodes: string[] = rawGroomCodes.map(name => 'GROOM' + name);
 ppaFreeCourseCodes.push('PAWZNDOGZ');
 
 export const studentSupport50Codes: readonly string[] = studentSupportNames.map(name => name + '50');
