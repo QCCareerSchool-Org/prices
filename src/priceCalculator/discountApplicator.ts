@@ -71,7 +71,7 @@ export class DiscountApplicator {
         continue;
       }
 
-      const reduction = remainingExtraDiscount.gt(coursePrice.discountedCost) ? remainingExtraDiscount : coursePrice.discountedCost;
+      const reduction = remainingExtraDiscount.gt(coursePrice.discountedCost) ? coursePrice.discountedCost : remainingExtraDiscount;
       remainingExtraDiscount = remainingExtraDiscount.minus(reduction);
       coursePrice.addPromoDiscount(reduction);
     }
